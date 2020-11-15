@@ -93,12 +93,12 @@ public partial class ReceiptBook : System.Web.UI.Page
                 nextyearnum = nextyear - 1;
             }
             cmd = new MySqlCommand("SELECT sno, BranchName, BranchCode FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtCode = vdm.SelectQuery(cmd).Tables[0];
             string Receiptid = "";
             //cmd = new MySqlCommand("SELECT Sno, BranchId, ReceivedFrom, AgentID, Empid, Amountpayable, AmountPaid, DOE, Create_by, Modified_by, Remarks, OppBal, dispatchid, Receipt FROM cashreceipts WHERE (BranchId = @BranchID) AND (Receipt = @Receipt)");
-            //cmd.Parameters.Add("@BranchID", Session["branch"]);
-            //cmd.Parameters.Add("@Receipt", txtReceiptNo.Text);
+            //cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+            //cmd.Parameters.AddWithValue("@Receipt", txtReceiptNo.Text);
             //DataTable dtReceipt = vdm.SelectQuery(cmd).Tables[0];
             //if (dtReceipt.Rows.Count > 0)
             //{
@@ -107,8 +107,8 @@ public partial class ReceiptBook : System.Web.UI.Page
                 if (Status == "SalesMen")
                 {
                     cmd = new MySqlCommand("SELECT cashreceipts.Remarks,DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno AS RefNo, cashreceipts.Receipt, dispatch.DispName, empmanage.EmpName, cashreceipts.AmountPaid,cashreceipts.GroupRecieptNo FROM cashreceipts INNER JOIN dispatch ON cashreceipts.dispatchid = dispatch.sno INNER JOIN empmanage ON cashreceipts.Empid = empmanage.Sno WHERE  (cashreceipts.Sno = @Receipt)");
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@Receipt", txtReceiptNo.Text);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@Receipt", txtReceiptNo.Text);
                     DataTable dtReceiptBook = vdm.SelectQuery(cmd).Tables[0];
                     if (dtReceiptBook.Rows.Count > 0)
                     {
@@ -130,8 +130,8 @@ public partial class ReceiptBook : System.Web.UI.Page
                 {
                     //cmd = new MySqlCommand("SELECT cashreceipts.Remarks,cashreceipts.Sno, DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno AS RefNo,cashreceipts.Receipt,cashreceipts.PaymentStatus,cashreceipts.ChequeNo,  branchdata.BranchName, cashreceipts.AmountPaid FROM cashreceipts INNER JOIN branchdata ON cashreceipts.AgentID = branchdata.sno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.Receipt = @Receipt)");
                     cmd = new MySqlCommand("SELECT cashreceipts.Remarks, cashreceipts.Sno, DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno AS RefNo, cashreceipts.Receipt,cashreceipts.PaymentStatus, cashreceipts.ChequeNo, branchdata.BranchName, cashreceipts.AmountPaid, branchroutes.RouteName FROM cashreceipts INNER JOIN branchdata ON cashreceipts.AgentID = branchdata.sno INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE  (cashreceipts.Sno = @Receipt)");
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@Receipt", txtReceiptNo.Text);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@Receipt", txtReceiptNo.Text);
                     DataTable dtReceiptBook = vdm.SelectQuery(cmd).Tables[0];
                     if (dtReceiptBook.Rows.Count > 0)
                     {
@@ -167,8 +167,8 @@ public partial class ReceiptBook : System.Web.UI.Page
                 if (Status == "Others" || Status == "freezer deposit" || Status == "Journal Voucher" || Status == "Cheque" || Status == "Bank Transfer")
                 {
                     cmd = new MySqlCommand("SELECT DATE_FORMAT(DOE, '%d %b %y') AS DOE, Receiptno, Name, Amount,remarks,CollectionType,PaymentType  FROM cashcollections WHERE (Sno = @Receipt)");
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@Receipt", txtReceiptNo.Text);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@Receipt", txtReceiptNo.Text);
                     DataTable dtReceiptBook = vdm.SelectQuery(cmd).Tables[0];
                     if (dtReceiptBook.Rows.Count > 0)
                     {
@@ -189,7 +189,7 @@ public partial class ReceiptBook : System.Web.UI.Page
                     else
                     {
                         cmd = new MySqlCommand("SELECT branchdata.BranchName,collections.Remarks, DATE_FORMAT(collections.PaidDate, '%d %b %y') AS DOE, collections.PaymentType, collections.AmountPaid, collections.Sno, collections.ReceiptNo FROM collections INNER JOIN branchmappingtable ON collections.Branchid = branchmappingtable.SubBranch INNER JOIN branchdata ON collections.Branchid = branchdata.sno WHERE (collections.Sno=@ReceiptNo) ORDER BY branchdata.BranchName");
-                        cmd.Parameters.Add("@ReceiptNo", txtReceiptNo.Text);
+                        cmd.Parameters.AddWithValue("@ReceiptNo", txtReceiptNo.Text);
                         DataTable dtReceip= vdm.SelectQuery(cmd).Tables[0];
                         if (dtReceip.Rows.Count > 0)
                         {

@@ -43,9 +43,9 @@ public partial class creditvoucherdetails : System.Web.UI.Page
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
                 {
@@ -55,7 +55,7 @@ public partial class creditvoucherdetails : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtPlant.Rows)
                 {
@@ -73,8 +73,8 @@ public partial class creditvoucherdetails : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -91,7 +91,7 @@ public partial class creditvoucherdetails : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT accountheads.HeadName, accountheads.Sno FROM subpayable INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.VoucherType = 'Due') GROUP BY accountheads.HeadName ORDER BY accountheads.HeadName");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         DataTable dtHead = vdm.SelectQuery(cmd).Tables[0];
         ddlHeadOfaccounts.DataSource = dtHead;
         ddlHeadOfaccounts.DataTextField = "HeadName";
@@ -105,7 +105,7 @@ public partial class creditvoucherdetails : System.Web.UI.Page
     //    {
     //        vdm = new VehicleDBMgr();
     //        cmd = new MySqlCommand("SELECT accountheads.HeadName, accountheads.Sno FROM subpayable INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.VoucherType = 'Due') GROUP BY accountheads.HeadName ORDER BY accountheads.HeadName");
-    //        cmd.Parameters.Add("@BranchID", Session["branch"]);
+    //        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
     //        DataTable dtHead = vdm.SelectQuery(cmd).Tables[0];
     //        ddlHeadOfaccounts.DataSource = dtHead;
     //        ddlHeadOfaccounts.DataTextField = "HeadName";
@@ -130,9 +130,9 @@ public partial class creditvoucherdetails : System.Web.UI.Page
             pnlHide.Visible = true;
             DataTable Report = new DataTable();
             cmd = new MySqlCommand("SELECT DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS EntryDate, cashpayables.VocherID, accountheads.HeadName,cashpayables.VoucherType, cashpayables.Amount, cashpayables.ApprovedAmount as ApprovedAmount FROM accountheads INNER JOIN subpayable ON accountheads.Sno = subpayable.HeadSno INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (cashpayables.BranchID = @BranchID)  AND (subpayable.HeadSno = @HeadSno) and (cashpayables.Status=@Status) AND (cashpayables.VoucherType<>'Debit')  ORDER BY cashpayables.DOE");
-            cmd.Parameters.Add("@Status", 'P');
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@HeadSno", ddlHeadOfaccounts.SelectedValue);
+            cmd.Parameters.AddWithValue("@Status", 'P');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@HeadSno", ddlHeadOfaccounts.SelectedValue);
             DataTable dtCredit = vdm.SelectQuery(cmd).Tables[0];
             Report.Columns.Add("Date");
             Report.Columns.Add("VoucherID");

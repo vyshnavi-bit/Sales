@@ -41,9 +41,9 @@ public partial class BranchWiseIndent : System.Web.UI.Page
             if (Session["salestype"].ToString() == "Plant")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -54,8 +54,8 @@ public partial class BranchWiseIndent : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -225,7 +225,7 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                     Report.Columns.Add("Decrease %");
                     cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, branchdata.BranchName,branchroutes.RouteName, branchroutes.Sno AS Routesno FROM branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno INNER JOIN branchroutes ON branchdata.sno = branchroutes.BranchID WHERE (branchmappingtable.SuperBranch = @BranchID) and (branchroutes.flag=1) order by branchdata.sno");
                     // cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, branchdata.BranchName FROM branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno WHERE (branchmappingtable.SuperBranch = @BranchID)");
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                     DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
                     double fromqty = 0;
                     double toqty = 0;
@@ -284,15 +284,15 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                             }
                             BranchName = drbranch["BranchName"].ToString();
                             cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo LEFT OUTER JOIN indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE (branchroutes.BranchID = @BranchID) AND (branchroutes.flag = 1) GROUP BY branchroutes.Sno, branchroutes.RouteName ORDER BY RouteSno");
-                            cmd.Parameters.Add("@branchID", drbranch["SubBranch"].ToString());
-                            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                            cmd.Parameters.AddWithValue("@branchID", drbranch["SubBranch"].ToString());
+                            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                             DataTable dtindentprev = vdm.SelectQuery(cmd).Tables[0];
 
                             cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo LEFT OUTER JOIN indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE (branchroutes.BranchID = @BranchID) AND (branchroutes.flag = 1) GROUP BY branchroutes.Sno, branchroutes.RouteName ORDER BY RouteSno");
-                            cmd.Parameters.Add("@branchID", drbranch["SubBranch"].ToString());
-                            cmd.Parameters.Add("@d1", GetLowDate(todate));
-                            cmd.Parameters.Add("@d2", GetHighDate(todate));
+                            cmd.Parameters.AddWithValue("@branchID", drbranch["SubBranch"].ToString());
+                            cmd.Parameters.AddWithValue("@d1", GetLowDate(todate));
+                            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                             DataTable dtindentpresent = vdm.SelectQuery(cmd).Tables[0];
 
                             double PrevIndent = 0;
@@ -395,10 +395,10 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                     double increseqty = 0;
                     double decreseeqty = 0;
                     cmd = new MySqlCommand("SELECT branchaccounts.BranchId, branchaccounts.Amount, branchaccounts.FineAmount, branchaccounts.Dtripid, branchaccounts.Ctripid, branchaccounts.SaleValue,branchmappingtable.SuperBranch FROM branchaccounts INNER JOIN branchmappingtable ON branchaccounts.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID)");
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable dtagentbalance = vdm.SelectQuery(cmd).Tables[0];
                     cmd = new MySqlCommand("SELECT branchmappingtable.SuperBranch, inventory_monitor.Qty, inventory_monitor.Inv_Sno, inventory_monitor.BranchId FROM inventory_monitor INNER JOIN branchmappingtable ON inventory_monitor.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID)");
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable dtinvebalance = vdm.SelectQuery(cmd).Tables[0];
                     cmd = new MySqlCommand("SELECT sno,salestype FROM salestypemanagement WHERE (status = 1) ORDER BY rank");
                     DataTable dtsalesType = vdm.SelectQuery(cmd).Tables[0];
@@ -432,7 +432,7 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                             {
                                 cmd = new MySqlCommand("SELECT branchroutes.RouteName,branchdata.SalesType,branchdata.SalesRepresentative, branchroutes.Sno AS Routesno,branchdata.sno as bsno, branchdata.BranchName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchdata.flag = 1) AND (branchroutes.BranchID = @BranchID) ORDER BY Routesno");
                             }
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                             DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
                             DataView viewLeaks = new DataView(dtbranch);
                             DataTable distinctroutes = viewLeaks.ToTable(true, "salestype", "RouteName");
@@ -608,15 +608,15 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                                     }
                                     Routename = drbranch["RouteName"].ToString();
                                     cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName,  branchdata.BranchName, branchdata.sno FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno LEFT OUTER JOIN  indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE  (branchdata.flag = 1) AND (branchroutes.Sno = @RouteID) GROUP BY branchdata.BranchName, branchdata.sno ORDER BY branchdata.sno");
-                                    cmd.Parameters.Add("@RouteID", drbranch["Routesno"].ToString());
-                                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                                    cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                                    cmd.Parameters.AddWithValue("@RouteID", drbranch["Routesno"].ToString());
+                                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                                     DataTable dtindentprev = vdm.SelectQuery(cmd).Tables[0];
 
                                     cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName,  branchdata.BranchName, branchdata.sno FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno LEFT OUTER JOIN  indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE  (branchdata.flag = 1) AND (branchroutes.Sno = @RouteID) GROUP BY branchdata.BranchName, branchdata.sno ORDER BY branchdata.sno");
-                                    cmd.Parameters.Add("@RouteID", drbranch["Routesno"].ToString());
-                                    cmd.Parameters.Add("@d1", GetLowDate(todate));
-                                    cmd.Parameters.Add("@d2", GetHighDate(todate));
+                                    cmd.Parameters.AddWithValue("@RouteID", drbranch["Routesno"].ToString());
+                                    cmd.Parameters.AddWithValue("@d1", GetLowDate(todate));
+                                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                                     DataTable dtindentpresent = vdm.SelectQuery(cmd).Tables[0];
 
                                     double PrevIndent = 0;
@@ -935,9 +935,9 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                 Report.Columns.Add("Decrease %");
                 Report.Columns.Add("Remarks");
                 cmd = new MySqlCommand("SELECT indent_monitoring.sno, indent_monitoring.RouteId AS Routesno,branchdata.SalesRepresentative, branchdata.sno as bsno, indent_monitoring.Indent_Date1, indent_monitoring.Indent_Date2, indent_monitoring.Indent_Increase, indent_monitoring.Indent_Decrease, indent_monitoring.Entry_Date, indent_monitoring.Reason, indent_monitoring.Remarks, indent_monitoring.Entered_by, indent_monitoring.Yesterday_Qty, indent_monitoring.Today_Qty, branchdata.BranchName FROM indent_monitoring INNER JOIN branchroutes ON indent_monitoring.RouteId = branchroutes.Sno INNER JOIN branchdata ON indent_monitoring.Agent_ID = branchdata.sno WHERE (branchroutes.BranchID = @BranchID) AND (indent_monitoring.Indent_Date1 BETWEEN @d1 AND @d2)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(todate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(todate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 DataTable dtIndentmonitoring = vdm.SelectQuery(cmd).Tables[0];
 
                 double fromqty = 0;
@@ -971,12 +971,12 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                         if (salestype == "DISCONTINUED AGENTS")
                         {
                             cmd = new MySqlCommand("SELECT branchroutes.RouteName,branchdata.SalesType,branchdata.SalesRepresentative, branchroutes.Sno AS Routesno,branchdata.sno as bsno, branchdata.BranchName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchroutes.BranchID = @BranchID) ORDER BY Routesno");
-                            cmd.Parameters.Add("@BranchID", 1);
+                            cmd.Parameters.AddWithValue("@BranchID", 1);
                         }
                         else
                         {
                             cmd = new MySqlCommand("SELECT branchroutes.RouteName,branchdata.SalesType,branchdata.SalesRepresentative, branchroutes.Sno AS Routesno,branchdata.sno as bsno, branchdata.BranchName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchdata.flag = 1) AND (branchroutes.BranchID = @BranchID) ORDER BY Routesno");
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                         }
                         DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
                         DataView viewLeaks = new DataView(dtbranch);
@@ -1153,15 +1153,15 @@ public partial class BranchWiseIndent : System.Web.UI.Page
                                 }
                                 Routename = drbranch["RouteName"].ToString();
                                 //cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName,  branchdata.BranchName, branchdata.sno FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno LEFT OUTER JOIN  indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE  (branchdata.flag = 1) AND (branchroutes.Sno = @RouteID) GROUP BY branchdata.BranchName, branchdata.sno ORDER BY branchdata.sno");
-                                //cmd.Parameters.Add("@RouteID", drbranch["Routesno"].ToString());
-                                //cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                                //cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                                //cmd.Parameters.AddWithValue("@RouteID", drbranch["Routesno"].ToString());
+                                //cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                                //cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                                 //DataTable dtindentprev = vdm.SelectQuery(cmd).Tables[0];
 
                                 //cmd = new MySqlCommand("SELECT branchroutesubtable.BranchID, ROUND(SUM(indents_subtable.unitQty), 2) AS indentqty, branchroutes.Sno AS RouteSno, branchroutes.RouteName,  branchdata.BranchName, branchdata.sno FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno LEFT OUTER JOIN  indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo ON  branchroutesubtable.BranchID = indnts.Branch_id WHERE  (branchdata.flag = 1) AND (branchroutes.Sno = @RouteID) GROUP BY branchdata.BranchName, branchdata.sno ORDER BY branchdata.sno");
-                                //cmd.Parameters.Add("@RouteID", drbranch["Routesno"].ToString());
-                                //cmd.Parameters.Add("@d1", GetLowDate(todate));
-                                //cmd.Parameters.Add("@d2", GetHighDate(todate));
+                                //cmd.Parameters.AddWithValue("@RouteID", drbranch["Routesno"].ToString());
+                                //cmd.Parameters.AddWithValue("@d1", GetLowDate(todate));
+                                //cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                                 //DataTable dtindentpresent = vdm.SelectQuery(cmd).Tables[0];
 
                                 double PrevIndent = 0;

@@ -45,9 +45,9 @@ public partial class SapOtherSale : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -58,8 +58,8 @@ public partial class SapOtherSale : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -122,16 +122,16 @@ public partial class SapOtherSale : System.Web.UI.Page
             if (ddltype.SelectedValue == "Non Tax")
             {
                 cmd = new MySqlCommand("SELECT  tripdata.Sno AS TripId, DATE_FORMAT(tripdata.AssignDate, '%d %b %y') AS AssignDate, tripdata.Permissions, tripdata.VehicleNo,dispatch.DispName AS DispatchName, empmanage.EmpName AS Employee FROM tripdata INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON empmanage.Branch = branchdata.sno WHERE (tripdata.DC_Type = 1) AND (tripdata.Status <> 'c') AND (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (tripdata.Permissions LIKE '%D%') AND  (empmanage.Branch = @BranchID)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dttripid = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow drdc in dttripid.Rows)
                 {
                     cmd = new MySqlCommand("SELECT  products_category.categorycode, products_category.sno AS categoryid, productsdata.Itemcode, products_category.tcategory, branchdata.BranchName,branchdata.whcode, branchdata.sno AS BSno, indent.IndentType, indents_subtable.DeliveryQty, indents_subtable.UnitCost, productsdata.tproduct,productsdata.ProductName, productsdata.Units, productsdata.sno AS productsno, products_category.tcategory AS Expr1, tripdata.to_adr_Id,addresstable.companyname AS tBranchName, IFNULL(branchproducts.VatPercent, 0) AS VatPercent FROM (SELECT IndentNo, Branch_id, I_date, Status, IndentType FROM indents WHERE (I_date BETWEEN @d1 AND @d2) AND (Status <> 'D')) indent INNER JOIN branchdata ON indent.Branch_id = branchdata.sno INNER JOIN tripdata ON tripdata.BranchID = branchdata.sno INNER JOIN addresstable ON addresstable.sno = tripdata.to_adr_Id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno AND productsdata.sno = branchproducts.product_sno WHERE (indents_subtable.DeliveryQty <> 0) AND (tripdata.Sno = @BranchID) GROUP BY productsdata.sno, BSno, branchproducts.VatPercent ORDER BY branchdata.BranchName");
-                    cmd.Parameters.Add("@BranchID", drdc["TripId"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                    cmd.Parameters.AddWithValue("@BranchID", drdc["TripId"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                     DataTable dtothntax = vdm.SelectQuery(cmd).Tables[0];
                     DateTime ReportDate = VehicleDBMgr.GetTime(vdm.conn);
                     DateTime dtapril = new DateTime();
@@ -178,11 +178,11 @@ public partial class SapOtherSale : System.Web.UI.Page
                         cmd = new MySqlCommand("SELECT sno, BranchName, statename,tax,ntax FROM branchdata WHERE (sno = @BranchID)");
                         if (Session["salestype"].ToString() == "Plant")
                         {
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                         }
                         else
                         {
-                            cmd.Parameters.Add("@BranchID", Session["branch"]);
+                            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                         }
                         DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
                         string statename = "";
@@ -198,9 +198,9 @@ public partial class SapOtherSale : System.Web.UI.Page
                         {
                             DataRow newrow = Report.NewRow();
                             cmd = new MySqlCommand("SELECT agentdcno FROM  agentdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-                            cmd.Parameters.Add("@BranchID", branch["BSno"].ToString());
-                            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@BranchID", branch["BSno"].ToString());
+                            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                             DataTable dtsubDc = vdm.SelectQuery(cmd).Tables[0];
                             string DCNO = "";
                             if (dtsubDc.Rows.Count > 0)
@@ -213,7 +213,7 @@ public partial class SapOtherSale : System.Web.UI.Page
                             }
 
                             cmd = new MySqlCommand("SELECT  sno, companyname, buildingaddress, street, mandal, district, state, pin, tin, cst, email, panno, customercode FROM addresstable WHERE (sno = @to_adr_Id)");
-                            cmd.Parameters.Add("@to_adr_Id", branch["to_adr_Id"].ToString());
+                            cmd.Parameters.AddWithValue("@to_adr_Id", branch["to_adr_Id"].ToString());
                             DataTable dtcustomer = vdm.SelectQuery(cmd).Tables[0];
                             newrow["Customer Name"] = dtcustomer.Rows[0]["companyname"].ToString();
                             newrow["Customer Code"] = dtcustomer.Rows[0]["customercode"].ToString();
@@ -448,16 +448,16 @@ public partial class SapOtherSale : System.Web.UI.Page
                 Report.Columns.Add("Narration");
                 int i = 1;
                 cmd = new MySqlCommand("SELECT  tripdata.Sno AS TripId, DATE_FORMAT(tripdata.AssignDate, '%d %b %y') AS AssignDate, tripdata.Permissions, tripdata.VehicleNo,dispatch.DispName AS DispatchName, empmanage.EmpName AS Employee FROM tripdata INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON empmanage.Branch = branchdata.sno WHERE (tripdata.DC_Type = 1) AND (tripdata.Status <> 'c') AND (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (tripdata.Permissions LIKE '%D%') AND  (empmanage.Branch = @BranchID)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dttripid = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow drdc in dttripid.Rows)
                 {
                     cmd = new MySqlCommand("SELECT   addresstable.customercode,products_category.categorycode, productsdata.Itemcode, branchdata.whcode, products_category.sno AS categoryid, branchdata.tbranchname,branchdata.BranchName, branchdata.sno AS BSno, indent.IndentType, indents_subtable.DeliveryQty, indents_subtable.UnitCost, productsdata.tproduct,productsdata.ProductName, productsdata.Units, productsdata.sno AS productsno, products_category.tcategory, branchproducts.VatPercent, tripdata.to_adr_Id,addresstable.companyname AS tBranchName FROM  (SELECT IndentNo, Branch_id, I_date, Status, IndentType FROM indents WHERE (I_date BETWEEN @d1 AND @d2) AND (Status <> 'D')) indent INNER JOIN branchdata ON indent.Branch_id = branchdata.sno INNER JOIN tripdata ON tripdata.BranchID = branchdata.sno INNER JOIN addresstable ON addresstable.sno = tripdata.to_adr_Id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno AND productsdata.sno = branchproducts.product_sno WHERE (indents_subtable.DeliveryQty <> 0) AND (branchproducts.VatPercent > 0) AND (tripdata.Sno = @BranchID) GROUP BY productsdata.sno, BSno, branchproducts.VatPercent ORDER BY branchdata.BranchName");
-                    cmd.Parameters.Add("@BranchID", drdc["TripId"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                    cmd.Parameters.AddWithValue("@BranchID", drdc["TripId"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                     DataTable dtothers = vdm.SelectQuery(cmd).Tables[0];
                     if (dtothers.Rows.Count > 0)
                     {
@@ -466,11 +466,11 @@ public partial class SapOtherSale : System.Web.UI.Page
                         cmd = new MySqlCommand("SELECT sno, BranchName, statename,tax,ntax FROM branchdata WHERE (sno = @BranchID)");
                         if (Session["salestype"].ToString() == "Plant")
                         {
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                         }
                         else
                         {
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                         }
                         DataTable dtstate = vdm.SelectQuery(cmd).Tables[0];
                         string statename = "";
@@ -488,9 +488,9 @@ public partial class SapOtherSale : System.Web.UI.Page
                             string DCNO = "0";
                             long DcNo = 0;
                             cmd = new MySqlCommand("SELECT sno, taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate FROM taxdc_table WHERE (branchid = @BranchID) AND (indentdate BETWEEN @d1 AND @d2)");
-                            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                             DataTable dtotherDc = vdm.SelectQuery(cmd).Tables[0];
                             if (dtotherDc.Rows.Count > 0)
                             {
@@ -592,7 +592,7 @@ public partial class SapOtherSale : System.Web.UI.Page
                                 DCNO = "CTR/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "T/" + DCNO;
                             }
                             cmd = new MySqlCommand("SELECT  sno, companyname, buildingaddress, street, mandal, district, state, pin, tin, cst, email, panno, customercode FROM addresstable WHERE (sno = @to_adr_Id)");
-                            cmd.Parameters.Add("@to_adr_Id", branch["to_adr_Id"].ToString());
+                            cmd.Parameters.AddWithValue("@to_adr_Id", branch["to_adr_Id"].ToString());
                             DataTable dtcustomer = vdm.SelectQuery(cmd).Tables[0];
                             newrow["Customer Code"] = dtcustomer.Rows[0]["customercode"].ToString();   // branch["tbranchname1"].ToString();
                             newrow["WH Code"] = branch["whcode"].ToString();

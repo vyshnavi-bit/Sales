@@ -37,7 +37,7 @@ public partial class MilkBuyerReport : System.Web.UI.Page
             {
                 PPlant.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlPlant.DataSource = dtRoutedata;
                 ddlPlant.DataTextField = "BranchName";
@@ -49,9 +49,9 @@ public partial class MilkBuyerReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -62,8 +62,8 @@ public partial class MilkBuyerReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -80,9 +80,9 @@ public partial class MilkBuyerReport : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         PBranch.Visible = true;
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-        cmd.Parameters.Add("@SuperBranch", ddlPlant.SelectedValue);
-        cmd.Parameters.Add("@SalesType", "21");
-        cmd.Parameters.Add("@SalesType1", "26");
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlPlant.SelectedValue);
+        cmd.Parameters.AddWithValue("@SalesType", "21");
+        cmd.Parameters.AddWithValue("@SalesType1", "26");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlSalesOffice.DataSource = dtRoutedata;
         ddlSalesOffice.DataTextField = "BranchName";
@@ -157,22 +157,22 @@ public partial class MilkBuyerReport : System.Web.UI.Page
         fromdate = fromdate.AddDays(-1);
 
         cmd = new MySqlCommand("SELECT SUM(collections.AmountPaid) AS amount, branchmappingtable.SuperBranch, branchdata.sno, branchdata.BranchName FROM collections INNER JOIN branchdata ON collections.Branchid = branchdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.tripId IS NULL) AND (branchmappingtable.SuperBranch = @SuperBranch) GROUP BY branchdata.sno, branchdata.BranchName");
-        cmd.Parameters.Add("@CheckStatus", 'P');
-        cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@CheckStatus", 'P');
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
         DataTable dtcheque = vdm.SelectQuery(cmd).Tables[0];
 
         cmd = new MySqlCommand("SELECT branchaccounts.BranchId, branchaccounts.Amount, branchaccounts.FineAmount, branchaccounts.Dtripid, branchaccounts.Ctripid, branchaccounts.SaleValue,branchmappingtable.SuperBranch FROM branchaccounts INNER JOIN branchmappingtable ON branchaccounts.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID)");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         DataTable dtagentbalance = vdm.SelectQuery(cmd).Tables[0];
 
         cmd = new MySqlCommand("SELECT due_trans_inventory.closing AS crates, due_trans_inventory.clo10 + due_trans_inventory.clo20 + due_trans_inventory.clo40 AS cans,due_trans_inventory.isuued, branchmappingtable.SubBranch FROM due_trans_inventory INNER JOIN branchmappingtable ON due_trans_inventory.agentid = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID) AND (due_trans_inventory.doe BETWEEN @d1 AND @d2)");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(1));
-        cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(1));
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(1));
+        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(1));
         DataTable dtinv = vdm.SelectQuery(cmd).Tables[0];
 
         cmd=new MySqlCommand ("SELECT branchmappingtable.SuperBranch, inventory_monitor.Qty, inventory_monitor.Inv_Sno, inventory_monitor.BranchId FROM inventory_monitor INNER JOIN branchmappingtable ON inventory_monitor.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID)");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         DataTable dtinvebalance = vdm.SelectQuery(cmd).Tables[0];
         int Totalcount = 1;
 
@@ -182,10 +182,10 @@ public partial class MilkBuyerReport : System.Web.UI.Page
         if (ddltype.SelectedValue == "With incentive")
         {
             cmd=new MySqlCommand ("SELECT incentivetransactions.BranchId, incentivetransactions.TotalDiscount FROM incentivetransactions INNER JOIN branchmappingtable ON incentivetransactions.BranchId = branchmappingtable.SubBranch INNER JOIN branchdata ON branchmappingtable.SuperBranch = branchdata.sno WHERE (incentivetransactions.EntryDate BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @BranchID) OR (incentivetransactions.EntryDate BETWEEN @d1 AND @d2) AND (branchdata.SalesOfficeID = @SOID)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-15));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(10));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-15));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(10));
             dtincentives = vdm.SelectQuery(cmd).Tables[0];
         
         }
@@ -224,10 +224,10 @@ public partial class MilkBuyerReport : System.Web.UI.Page
             {
                 cmd = new MySqlCommand("SELECT  branchroutes.srname,branchroutes.RouteName,branchdata.BranchName,branchdata.sno as Branchid,branchdata.SalesRepresentative, tempduetrasactions.ClosingBalance, salestypemanagement.salestype FROM branchmappingtable INNER JOIN tempduetrasactions ON branchmappingtable.SubBranch = tempduetrasactions.AgentId INNER JOIN branchdata ON tempduetrasactions.AgentId = branchdata.sno INNER JOIN salestypemanagement ON branchdata.SalesType = salestypemanagement.sno INNER JOIN branchroutes ON tempduetrasactions.RouteId = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @BranchID) AND (branchdata.flag = 1) and (salestypemanagement.sno=@SalesType) AND (tempduetrasactions.IndentDate BETWEEN @d1 AND @d2) GROUP BY branchdata.BranchName, salestypemanagement.salestype, branchroutes.RouteName order by salestypemanagement.salestype, branchroutes.RouteName");
             }
-            cmd.Parameters.Add("@SalesType", dr["sno"].ToString());
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@SalesType", dr["sno"].ToString());
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
             DataView viewLeaks = new DataView(dtble);
             DataTable distinctroutes = viewLeaks.ToTable(true, "salestype", "RouteName");
@@ -483,10 +483,10 @@ public partial class MilkBuyerReport : System.Web.UI.Page
                             else
                             {
                                 cmd = new MySqlCommand("SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty, CBFromTran, CBToTran, DeliveryTime, CollectionTime, Remarks, Modified_EmpId FROM invtransactions12 WHERE (ToTran = @BranchID) and (DOE between @d1 and @d2) ORDER BY DOE DESC");
-                                cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddMonths(-4));
-                                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddMonths(-4));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                             }
-                            cmd.Parameters.Add("@BranchID", drbranch["Branchid"].ToString());
+                            cmd.Parameters.AddWithValue("@BranchID", drbranch["Branchid"].ToString());
                             DataTable dtinvamount = vdm.SelectQuery(cmd).Tables[0];
                             if (dtinvamount.Rows.Count > 0)
                             {
@@ -529,10 +529,10 @@ public partial class MilkBuyerReport : System.Web.UI.Page
                             else
                             {
                                 cmd = new MySqlCommand("SELECT SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS amount, indents.I_date FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.Branch_id = @BranchID)  and (indents.I_date between @d1 and @d2) GROUP BY indents.Branch_id, indents.I_date ORDER BY indents.I_date DESC");
-                                cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddMonths(-4));
-                                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddMonths(-4));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                             }
-                            cmd.Parameters.Add("@BranchID", drbranch["Branchid"].ToString());
+                            cmd.Parameters.AddWithValue("@BranchID", drbranch["Branchid"].ToString());
                             DataTable dtsalesamount = vdm.SelectQuery(cmd).Tables[0];
                             if (dtsalesamount.Rows.Count > 0)
                             {

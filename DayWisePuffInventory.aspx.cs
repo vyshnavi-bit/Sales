@@ -47,9 +47,9 @@ public partial class DayWisePuffInventory : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -61,8 +61,8 @@ public partial class DayWisePuffInventory : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -146,9 +146,9 @@ public partial class DayWisePuffInventory : System.Web.UI.Page
             Session["filename"] = ddlSalesOffice.SelectedItem.Text + " REPORT " + fromdate.AddDays(1).ToString("dd/MM/yyyy");
             pnlHide.Visible = true;
             cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno, dispatch.BranchID,tripdata.sno as tripid,DATE_FORMAT(tripdata.AssignDate, '%d %b %y') AS AssignDate FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.BranchID = @BranchID) AND (tripdata.I_Date BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
             DataTable dtDispnames = vdm.SelectQuery(cmd).Tables[0];
 
             Report = new DataTable();
@@ -180,13 +180,13 @@ public partial class DayWisePuffInventory : System.Web.UI.Page
             foreach (DataRow drSub in dtDispnames.Rows)
             {
                 cmd = new MySqlCommand("SELECT triproutes.Tripdata_sno, tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName, invmaster.sno FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (tripdata.sno = @tripsno)");
-                cmd.Parameters.Add("@tripsno", drSub["tripid"].ToString());
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@tripsno", drSub["tripid"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
                 DataTable DtTripSubData = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT TransType, FromTran, ToTran, Qty, VQty,B_inv_sno FROM invtransactions12 WHERE (ToTran = @tripsno) AND (FromTran = @soid) AND (TransType= 3)");
-                cmd.Parameters.Add("@tripsno", drSub["tripid"].ToString());
-                cmd.Parameters.Add("@soid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@tripsno", drSub["tripid"].ToString());
+                cmd.Parameters.AddWithValue("@soid", ddlSalesOffice.SelectedValue);
                 DataTable DtverifiedData = vdm.SelectQuery(cmd).Tables[0];
 
                 string Disp = drSub["DispName"].ToString();

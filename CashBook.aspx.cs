@@ -45,7 +45,7 @@ public partial class CashBook : System.Web.UI.Page
             {
                 PPlant.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlPlant.DataSource = dtRoutedata;
                 ddlPlant.DataTextField = "BranchName";
@@ -59,9 +59,9 @@ public partial class CashBook : System.Web.UI.Page
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
                 {
@@ -71,7 +71,7 @@ public partial class CashBook : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd=new MySqlCommand ("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtPlant.Rows)
                 {
@@ -81,8 +81,8 @@ public partial class CashBook : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "23");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "23");
                 DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtNewPlant.Rows)
                 {
@@ -99,8 +99,8 @@ public partial class CashBook : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -119,9 +119,9 @@ public partial class CashBook : System.Web.UI.Page
         dtBranch.Columns.Add("BranchName");
         dtBranch.Columns.Add("sno");
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-        cmd.Parameters.Add("@SuperBranch", ddlPlant.SelectedValue);
-        cmd.Parameters.Add("@SalesType", "21");
-        cmd.Parameters.Add("@SalesType1", "26");
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlPlant.SelectedValue);
+        cmd.Parameters.AddWithValue("@SalesType", "21");
+        cmd.Parameters.AddWithValue("@SalesType1", "26");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         foreach (DataRow dr in dtRoutedata.Rows)
         {
@@ -131,7 +131,7 @@ public partial class CashBook : System.Web.UI.Page
             dtBranch.Rows.Add(newrow);
         }
         cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-        cmd.Parameters.Add("@BranchID", ddlPlant.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlPlant.SelectedValue);
         DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
         foreach (DataRow dr in dtPlant.Rows)
         {
@@ -225,15 +225,15 @@ public partial class CashBook : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT dispatch.DispName, tripdata.RecieptNo, tripdata.ReceivedAmount FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON tripdata.BranchID = branchdata.sno WHERE (tripdata.BranchID = @BranchID) AND (tripdata.Cdate BETWEEN @d1 AND @d2) OR (tripdata.Cdate BETWEEN @d1 AND @d2) AND (branchdata.SalesOfficeID = @BranchID)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 dtCashBook = vdm.SelectQuery(cmd).Tables[0];
             }
             cmd = new MySqlCommand("SELECT Branchid, AmountPaid FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
             DataTable dtOpp = vdm.SelectQuery(cmd).Tables[0];
             if (dtOpp.Rows.Count > 0)
             {
@@ -243,9 +243,9 @@ public partial class CashBook : System.Web.UI.Page
                 //RouteReport.Rows.Add(newClo);
             }
             cmd = new MySqlCommand("SELECT Branchid, AmountPaid,VarifyDate FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtclosedtime = vdm.SelectQuery(cmd).Tables[0];
             if (dtclosedtime.Rows.Count > 0)
             {
@@ -275,9 +275,9 @@ public partial class CashBook : System.Web.UI.Page
                 }
             }
             cmd = new MySqlCommand("SELECT Branchid, Amount, Remarks, DOE, Receiptno, Name,PaymentType FROM cashcollections WHERE (Branchid = @Branchid) AND (DOE BETWEEN @d1 AND @d2)  AND (CollectionType = 'Cash')");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtCashCollection = vdm.SelectQuery(cmd).Tables[0];
             if (dtCashCollection.Rows.Count > 0)
             {
@@ -321,9 +321,9 @@ public partial class CashBook : System.Web.UI.Page
                 //cmd = new MySqlCommand("SELECT branchdata.BranchName, collections.AmountPaid, collections.ReceiptNo FROM collections INNER JOIN branchdata ON collections.Branchid = branchdata.sno INNER JOIN branchmappingtable ON collections.Branchid = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID) AND (collections.tripId IS NULL) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.PaymentType = 'Cash') AND (branchdata.SalesType <> 21) AND (branchdata.SalesType <> 21) ");
                 cmd = new MySqlCommand("SELECT branchdata_2.BranchName, collections.AmountPaid, collections.ReceiptNo FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SuperBranch INNER JOIN branchdata branchdata_2 ON branchmappingtable.SubBranch = branchdata_2.sno INNER JOIN collections ON branchdata_2.sno = collections.Branchid WHERE (branchdata_1.SalesOfficeID = @BranchID) AND (collections.tripId IS NULL) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND  (collections.PaymentType = 'Cash') OR (branchdata.sno = @BranchID) AND (collections.tripId IS NULL) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.PaymentType = 'Cash')");
             }
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtAgents.Rows)
             {
@@ -377,9 +377,9 @@ public partial class CashBook : System.Web.UI.Page
             dv.Sort = "Reciept No ASC";
             DataTable sortedDT = dv.ToTable();
             cmd = new MySqlCommand("SELECT CashTo as Payments,ApprovedAmount as Amount,VocherID FROM cashpayables WHERE  (BranchID = @BranchID) AND (DOE BETWEEN @d1 AND @d2) AND (Status = 'P') AND ((VoucherType = 'Debit') OR  (VoucherType = 'SalaryPayble') OR  (VoucherType = 'SalaryAdvance')) and (Status <>'C')");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtCashPayble = vdm.SelectQuery(cmd).Tables[0];
 
 
@@ -415,7 +415,7 @@ public partial class CashBook : System.Web.UI.Page
             CashPayReport.Columns.Add("Amount").DataType = typeof(Double);
             //cmd = new MySqlCommand("SELECT Sno, BranchID, CashTo, DOE, VocherID, Remarks, SUM(ApprovedAmount) AS Amount FROM  cashpayables WHERE (BranchID = @BranchID)  AND (VoucherType = 'Credit')GROUP BY CashTo ORDER BY CashTo");
             cmd = new MySqlCommand("SELECT cashpayables.Sno, cashpayables.BranchID, cashpayables.CashTo,subpayable.HeadSno, cashpayables.DOE, cashpayables.VocherID, cashpayables.Remarks, SUM(cashpayables.ApprovedAmount) AS Amount, accountheads.HeadName FROM cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.Status='P') AND (cashpayables.VoucherType = 'Credit') GROUP BY accountheads.HeadName ORDER BY accountheads.HeadName");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
             DataTable dtCredit = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtCashPayble.Rows)
             {
@@ -450,9 +450,9 @@ public partial class CashBook : System.Web.UI.Page
             dtIoutoday.Columns.Add("Today IOU");
             dtIoutoday.Columns.Add("Amount").DataType = typeof(Double);
             cmd = new MySqlCommand("SELECT CashTo as Payments,ApprovedAmount as Amount,VocherID FROM cashpayables WHERE  (BranchID = @BranchID) AND (DOE BETWEEN @d1 AND @d2) AND (Status = 'P') AND (VoucherType = 'Due') and (Status <>'C')");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtTodayIOU = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtTodayIOU.Rows)
             {
@@ -485,9 +485,9 @@ public partial class CashBook : System.Web.UI.Page
             IOUReport.Columns.Add("IOU");
             IOUReport.Columns.Add("Amount").DataType = typeof(Double);
             cmd = new MySqlCommand("SELECT IOU as onNameof, Amount  FROM ioutable WHERE (BranchID = @BranchID) AND (DOE BETWEEN @d1 AND @d2) ");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             dtIOU = vdm.SelectQuery(cmd).Tables[0];
             if (dtIOU.Rows.Count > 0)
             {
@@ -511,9 +511,9 @@ public partial class CashBook : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT BranchID FROM  Collections WHERE (BranchId = @BranchId) AND (PaidDate BETWEEN @d1 AND @d2)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dtCol = vdm.SelectQuery(cmd).Tables[0];
                 if (dtCol.Rows.Count > 0)
                 {
@@ -522,7 +522,7 @@ public partial class CashBook : System.Web.UI.Page
                 else
                 {
                     cmd = new MySqlCommand("SELECT cashpayables.onNameof,cashpayables.CashTo, SUM(cashpayables.ApprovedAmount) AS Amount, subpayable.HeadSno, accountheads.HeadName FROM cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.VoucherType = 'Due') AND (cashpayables.Status<> 'C') AND (cashpayables.Status='P') GROUP BY  accountheads.HeadName ORDER BY accountheads.HeadName");
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     dtIOU = vdm.SelectQuery(cmd).Tables[0];
                     foreach (DataRow dr in dtIOU.Rows)
                     {
@@ -601,9 +601,9 @@ public partial class CashBook : System.Web.UI.Page
                 hidePanel.Visible = false;
 
                 cmd = new MySqlCommand("  SELECT  sno,DATE_FORMAT(doe, '%d %b %y') AS EntryDate, paymenttype, receiptno, voucherid, branchid, amount,  remarks FROM  zerocashpaybles WHERE (branchid = @BranchID)  AND (doe BETWEEN @d1 AND @d2) AND (paymenttype is NULL)  ORDER BY DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtZeroOpp = vdm.SelectQuery(cmd).Tables[0];
                 double TotalZeroOpp = 0;
                 double ZeroOpp = 0;
@@ -616,10 +616,10 @@ public partial class CashBook : System.Web.UI.Page
                 TotalZeroOpp = Math.Round(TotalZeroOpp, 0);
                 lblZeroOppBal.Text = TotalZeroOpp.ToString();
                 cmd = new MySqlCommand("  SELECT  sno,DATE_FORMAT(doe, '%d %b %y') AS EntryDate, paymenttype, receiptno, voucherid, branchid, Sum(amount) as amount,  remarks,Name FROM  zerocashpaybles WHERE (branchid = @BranchID) AND (paymenttype = @Type) AND (doe BETWEEN @d1 AND @d2) Group By DATE(doe) ORDER BY DOE");
-                cmd.Parameters.Add("@Type", "Receipt");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@Type", "Receipt");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dtReceipt = vdm.SelectQuery(cmd).Tables[0];
                 double TotalReceipt = 0;
                 double ZeroReceipt = 0;
@@ -633,10 +633,10 @@ public partial class CashBook : System.Web.UI.Page
                 lblZeroReceipts.Text = TotalReceipt.ToString();
 
                 cmd = new MySqlCommand("  SELECT  sno,DATE_FORMAT(doe, '%d %b %y') AS EntryDate, paymenttype, receiptno, voucherid, branchid, Sum(amount) as amount,  remarks,Name FROM  zerocashpaybles WHERE (branchid = @BranchID) AND (paymenttype = @Type) AND (doe BETWEEN @d1 AND @d2) Group By DATE(doe) ORDER BY DOE");
-                cmd.Parameters.Add("@Type", "Payment");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@Type", "Payment");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dtPayment = vdm.SelectQuery(cmd).Tables[0];
                 double TotalPayMent = 0;
                 double ZeroPayMent = 0;
@@ -657,9 +657,9 @@ public partial class CashBook : System.Web.UI.Page
             }
             //cmd = new MySqlCommand("SELECT Branchid, AmountPaid,Denominations,EmpID FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2)");
             cmd = new MySqlCommand("SELECT collections.Branchid, collections.AmountPaid, collections.Denominations, collections.VEmpID, collections.EmpID, empmanage.EmpName FROM collections INNER JOIN empmanage ON collections.EmpID = empmanage.Sno WHERE (collections.Branchid = @BranchID) AND (collections.PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtClo = vdm.SelectQuery(cmd).Tables[0];
             if (dtClo.Rows.Count > 0)
             {
@@ -778,9 +778,9 @@ public partial class CashBook : System.Web.UI.Page
             string DenominationString = Session["DenominationString"].ToString();
             DenominationString = DenominationString.Trim();
             cmd = new MySqlCommand("SELECT BranchID FROM  Collections WHERE (BranchId = @BranchId) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtCol = vdm.SelectQuery(cmd).Tables[0];
             if (dtCol.Rows.Count > 0)
             {
@@ -791,10 +791,10 @@ public partial class CashBook : System.Web.UI.Page
             {
                
                 cmd = new MySqlCommand("SELECT cashpayables.Sno, cashpayables.BranchID, cashpayables.CashTo,subpayable.HeadSno, cashpayables.DOE, cashpayables.VocherID, cashpayables.Remarks, SUM(cashpayables.ApprovedAmount) AS Amount, accountheads.HeadName FROM cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.Status='P') AND (cashpayables.VoucherType = 'Credit') GROUP BY accountheads.Sno ORDER BY accountheads.HeadName");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 DataTable dtCredit = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT cashpayables.onNameof,cashpayables.CashTo, SUM(cashpayables.ApprovedAmount) AS Amount, subpayable.HeadSno, accountheads.HeadName FROM cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.VoucherType = 'Due') AND (cashpayables.Status<> 'C') AND (cashpayables.Status='P') GROUP BY  accountheads.HeadName ORDER BY accountheads.HeadName");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 DataTable dtDebit = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtDebit.Rows)
                 {
@@ -814,22 +814,22 @@ public partial class CashBook : System.Web.UI.Page
                     else
                     {
                         cmd = new MySqlCommand("Insert into ioutable (BranchID,IOU,Amount,DOE) values(@BranchID,@IOU,@Amount,@DOE)");
-                        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                        cmd.Parameters.Add("@Amount", TotIouBal);
-                        cmd.Parameters.Add("@IOU", IouName);
-                        cmd.Parameters.Add("@DOE", fromdate);
+                        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@Amount", TotIouBal);
+                        cmd.Parameters.AddWithValue("@IOU", IouName);
+                        cmd.Parameters.AddWithValue("@DOE", fromdate);
                         vdm.insert(cmd);
                     }
                 }
                 cmd = new MySqlCommand("Insert into Collections (BranchID,AmountPaid,UserData_sno,PaidDate,PaymentType,Denominations,EmpID,VarifyDate) values(@BranchID,@AmountPaid,@UserData_sno,@PaidDate,@PaymentType,@Denominations,@EmpID,@VarifyDate)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@AmountPaid", Math.Round(Totalclosing, 2));
-                cmd.Parameters.Add("@Denominations", DenominationString);
-                cmd.Parameters.Add("@UserData_sno", "1");
-                cmd.Parameters.Add("@PaidDate", fromdate);
-                cmd.Parameters.Add("@VarifyDate", ServerDateCurrentdate);
-                cmd.Parameters.Add("@PaymentType", "Cash");
-                cmd.Parameters.Add("@EmpID", Session["UserSno"].ToString());
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@AmountPaid", Math.Round(Totalclosing, 2));
+                cmd.Parameters.AddWithValue("@Denominations", DenominationString);
+                cmd.Parameters.AddWithValue("@UserData_sno", "1");
+                cmd.Parameters.AddWithValue("@PaidDate", fromdate);
+                cmd.Parameters.AddWithValue("@VarifyDate", ServerDateCurrentdate);
+                cmd.Parameters.AddWithValue("@PaymentType", "Cash");
+                cmd.Parameters.AddWithValue("@EmpID", Session["UserSno"].ToString());
                 vdm.insert(cmd);
                 if (ddlSalesOffice.SelectedValue == "172")
                 {
@@ -852,7 +852,7 @@ public partial class CashBook : System.Web.UI.Page
                         }
                     }
                     cmd = new MySqlCommand("SELECT  DispNo, PhoneNumber, Sno, EmpID, EmailID, MsgType, name FROM mobilenotable where MsgType=@MsgType");
-                    cmd.Parameters.Add("@MsgType", "3");
+                    cmd.Parameters.AddWithValue("@MsgType", "3");
                     DataTable dtmobileno = vdm.SelectQuery(cmd).Tables[0];
                     if (dtmobileno.Rows.Count > 0)
                     {
@@ -886,14 +886,14 @@ public partial class CashBook : System.Web.UI.Page
                                 reader.Close();
                             }
                             //cmd = new MySqlCommand("insert into smsinfo (agentid,branchid,mainbranch,msg,mobileno,msgtype,agentname,doe) values (@agentid,@branchid,@mainbranch,@msg,@mobileno,@msgtype,@agentname,@doe)");
-                            //cmd.Parameters.Add("@agentid", BranchID);
-                            //cmd.Parameters.Add("@branchid", soid);
-                            //cmd.Parameters.Add("@mainbranch", Session["SuperBranch"].ToString());
-                            //cmd.Parameters.Add("@msg", message);
-                            //cmd.Parameters.Add("@mobileno", phonenumber);
-                            //cmd.Parameters.Add("@msgtype", "CashBook");
-                            //cmd.Parameters.Add("@agentname", BranchName);
-                            //cmd.Parameters.Add("@doe", ServerDateCurrentdate);
+                            //cmd.Parameters.AddWithValue("@agentid", BranchID);
+                            //cmd.Parameters.AddWithValue("@branchid", soid);
+                            //cmd.Parameters.AddWithValue("@mainbranch", Session["SuperBranch"].ToString());
+                            //cmd.Parameters.AddWithValue("@msg", message);
+                            //cmd.Parameters.AddWithValue("@mobileno", phonenumber);
+                            //cmd.Parameters.AddWithValue("@msgtype", "CashBook");
+                            //cmd.Parameters.AddWithValue("@agentname", BranchName);
+                            //cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                             //vdm.insert(cmd);
 
                         }
@@ -942,9 +942,9 @@ public partial class CashBook : System.Web.UI.Page
             DataTable Report = new DataTable();
 
             cmd = new MySqlCommand("SELECT BranchID FROM  Collections WHERE (BranchId = @BranchId) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtCol = vdm.SelectQuery(cmd).Tables[0];
             if (dtCol.Rows.Count > 0)
             {
@@ -955,9 +955,9 @@ public partial class CashBook : System.Web.UI.Page
             {
                 //cmd = new MySqlCommand("SELECT DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS EntryDate, cashpayables.VocherID, accountheads.HeadName,cashpayables.VoucherType, cashpayables.Amount, cashpayables.ApprovedAmount as ApprovedAmount FROM accountheads INNER JOIN subpayable ON accountheads.Sno = subpayable.HeadSno INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (cashpayables.BranchID = @BranchID)  AND (subpayable.HeadSno = @HeadSno) and (cashpayables.Status=@Status)  ORDER BY cashpayables.DOE");
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS EntryDate, cashpayables.VocherID, accountheads.HeadName, cashpayables.VoucherType,cashpayables.Amount, cashpayables.ApprovedAmount FROM accountheads INNER JOIN subpayable ON accountheads.Sno = subpayable.HeadSno INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (subpayable.HeadSno = @HeadSno) AND (cashpayables.Status = @Status) AND ((cashpayables.VoucherType<>'Debit') OR (cashpayables.VoucherType<>'SalaryAdvance') OR (cashpayables.VoucherType<>'SalaryPayble'))  ORDER BY cashpayables.DOE");
-                cmd.Parameters.Add("@Status", 'P');
-                //cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@HeadSno", headsno);
+                cmd.Parameters.AddWithValue("@Status", 'P');
+                //cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@HeadSno", headsno);
                 DataTable dtCredit = vdm.SelectQuery(cmd).Tables[0];
                 Report.Columns.Add("Date");
                 Report.Columns.Add("VoucherID");

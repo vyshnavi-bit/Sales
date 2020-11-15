@@ -63,14 +63,14 @@ public partial class Login : System.Web.UI.Page
         {
             String UserName = txtUserName.Text, PassWord = txtPassword.Text;
             cmd = new MySqlCommand("SELECT empmanage.Sno, IFNULL(empmanage.otpstatus,0) otpstatus, empmanage.UserName,empmanage.grouplogin, empmanage.Password, empmanage.LevelType, empmanage.flag, empmanage.Userdata_sno, empmanage.Owner, empmanage.EmpName, empmanage.Address, empmanage.Mobno, empmanage.Email, empmanage.LWC, empmanage.RefName, empmanage.Dept_Sno, branchdata.BranchName,branchdata.Radius, empmanage.Branch, salestypemanagement.salestype FROM empmanage INNER JOIN branchdata ON empmanage.Branch = branchdata.sno INNER JOIN salestypemanagement ON branchdata.SalesType = salestypemanagement.sno WHERE (empmanage.UserName = @UN) AND (empmanage.Password = @Pwd) AND (empmanage.flag ='1')");
-            cmd.Parameters.Add("@UN", UserName);
-            cmd.Parameters.Add("@Pwd", PassWord);
+            cmd.Parameters.AddWithValue("@UN", UserName);
+            cmd.Parameters.AddWithValue("@Pwd", PassWord);
              dtemp = vdm.SelectQuery(cmd).Tables[0];
             string LevelType = "";
             if (dtemp.Rows.Count > 0)
             {
                 //cmd = new MySqlCommand("SELECT branchmappingtable.SuperBranch, branchdata.BranchName, branchdata.stateid, branchdata.gstno, branchdata.statename, statemastar.statename AS BranchState, statemastar.gststatecode FROM branchmappingtable INNER JOIN empmanage ON branchmappingtable.SubBranch = empmanage.Branch INNER JOIN branchdata ON empmanage.Branch = branchdata.sno INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (empmanage.UserName = @UN)");
-                //cmd.Parameters.Add("@UN", UserName);
+                //cmd.Parameters.AddWithValue("@UN", UserName);
                 //DataTable dtBranch = vdm.SelectQuery(cmd).Tables[0];
                 //string PlantID = "";
                 //string Branch = dtemp.Rows[0]["Branch"].ToString();
@@ -134,12 +134,12 @@ public partial class Login : System.Web.UI.Page
                     devicetype = "Desktop";
                 }
                 cmd = new MySqlCommand("INSERT INTO logininfo(UserId, UserName, Logintime, IpAddress,devicetype,status) values (@userid, @UserName, @logintime, @ipaddress,@devicetype,@status)");
-                cmd.Parameters.Add("@userid", dtemp.Rows[0]["sno"].ToString());
-                cmd.Parameters.Add("@UserName", dtemp.Rows[0]["EmpName"].ToString());
-                cmd.Parameters.Add("@logintime", Currentdate);
-                cmd.Parameters.Add("@ipaddress", ipaddress);
-                cmd.Parameters.Add("@devicetype", devicetype);
-                cmd.Parameters.Add("@status", "1");
+                cmd.Parameters.AddWithValue("@userid", dtemp.Rows[0]["sno"].ToString());
+                cmd.Parameters.AddWithValue("@UserName", dtemp.Rows[0]["EmpName"].ToString());
+                cmd.Parameters.AddWithValue("@logintime", Currentdate);
+                cmd.Parameters.AddWithValue("@ipaddress", ipaddress);
+                cmd.Parameters.AddWithValue("@devicetype", devicetype);
+                cmd.Parameters.AddWithValue("@status", "1");
                 vdm.insert(cmd);
                 //End
 
@@ -259,7 +259,7 @@ public partial class Login : System.Web.UI.Page
                     Session["userdata_sno"] = dtemp.Rows[0]["UserData_sno"].ToString();
                     Session["empid"] = dtemp.Rows[0]["Sno"].ToString();
                     cmd = new MySqlCommand("SELECT sno, branchid, empid FROM branchmonitering WHERE  (empid = @empid)");
-                    cmd.Parameters.Add("@empid", dtemp.Rows[0]["Sno"].ToString());
+                    cmd.Parameters.AddWithValue("@empid", dtemp.Rows[0]["Sno"].ToString());
                     DataTable empmonitor = vdm.SelectQuery(cmd).Tables[0];
                     if (empmonitor.Rows.Count > 1)
                     {
@@ -268,7 +268,7 @@ public partial class Login : System.Web.UI.Page
                     else
                     {
                         cmd = new MySqlCommand("SELECT branchmappingtable.SuperBranch, branchdata.BranchName, branchdata.stateid, branchdata.gstno, branchdata.statename, statemastar.statename AS BranchState, statemastar.gststatecode FROM branchmappingtable INNER JOIN empmanage ON branchmappingtable.SubBranch = empmanage.Branch INNER JOIN branchdata ON empmanage.Branch = branchdata.sno INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (empmanage.UserName = @UN)");
-                        cmd.Parameters.Add("@UN", UserName);
+                        cmd.Parameters.AddWithValue("@UN", UserName);
                         DataTable dtBranch = vdm.SelectQuery(cmd).Tables[0];
                         string PlantID = "";
                         string Branch = dtemp.Rows[0]["Branch"].ToString();
@@ -436,27 +436,27 @@ public partial class Login : System.Web.UI.Page
     //        string username = lbl_username.Text.ToString();
     //        string password = lbl_passwords.Text.ToString();
     //        cmd = new MySqlCommand("update employe_logins set loginstatus=@log where username=@username and password=@passward");
-    //        cmd.Parameters.Add("@log", "0");
-    //        cmd.Parameters.Add("@username", username);
-    //        cmd.Parameters.Add("@passward", password);
+    //        cmd.Parameters.AddWithValue("@log", "0");
+    //        cmd.Parameters.AddWithValue("@username", username);
+    //        cmd.Parameters.AddWithValue("@passward", password);
     //        vdm.Update(cmd);
     //        DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdm.conn);
     //        cmd = new MySqlCommand("SELECT loginid,empid FROM employe_logins where username=@username and password=@passward");
-    //        cmd.Parameters.Add("@username", username);
-    //        cmd.Parameters.Add("@passward", password);
+    //        cmd.Parameters.AddWithValue("@username", username);
+    //        cmd.Parameters.AddWithValue("@passward", password);
     //        DataTable dtEMP = vdm.SelectQuery(cmd).Tables[0];
     //        if (dtEMP.Rows.Count > 0)
     //        {
     //            string empid = dtEMP.Rows[0]["empid"].ToString();
     //            cmd = new MySqlCommand("Select max(sno) as transno from logininfo where empid=@userid");
-    //            cmd.Parameters.Add("@userid", empid);
+    //            cmd.Parameters.AddWithValue("@userid", empid);
     //            DataTable dttime = vdm.SelectQuery(cmd).Tables[0];
     //            if (dttime.Rows.Count > 0)
     //            {
     //                string transno = dttime.Rows[0]["transno"].ToString();
     //                cmd = new MySqlCommand("UPDATE logininfo set logouttime=@logouttime where sno=@sno");
-    //                cmd.Parameters.Add("@logouttime", ServerDateCurrentdate);
-    //                cmd.Parameters.Add("@sno", transno);
+    //                cmd.Parameters.AddWithValue("@logouttime", ServerDateCurrentdate);
+    //                cmd.Parameters.AddWithValue("@sno", transno);
     //                vdm.Update(cmd);
     //            }
     //        }

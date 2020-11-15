@@ -75,8 +75,8 @@ public partial class BookingReport : System.Web.UI.Page
             Report = new DataTable();
             todate = todate.AddDays(5);
             cmd = new MySqlCommand("SELECT bookingtransaction.Transno,bookingsubtable.Qty,bookingsubtable.Cost,DATE_FORMAT(bookingtransaction.DateOfDel, '%d %b %y') AS IndentDate , bookingtransaction.PersonName,bookingtransaction.Address, bookingtransaction.Mobno, bookingtransaction.BookingDate, productsdata.ProductName, products_category.Categoryname FROM bookingtransaction INNER JOIN bookingsubtable ON bookingtransaction.Transno = bookingsubtable.TransNo INNER JOIN productsdata ON bookingsubtable.ProductID = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (bookingtransaction.DateOfDel BETWEEN @d1 AND @d2) ORDER BY bookingtransaction.DateOfDel");
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));  
-            cmd.Parameters.Add("@d2", GetHighDate(todate));  
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));  
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));  
             DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
             if (dtble.Rows.Count > 0)
             {

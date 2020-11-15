@@ -140,11 +140,11 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //        cmd = new MySqlCommand("SELECT sno, BranchName, statename FROM branchdata WHERE (sno = @BranchID)");
         //        if (Session["salestype"].ToString() == "Plant")
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //        }
         //        else
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //        }
         //        DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
         //        string statename = "";
@@ -153,20 +153,20 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //            statename = dtstatename.Rows[0]["statename"].ToString();
         //        }
         //        cmd = new MySqlCommand("SELECT TripInfo.Sno, TripInfo.DCNo, ProductInfo.tproduct, ProductInfo.Prodsno, ProductInfo.Categoryname, ProductInfo.Qty, TripInfo.I_Date, TripInfo.VehicleNo, TripInfo.Status, TripInfo.DispName, TripInfo.DispType, TripInfo.DispMode FROM (SELECT tripdata.Sno, tripdata.DCNo, tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, dispatch.DispType, dispatch.DispMode FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.DispMode = 'LOCAL') AND (dispatch.Branch_Id = @branch) AND (tripdata.AssignDate BETWEEN @d1 AND @d2)) TripInfo INNER JOIN (SELECT Categoryname, ProductName, Sno, Qty, tproduct,Prodsno FROM  (SELECT products_category.Categoryname, productsdata.ProductName, tripdata_1.Sno, tripsubdata.Qty, productsdata.tproduct,productsdata.sno as Prodsno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2)) TripSubInfo) ProductInfo ON TripInfo.Sno = ProductInfo.Sno");
-        //        cmd.Parameters.Add("@branch", Session["branch"]);
-        //        cmd.Parameters.Add("@SOID", Session["branch"]);
-        //        cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-        //        cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+        //        cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+        //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
         //        DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
         //        cmd = new MySqlCommand("SELECT branchproducts.branch_sno, branchproducts.product_sno, branchproducts.unitprice,IFNULL(branchproducts.VatPercent, 0) AS VatPercent, products_category.tcategory FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID)");
         //        if (ddlSalesOffice.SelectedItem.Text == "Cash Sale")
         //        {
-        //            cmd.Parameters.Add("@BranchID", "282");
+        //            cmd.Parameters.AddWithValue("@BranchID", "282");
         //        }
         //        else
         //        {
         //            string barnch = "760";
-        //            cmd.Parameters.Add("@BranchID", barnch);
+        //            cmd.Parameters.AddWithValue("@BranchID", barnch);
         //        }
         //        DataTable dtprodcts = vdm.SelectQuery(cmd).Tables[0];
         //        int i = 1;
@@ -176,10 +176,10 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //        {
         //            BranchID = "158";
         //        }
-        //        cmd.Parameters.Add("@BranchID", "282");
-        //        cmd.Parameters.Add("@SOID", "282");
-        //        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@BranchID", "282");
+        //        cmd.Parameters.AddWithValue("@SOID", "282");
+        //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //        DataTable dtDc = vdm.SelectQuery(cmd).Tables[0];
         //        foreach (DataRow branch in dtble.Rows)
         //        {
@@ -220,36 +220,36 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //                            {
         //                                socode = "282";
         //                            }
-        //                            cmd.Parameters.Add("@BranchID", socode);
-        //                            cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                            cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@BranchID", socode);
+        //                            cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                            DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                            string agentdcNo = dtadcno.Rows[0]["Sno"].ToString();
         //                            cmd = new MySqlCommand("Insert Into Agentdc (BranchId,IndDate,soid,agentdcno) Values(@BranchId,@IndDate,@soid,@agentdcno)");
-        //                            cmd.Parameters.Add("@BranchId", dr["branch_sno"].ToString());
-        //                            cmd.Parameters.Add("@IndDate", GetLowDate(fromdate.AddDays(-1)));
-        //                            cmd.Parameters.Add("@soid", socode);
-        //                            cmd.Parameters.Add("@agentdcno", agentdcNo);
+        //                            cmd.Parameters.AddWithValue("@BranchId", dr["branch_sno"].ToString());
+        //                            cmd.Parameters.AddWithValue("@IndDate", GetLowDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@soid", socode);
+        //                            cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
         //                            DcNo = vdm.insertScalar(cmd);
         //                            cmd = new MySqlCommand("SELECT IndentNo FROM indents WHERE (Branch_id = @BranchId) AND (I_date BETWEEN @d1 AND @d2)");
-        //                            cmd.Parameters.Add("@BranchId", dr["branch_sno"].ToString());
-        //                            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@BranchId", dr["branch_sno"].ToString());
+        //                            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                            DataTable dtindentno = vdm.SelectQuery(cmd).Tables[0];
         //                            if (dtindentno.Rows.Count > 0)
         //                            {
         //                                foreach (DataRow drr in dtindentno.Rows)
         //                                {
         //                                    cmd = new MySqlCommand("Insert Into dcsubTable (DcNo,IndentNo) Values(@DcNo,@IndentNo)");
-        //                                    cmd.Parameters.Add("@DcNo", DcNo);
-        //                                    cmd.Parameters.Add("@IndentNo", drr["IndentNo"].ToString());
+        //                                    cmd.Parameters.AddWithValue("@DcNo", DcNo);
+        //                                    cmd.Parameters.AddWithValue("@IndentNo", drr["IndentNo"].ToString());
         //                                    vdm.insert(cmd);
         //                                }
         //                            }
         //                            cmd = new MySqlCommand("SELECT agentdcno FROM  agentdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-        //                            cmd.Parameters.Add("@BranchID", dr["branch_sno"].ToString());
-        //                            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@BranchID", dr["branch_sno"].ToString());
+        //                            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                            DataTable dtsubDc = vdm.SelectQuery(cmd).Tables[0];
         //                            if (dtsubDc.Rows.Count > 0)
         //                            {
@@ -357,11 +357,11 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //        cmd = new MySqlCommand("SELECT sno, BranchName, statename FROM branchdata WHERE (sno = @BranchID)");
         //        if (Session["salestype"].ToString() == "Plant")
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //        }
         //        else
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //        }
         //        DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
         //        string statename = "";
@@ -370,26 +370,26 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //            statename = dtstatename.Rows[0]["statename"].ToString();
         //        }
         //        cmd = new MySqlCommand("SELECT TripInfo.Sno, TripInfo.DCNo, ProductInfo.tproduct, ProductInfo.Prodsno, ProductInfo.Categoryname, ProductInfo.Qty, TripInfo.I_Date, TripInfo.VehicleNo, TripInfo.Status, TripInfo.DispName, TripInfo.DispType, TripInfo.DispMode FROM (SELECT tripdata.Sno, tripdata.DCNo, tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, dispatch.DispType, dispatch.DispMode FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.DispMode = 'LOCAL') AND (dispatch.Branch_Id = @branch) AND (tripdata.AssignDate BETWEEN @d1 AND @d2)) TripInfo INNER JOIN (SELECT Categoryname, ProductName, Sno, Qty, tproduct,Prodsno FROM  (SELECT products_category.Categoryname, productsdata.ProductName, tripdata_1.Sno, tripsubdata.Qty, productsdata.tproduct,productsdata.sno as Prodsno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2)) TripSubInfo) ProductInfo ON TripInfo.Sno = ProductInfo.Sno");
-        //        cmd.Parameters.Add("@branch", Session["branch"]);
-        //        cmd.Parameters.Add("@SOID", Session["branch"]);
-        //        cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-        //        cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+        //        cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+        //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
         //        DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
         //        cmd = new MySqlCommand("SELECT branchproducts.branch_sno, products_category.sno AS categoryid, branchproducts.product_sno, branchproducts.unitprice,IFNULL(branchproducts.VatPercent, 0) AS VatPercent, products_category.tcategory FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID)");
         //        if (ddlSalesOffice.SelectedItem.Text == "Cash Sale")
         //        {
-        //            cmd.Parameters.Add("@BranchID", "282");
+        //            cmd.Parameters.AddWithValue("@BranchID", "282");
         //        }
         //        else
         //        {
         //            string barnch = "760";
-        //            cmd.Parameters.Add("@BranchID", barnch);
+        //            cmd.Parameters.AddWithValue("@BranchID", barnch);
         //        }
         //        DataTable dtprodcts = vdm.SelectQuery(cmd).Tables[0];
         //        cmd = new MySqlCommand("SELECT sno, taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate FROM taxdc_table WHERE (branchid = @BranchID) AND (indentdate BETWEEN @d1 AND @d2)");
-        //        cmd.Parameters.Add("@BranchID", "282");
-        //        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@BranchID", "282");
+        //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //        DataTable dtDc = vdm.SelectQuery(cmd).Tables[0];
         //        int i = 1;
         //        foreach (DataRow branch in dtble.Rows)
@@ -419,40 +419,40 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
         //                        else
         //                        {
         //                            cmd = new MySqlCommand("SELECT IFNULL(MAX(taxdcno), 0) + 1 AS Sno FROM taxdc_table WHERE (branchid = @branchid) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                            cmd.Parameters.Add("@branchid", "282");
-        //                            cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                            cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@branchid", "282");
+        //                            cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                            DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                            DCNO = dtadcno.Rows[0]["Sno"].ToString();
         //                            string agentdcno = dtadcno.Rows[0]["Sno"].ToString();
         //                            cmd = new MySqlCommand("Insert Into taxdc_table (taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate) Values(@taxdcno, @invoiceno, @agentid, @branchid, @productid, @doe, @indentdate)");
-        //                            cmd.Parameters.Add("@taxdcno", agentdcno);
-        //                            cmd.Parameters.Add("@invoiceno", DCNO);
-        //                            cmd.Parameters.Add("@agentid", dr["branch_sno"].ToString());
-        //                            cmd.Parameters.Add("@branchid", "282");
-        //                            cmd.Parameters.Add("@productid", dr["categoryid"].ToString());
-        //                            cmd.Parameters.Add("@doe", ReportDate);
-        //                            cmd.Parameters.Add("@indentdate", GetLowDate(fromdate.AddDays(-1)));
+        //                            cmd.Parameters.AddWithValue("@taxdcno", agentdcno);
+        //                            cmd.Parameters.AddWithValue("@invoiceno", DCNO);
+        //                            cmd.Parameters.AddWithValue("@agentid", dr["branch_sno"].ToString());
+        //                            cmd.Parameters.AddWithValue("@branchid", "282");
+        //                            cmd.Parameters.AddWithValue("@productid", dr["categoryid"].ToString());
+        //                            cmd.Parameters.AddWithValue("@doe", ReportDate);
+        //                            cmd.Parameters.AddWithValue("@indentdate", GetLowDate(fromdate.AddDays(-1)));
         //                            vdm.insert(cmd);
         //                        }
         //                    }
         //                    else
         //                    {
         //                        cmd = new MySqlCommand("SELECT IFNULL(MAX(taxdcno), 0) + 1 AS Sno FROM taxdc_table WHERE (branchid = @branchid) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-        //                        cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                        cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+        //                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                        DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                        DCNO = dtadcno.Rows[0]["Sno"].ToString();
         //                        string agentdcno = dtadcno.Rows[0]["Sno"].ToString();
         //                        cmd = new MySqlCommand("Insert Into taxdc_table (taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate) Values(@taxdcno, @invoiceno, @agentid, @branchid, @productid, @doe, @indentdate)");
-        //                        cmd.Parameters.Add("@taxdcno", agentdcno);
-        //                        cmd.Parameters.Add("@invoiceno", DCNO);
-        //                        cmd.Parameters.Add("@agentid", dr["branch_sno"].ToString());
-        //                        cmd.Parameters.Add("@branchid", "282");
-        //                        cmd.Parameters.Add("@productid", dr["categoryid"].ToString());
-        //                        cmd.Parameters.Add("@doe", ReportDate);
-        //                        cmd.Parameters.Add("@indentdate", GetLowDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@taxdcno", agentdcno);
+        //                        cmd.Parameters.AddWithValue("@invoiceno", DCNO);
+        //                        cmd.Parameters.AddWithValue("@agentid", dr["branch_sno"].ToString());
+        //                        cmd.Parameters.AddWithValue("@branchid", "282");
+        //                        cmd.Parameters.AddWithValue("@productid", dr["categoryid"].ToString());
+        //                        cmd.Parameters.AddWithValue("@doe", ReportDate);
+        //                        cmd.Parameters.AddWithValue("@indentdate", GetLowDate(fromdate.AddDays(-1)));
         //                        vdm.insert(cmd);
         //                    }
         //                    DataRow newrow = Report.NewRow();
@@ -610,11 +610,11 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT branchdata.whcode,branchdata.sno,branchdata.branchcode, branchdata.BranchName, statemastar.statename ,statemastar.statecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 }
                 DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
                 string statename = "";
@@ -644,20 +644,20 @@ public partial class SAP_Cash_staffsales : System.Web.UI.Page
                 {
                     cmd = new MySqlCommand("SELECT  TripInfo.Sno,TripInfo.customercode, TripInfo.DCNo, ProductInfo.tproduct, ProductInfo.hsncode, ProductInfo.igst, ProductInfo.cgst, ProductInfo.sgst, ProductInfo.Prodsno, ProductInfo.Categoryname,ProductInfo.categorycode, ProductInfo.Qty,ProductInfo.Itemcode, TripInfo.I_Date, TripInfo.VehicleNo, TripInfo.Status, TripInfo.DispName, TripInfo.DispType, TripInfo.DispMode FROM (SELECT tripdata.Sno, tripdata.DCNo, tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, dispatch.DispType,branchdata.customercode, dispatch.DispMode FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.DispType = 'AGENT') AND(dispatch.DispMode = 'AGENT') AND (dispatch.Branch_Id = @branch) AND (tripdata.AssignDate BETWEEN @d1 AND @d2)) TripInfo INNER JOIN (SELECT Categoryname,categorycode,itemcode, ProductName, Sno, Qty, tproduct, Prodsno, hsncode, igst, sgst, cgst FROM (SELECT products_category.Categoryname,products_category.categorycode, productsdata.ProductName,productsdata.itemcode, tripdata_1.Sno, tripsubdata.Qty, productsdata.hsncode, productsdata.igst,productsdata.cgst, productsdata.sgst, productsdata.tproduct, productsdata.sno AS Prodsno FROM  tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2)) TripSubInfo) ProductInfo ON TripInfo.Sno = ProductInfo.Sno");
                 }
-                cmd.Parameters.Add("@branch", Session["branch"]);
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
                 DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT branchproducts.branch_sno, branchproducts.product_sno, branchproducts.unitprice, branchproducts.VatPercent, products_category.tcategory,products_category.categorycode FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID)");
                 if (ddlSalesOffice.SelectedItem.Text == "Cash Sale" || ddlSalesOffice.SelectedItem.Text == "Free Sale" || ddlSalesOffice.SelectedItem.Text == "Others")
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 }
                 else
                 {
                     string barnch = "760";
-                    cmd.Parameters.Add("@BranchID", barnch);
+                    cmd.Parameters.AddWithValue("@BranchID", barnch);
                 }
                 DataTable dtprodcts = vdm.SelectQuery(cmd).Tables[0];
                 int i = 1;

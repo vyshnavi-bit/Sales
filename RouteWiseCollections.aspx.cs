@@ -41,9 +41,9 @@ public partial class RouteWiseCollections : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -56,8 +56,8 @@ public partial class RouteWiseCollections : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -75,9 +75,9 @@ public partial class RouteWiseCollections : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  AND (dispatch.flag=@flag))  OR ((branchdata_1.SalesOfficeID = @SOID) AND (dispatch.flag=@flag))");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@flag", "1");
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@flag", "1");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlRouteName.DataSource = dtRoutedata;
         ddlRouteName.DataTextField = "DispName";
@@ -138,23 +138,23 @@ public partial class RouteWiseCollections : System.Web.UI.Page
                 }
             }
             lblDate.Text = fromdate.ToString("dd/MMM/yyyy");
-            // cmd.Parameters.Add("SELECT branchdata.sno, branchdata.BranchName, branchaccounts.Amount FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = 5)");
+            // cmd.Parameters.AddWithValue("SELECT branchdata.sno, branchdata.BranchName, branchaccounts.Amount FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = 5)");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.tripId, collections.ReceiptNo FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (dispatch.sno = @dispatchsno) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.AmountPaid <> 0)");
-            cmd.Parameters.Add("@dispatchsno", ddlRouteName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@dispatchsno", ddlRouteName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtroutecollection = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT Sno, BranchId, ReceivedFrom, AgentID, Empid, Amountpayable, AmountPaid, DOE, Create_by, Modified_by, Remarks, OppBal, dispatchid, Receipt, PaymentStatus,ChequeNo, GroupRecieptNo, GroupRef, Tripid FROM cashreceipts WHERE (BranchId = @branchid) AND (DOE BETWEEN @d1 AND @d2) AND (AmountPaid <> 0)");
             if (Session["salestype"].ToString() == "Plant")
             {
-            cmd.Parameters.Add("@branchid",ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@branchid",ddlSalesOffice.SelectedValue);
             }
             if (Session["salestype"].ToString() != "Plant")
             {
-                cmd.Parameters.Add("@branchid", Session["branch"]);
+                cmd.Parameters.AddWithValue("@branchid", Session["branch"]);
             }
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtreciept = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("Reciept No");

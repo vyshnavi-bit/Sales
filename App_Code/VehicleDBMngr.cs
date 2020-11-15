@@ -153,7 +153,7 @@ public class VehicleDBMgr
                     {
                         UpdateString += fieldNames[i] + ", ";
                         param = new MySqlParameter(fieldNames[i].Split('=')[1], fieldValues[i]);
-                        cmd.Parameters.Add(param);
+                        cmd.Parameters.AddWithValue(param);
                     }
                     UpdateString = UpdateString.Substring(0, UpdateString.LastIndexOf(","));
 
@@ -161,7 +161,7 @@ public class VehicleDBMgr
                     {
                         ConditionStr += conFieldNames[j] + Operators[j];
                         param = new MySqlParameter(conFieldNames[j].Split('=')[1], conFieldValues[j]);
-                        cmd.Parameters.Add(param);
+                        cmd.Parameters.AddWithValue(param);
                     }
 
                     cmd.CommandText = "update " + table + " set " + UpdateString + " where " + ConditionStr;

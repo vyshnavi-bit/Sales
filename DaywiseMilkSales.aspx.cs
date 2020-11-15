@@ -52,8 +52,8 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         string type = ddlReportType.SelectedValue;
         cmd = new MySqlCommand("SELECT    sno, category_sno, SubCatName, Flag, userdata_sno, fat, description, rank, tempcatsno, tempsub_catsno FROM  products_subcategory WHERE (Flag = @flag) AND (tempsub_catsno IS NOT NULL) AND (tempsub_catsno <> '0') AND (tempcatsno = @CatSno) ORDER BY tempsub_catsno");
-        cmd.Parameters.Add("@CatSno", ddlReportType.SelectedValue);
-        cmd.Parameters.Add("@flag", "1");
+        cmd.Parameters.AddWithValue("@CatSno", ddlReportType.SelectedValue);
+        cmd.Parameters.AddWithValue("@flag", "1");
         DataTable dtCategory = vdm.SelectQuery(cmd).Tables[0];
         ddlSubCategoryName.DataSource = dtCategory;
         ddlSubCategoryName.DataTextField = "description";
@@ -98,9 +98,9 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
 
 
             cmd = new MySqlCommand("SELECT ROUND(SUM(tripsubdata.Qty), 2) AS Qty, productsdata.ProductName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, Status FROM tripdata WHERE (AssignDate BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno INNER JOIN (SELECT branch_sno, product_sno, unitprice, flag, userdata_sno, DTarget, WTarget, MTarget, BranchQty, LeakQty, Rank FROM branchproducts WHERE (branch_sno = @branch)) brnchprdt ON tripsubdata.ProductId = brnchprdt.product_sno INNER JOIN productsdata ON brnchprdt.product_sno = productsdata.sno WHERE (dispatch.Branch_Id = @branch) GROUP BY productsdata.sno ORDER BY brnchprdt.Rank");
-            cmd.Parameters.Add("@branch", Session["branch"]);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(Todate));
+            cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             DataTable dtTotalDespatch = vdm.SelectQuery(cmd).Tables[0];
             double TotalQty = 0;
             string ProductName = "";
@@ -125,9 +125,9 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
             //reader.Close();
 
             cmd = new MySqlCommand("SELECT ROUND(SUM(tripsubdata.Qty), 2) AS Qty, products_subcategory.SubCatName, products_category.Categoryname, products_category.sno AS categorysno, products_subcategory.sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, Status FROM tripdata WHERE (AssignDate BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (dispatch.Branch_Id = @branch) GROUP BY categorysno, products_subcategory.sno ORDER BY categorysno");
-            cmd.Parameters.Add("@branch", Session["branch"]);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(Todate));
+            cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             DataTable dtTotalDespatch_subcategorywise = vdm.SelectQuery(cmd).Tables[0];
             double SubCategoryTotalQty = 0;
             string subcategoryName = "";
@@ -243,15 +243,15 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
             {
                 cmd = new MySqlCommand("SELECT  products_subcategory.rank,DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchdata.BranchName, products_subcategory.tempsub_catsno,products_subcategory.description AS SubCatName,  productsdata.tempsubcatsno, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS SaleValue FROM branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno INNER JOIN branchmappingtable branchmappingtable_1 ON branchdata.sno = branchmappingtable_1.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable_1.SubBranch = branchdata_1.sno INNER JOIN indents ON branchdata_1.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.tempsubcatsno = products_subcategory.tempsub_catsno INNER JOIN products_category ON products_subcategory.tempcatsno = products_category.tempcatsno WHERE (branchmappingtable.SuperBranch = @BranchID) AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents_subtable.DeliveryQty > 0) AND (products_category.tempcatsno = @CatSno) GROUP BY IndentDate,products_subcategory.tempsub_catsno ORDER BY products_subcategory.tempsub_catsno");
                 //  cmd = new MySqlCommand("SELECT  ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.Product_sno, products_subcategory.sno, products_subcategory.SubCatName, DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate FROM  branchmappingtable branchmappingtable_1 INNER JOIN branchdata branchdata_1 ON branchmappingtable_1.SubBranch = branchdata_1.sno INNER JOIN indents ON branchdata_1.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchmappingtable ON branchmappingtable_1.SuperBranch = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID) AND (indents.I_date BETWEEN @d1 AND @d2) AND (products_category.sno = '9') AND  (branchmappingtable_1.SuperBranch <> 538) GROUP BY IndentDate, products_subcategory.sno");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@CatSno", ddlReportType.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@CatSno", ddlReportType.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
                 dtble1 = vdm.SelectQuery(cmd).Tables[0];
                 //cmd = new MySqlCommand("SELECT SUM(tripsubdata.Qty) AS dispqty, products_category.Categoryname, products_subcategory.SubCatName, result.IndentDate FROM (SELECT dispatch.sno, dispatch.DispName, tripdat.Sno AS tripid, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS IndentDate FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, Status, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno WHERE (dispatch.Branch_Id = @branch) AND (dispatch.DispMode IS NOT NULL) AND (dispatch.DispMode <> 'SPL')) result INNER JOIN tripsubdata ON result.tripid = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (products_category.sno = 9) GROUP BY products_subcategory.sno, result.IndentDate");
-                //cmd.Parameters.Add("@branch", Session["branch"]);
-                //cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                //cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+                //cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+                //cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                //cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
                 //dtdirect = vdm.SelectQuery(cmd).Tables[0];
                 DataView dv = dtble1.DefaultView;
                 dv.Sort = "IndentDate ASC";
@@ -315,24 +315,24 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
                 if (Session["branch"].ToString() == "172")
                 {
                     cmd = new MySqlCommand("SELECT  products_subcategory.rank,DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchdata.BranchName, products_subcategory.tempcatsno, productsdata.tempsubcatsno, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS SaleValue, products_category.description AS Categoryname FROM branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno INNER JOIN branchmappingtable branchmappingtable_1 ON branchdata.sno = branchmappingtable_1.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable_1.SubBranch = branchdata_1.sno INNER JOIN indents ON branchdata_1.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.tempsubcatsno = products_subcategory.tempsub_catsno INNER JOIN products_category ON products_subcategory.tempcatsno = products_category.tempcatsno WHERE (branchmappingtable.SuperBranch = @BranchID) AND (branchmappingtable.SubBranch NOT IN (538, 2749, 3928, 1801, 3625)) AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents_subtable.DeliveryQty > 0) AND (products_subcategory.tempsub_catsno = @SubCatsno) GROUP BY IndentDate,productsdata.ProductName ORDER BY products_subcategory.tempsub_catsno,productsdata.rank");
-                    cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
-                    cmd.Parameters.Add("@SubCatsno", ddlSubCategoryName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@SubCatsno", ddlSubCategoryName.SelectedValue);
                 }
                 else
                 {
                     cmd = new MySqlCommand("SELECT  products_subcategory.rank,DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchdata.BranchName, products_subcategory.tempcatsno, productsdata.tempsubcatsno, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS SaleValue, products_category.description AS Categoryname FROM branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno INNER JOIN branchmappingtable branchmappingtable_1 ON branchdata.sno = branchmappingtable_1.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable_1.SubBranch = branchdata_1.sno INNER JOIN indents ON branchdata_1.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.tempsubcatsno = products_subcategory.tempsub_catsno INNER JOIN products_category ON products_subcategory.tempcatsno = products_category.tempcatsno WHERE (branchmappingtable.SuperBranch = @BranchID)  AND (indents.I_date BETWEEN @d1 AND @d2) AND (indents_subtable.DeliveryQty > 0) AND (products_subcategory.tempsub_catsno = @SubCatsno) GROUP BY IndentDate,productsdata.ProductName ORDER BY products_subcategory.tempsub_catsno,productsdata.rank");
-                    cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
-                    cmd.Parameters.Add("@SubCatsno", ddlSubCategoryName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@SubCatsno", ddlSubCategoryName.SelectedValue);
                 }
                 dtsubcategory = vdm.SelectQuery(cmd).Tables[0];
                 //cmd = new MySqlCommand("SELECT SUM(tripsubdata.Qty) AS dispqty, products_category.Categoryname, products_subcategory.SubCatName, result.IndentDate FROM (SELECT dispatch.sno, dispatch.DispName, tripdat.Sno AS tripid, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS IndentDate FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, Status, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno WHERE (dispatch.Branch_Id = @branch) AND (dispatch.DispMode IS NOT NULL) AND (dispatch.DispMode <> 'SPL')) result INNER JOIN tripsubdata ON result.tripid = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (products_category.sno = 9) GROUP BY products_subcategory.sno, result.IndentDate");
-                //cmd.Parameters.Add("@branch", Session["branch"]);
-                //cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                //cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+                //cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+                //cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                //cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
                 //dtdirect = vdm.SelectQuery(cmd).Tables[0];
                 DataView dv = dtsubcategory.DefaultView;
                 dv.Sort = "IndentDate ASC";
@@ -411,15 +411,15 @@ public partial class Day_wise_Milk_Sales : System.Web.UI.Page
             //    //cmd = new MySqlCommand("SELECT ind.IndentNo, DATE_FORMAT(ind.I_date, '%d %b %y') AS IndentDate, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.Product_sno,products_subcategory.sno, products_subcategory.SubCatName, products_category.sno AS categorysno FROM branchmappingtable INNER JOIN branchmappingtable branchmappingtable_1 ON branchmappingtable.SubBranch = branchmappingtable_1.SuperBranch INNER JOIN (SELECT IndentNo, Branch_id, TotalQty, TotalPrice, I_date, D_date, Status, UserData_sno, PaymentStatus, I_createdby, I_modifiedby, IndentType FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) ind ON branchmappingtable_1.SubBranch = ind.Branch_id INNER JOIN indents_subtable ON ind.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 10) OR (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 12) GROUP BY IndentDate, products_category.sno");
             //    //cmd = new MySqlCommand("SELECT ind.IndentNo, DATE_FORMAT(ind.I_date, '%d %b %y') AS IndentDate, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.Product_sno,products_subcategory.sno, products_subcategory.SubCatName, products_category.sno AS categorysno FROM branchmappingtable INNER JOIN branchmappingtable branchmappingtable_1 ON branchmappingtable.SubBranch = branchmappingtable_1.SuperBranch INNER JOIN (SELECT IndentNo, Branch_id, TotalQty, TotalPrice, I_date, D_date, Status, UserData_sno, PaymentStatus, I_createdby, I_modifiedby, IndentType FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) ind ON branchmappingtable_1.SubBranch = ind.Branch_id INNER JOIN indents_subtable ON ind.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 10) AND (branchmappingtable_1.SuperBranch <> 538) OR (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 12) AND (branchmappingtable_1.SuperBranch <> 538) GROUP BY IndentDate, products_category.sno");
             //    cmd = new MySqlCommand("SELECT ind.IndentNo, DATE_FORMAT(ind.I_date, '%d %b %y') AS IndentDate, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.Product_sno,products_subcategory.sno, products_subcategory.SubCatName, products_category.sno AS categorysno FROM branchmappingtable INNER JOIN branchmappingtable branchmappingtable_1 ON branchmappingtable.SubBranch = branchmappingtable_1.SuperBranch INNER JOIN (SELECT IndentNo, Branch_id, TotalQty, TotalPrice, I_date, D_date, Status, UserData_sno, PaymentStatus, I_createdby, I_modifiedby, IndentType FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) ind ON branchmappingtable_1.SubBranch = ind.Branch_id INNER JOIN indents_subtable ON ind.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 10) AND (branchmappingtable_1.SuperBranch <> 538) AND (productsdata.Units <> @units) OR (branchmappingtable.SuperBranch = @branch) AND (products_category.sno = 12) AND (branchmappingtable_1.SuperBranch <> 538) AND  (productsdata.Units <> @units) GROUP BY IndentDate, products_category.sno");
-            //    cmd.Parameters.Add("@branch", Session["branch"]);
-            //    cmd.Parameters.Add("@units", "ltr");
-            //    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            //    cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+            //    cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+            //    cmd.Parameters.AddWithValue("@units", "ltr");
+            //    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            //    cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
             //    dtcurdBM = vdm.SelectQuery(cmd).Tables[0];
             //    //cmd = new MySqlCommand("SELECT SUM(tripsubdata.Qty) AS dispqty, products_category.Categoryname,products_category.sno AS categorysno,result.IndentDate FROM (SELECT dispatch.sno, dispatch.DispName, tripdat.Sno AS tripid, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS IndentDate FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, Status, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno WHERE (dispatch.Branch_Id = @branch) AND (dispatch.DispMode IS NOT NULL) AND (dispatch.DispMode <> 'SPL')) result INNER JOIN tripsubdata ON result.tripid = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (products_category.sno = 10) OR (products_category.sno = 12) GROUP BY result.IndentDate, products_category.sno");
-            //    //cmd.Parameters.Add("@branch", Session["branch"]);
-            //    //cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            //    //cmd.Parameters.Add("@d2", GetHighDate(Todate.AddDays(-1)));
+            //    //cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+            //    //cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            //    //cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate.AddDays(-1)));
             //    //dtdirectcurdBM = vdm.SelectQuery(cmd).Tables[0];
             //    if (dtcurdBM.Rows.Count > 0)
             //    {

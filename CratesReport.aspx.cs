@@ -40,9 +40,9 @@ public partial class CratesReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -54,8 +54,8 @@ public partial class CratesReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -132,10 +132,10 @@ public partial class CratesReport : System.Web.UI.Page
                 BranchID = "158";
             }
             cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchdata INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @bid) AND (branchdata.SalesType <> '21') AND (branchdata.flag = 1)");
-            cmd.Parameters.Add("@bid", BranchID);
+            cmd.Parameters.AddWithValue("@bid", BranchID);
             DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT inventory_monitor.BranchId, inventory_monitor.Inv_Sno, inventory_monitor.Qty, inventory_monitor.Sno, inventory_monitor.EmpId, inventory_monitor.lostQty FROM inventory_monitor INNER JOIN branchmappingtable ON inventory_monitor.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @branchid)");
-            cmd.Parameters.Add("@branchid", BranchID);
+            cmd.Parameters.AddWithValue("@branchid", BranchID);
             DataTable dtinventoryopp = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("Sno");
@@ -176,31 +176,31 @@ public partial class CratesReport : System.Web.UI.Page
             #region Queries
 
             cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM branchmappingtable INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2)) invtras ON branchmappingtable.SubBranch = invtras.ToTran INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE (branchmappingtable.SuperBranch = @branchid) ORDER BY branchmappingtable.SubBranch");
-            cmd.Parameters.Add("@branchid", BranchID);
+            cmd.Parameters.AddWithValue("@branchid", BranchID);
             DateTime dt1 = GetLowDate(fromdate.AddDays(-1));
             DateTime dt2 = GetLowDate(fromdate);
-            cmd.Parameters.Add("@d1", dt1.AddHours(15));
-            cmd.Parameters.Add("@d2", dt2.AddHours(15));
+            cmd.Parameters.AddWithValue("@d1", dt1.AddHours(15));
+            cmd.Parameters.AddWithValue("@d2", dt2.AddHours(15));
             DataTable dtinventoryD = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM branchmappingtable INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2)) invtras ON branchmappingtable.SubBranch = invtras.FromTran INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE (branchmappingtable.SuperBranch = @branchid) ORDER BY branchmappingtable.SubBranch");
-            cmd.Parameters.Add("@branchid", BranchID);
-            cmd.Parameters.Add("@d1", dt1.AddHours(15));
-            cmd.Parameters.Add("@d2", dt2.AddHours(15));
+            cmd.Parameters.AddWithValue("@branchid", BranchID);
+            cmd.Parameters.AddWithValue("@d1", dt1.AddHours(15));
+            cmd.Parameters.AddWithValue("@d2", dt2.AddHours(15));
             DataTable dtinventoryC = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM branchmappingtable INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2)) invtras ON branchmappingtable.SubBranch = invtras.ToTran INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE (branchmappingtable.SuperBranch = @branchid) ORDER BY branchmappingtable.SubBranch");
-            cmd.Parameters.Add("@branchid", BranchID);
+            cmd.Parameters.AddWithValue("@branchid", BranchID);
             DateTime dtmin = GetLowDate(fromdate.AddDays(-1));
             DateTime dtmax = GetLowDate(ServerDateCurrentdate);
-            cmd.Parameters.Add("@d1", dtmin.AddHours(15));
-            cmd.Parameters.Add("@d2", dtmax.AddHours(15));
+            cmd.Parameters.AddWithValue("@d1", dtmin.AddHours(15));
+            cmd.Parameters.AddWithValue("@d2", dtmax.AddHours(15));
             DataTable dtprevinventoryD = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT branchmappingtable.SubBranch, branchmappingtable.SuperBranch, invtras.TransType, invtras.FromTran, invtras.ToTran, invtras.Qty, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM branchmappingtable INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2)) invtras ON branchmappingtable.SubBranch = invtras.FromTran INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno WHERE (branchmappingtable.SuperBranch = @branchid) ORDER BY branchmappingtable.SubBranch");
-            cmd.Parameters.Add("@branchid", BranchID);
-            cmd.Parameters.Add("@d1", dtmin.AddHours(15));
-            cmd.Parameters.Add("@d2", dtmax.AddHours(15));
+            cmd.Parameters.AddWithValue("@branchid", BranchID);
+            cmd.Parameters.AddWithValue("@d1", dtmin.AddHours(15));
+            cmd.Parameters.AddWithValue("@d2", dtmax.AddHours(15));
             DataTable dtprevinventoryC = vdm.SelectQuery(cmd).Tables[0];
 
             #endregion
@@ -263,7 +263,7 @@ public partial class CratesReport : System.Web.UI.Page
                 int oppcan40ltr = 0;
                 int oppcan10ltr = 0;
                 //cmd = new MySqlCommand("SELECT BranchId, Inv_Sno, Qty, Sno, EmpId, lostQty FROM inventory_monitor WHERE (BranchId = @branchid)");
-                //cmd.Parameters.Add("@branchid", drbranch["sno"].ToString());
+                //cmd.Parameters.AddWithValue("@branchid", drbranch["sno"].ToString());
                 //DataTable dtinventoryopp = vdm.SelectQuery(cmd).Tables[0];
 
                 foreach (DataRow dropp in dtinventoryopp.Select("BranchId='" + drbranch["sno"].ToString() + "'"))

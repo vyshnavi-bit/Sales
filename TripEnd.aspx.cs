@@ -101,8 +101,8 @@ public partial class TripEnd : System.Web.UI.Page
         string SubmittedAmount = (row.FindControl("txtSubmittedAmount") as TextBox).Text;
         string ReceivedAmount = (row.FindControl("txtReceivedAmount") as TextBox).Text;
         cmd = new MySqlCommand("SELECT Sno, EmpId, AssignDate, Status, Cdate, ReceivedAmount, RecieptNo FROM  tripdata WHERE (Sno = @tripid) AND (BranchID = @branchid)");
-        cmd.Parameters.Add("@tripid", Sno);
-        cmd.Parameters.Add("@branchid", Session["branch"].ToString());
+        cmd.Parameters.AddWithValue("@tripid", Sno);
+        cmd.Parameters.AddWithValue("@branchid", Session["branch"].ToString());
         DataTable dtreceiptno = vdm.SelectQuery(cmd).Tables[0];
         DateTime Receiptdate = new DateTime();
         string RecieptNo = "";
@@ -117,25 +117,25 @@ public partial class TripEnd : System.Web.UI.Page
         }
         //int customerId = Convert.ToInt32(grdReports.DataKeys[e.RowIndex].Values[0]);
         cmd = new MySqlCommand("Update Tripdata set Status=@Status,SyncStatus=@SyncStatus,Cdate=@Cdate,ReceivedAmount=@ReceivedAmount where  Sno=@sno");
-        cmd.Parameters.Add("@Status", Status);
-        cmd.Parameters.Add("@Sno", Sno);
-        cmd.Parameters.Add("@Cdate", fromdate);
-        cmd.Parameters.Add("@SyncStatus", "1");
-        cmd.Parameters.Add("@ReceivedAmount", ReceivedAmount);
+        cmd.Parameters.AddWithValue("@Status", Status);
+        cmd.Parameters.AddWithValue("@Sno", Sno);
+        cmd.Parameters.AddWithValue("@Cdate", fromdate);
+        cmd.Parameters.AddWithValue("@SyncStatus", "1");
+        cmd.Parameters.AddWithValue("@ReceivedAmount", ReceivedAmount);
         vdm.Update(cmd);
         cmd = new MySqlCommand("SELECT   Sno, BranchId, ReceivedFrom, AgentID, Empid, Amountpayable, AmountPaid, DOE, Create_by, Modified_by, Remarks, OppBal, dispatchid, Receipt, PaymentStatus, ChequeNo, Tripid, GroupRecieptNo, GroupRef,TransactionType, AmountDebited, newreceipt FROM cashreceipts WHERE (Receipt = @receipt) AND (BranchId = @branchid) AND (ReceivedFrom = @ReceivedFrom) AND (DOE BETWEEN @d1 AND @d2)");
-        cmd.Parameters.Add("@receipt", RecieptNo);
-        cmd.Parameters.Add("@branchid", Session["branch"].ToString());
-        cmd.Parameters.Add("@ReceivedFrom", "SalesMen");
-        cmd.Parameters.Add("@d1", GetLowDate(Receiptdate));
-        cmd.Parameters.Add("@d2", GetHighDate(Receiptdate));
+        cmd.Parameters.AddWithValue("@receipt", RecieptNo);
+        cmd.Parameters.AddWithValue("@branchid", Session["branch"].ToString());
+        cmd.Parameters.AddWithValue("@ReceivedFrom", "SalesMen");
+        cmd.Parameters.AddWithValue("@d1", GetLowDate(Receiptdate));
+        cmd.Parameters.AddWithValue("@d2", GetHighDate(Receiptdate));
         DataTable dtreceiptdetails = vdm.SelectQuery(cmd).Tables[0];
         if (dtreceiptdetails.Rows.Count > 0)
         {
             string receiptsno = dtreceiptdetails.Rows[0]["Sno"].ToString();
             cmd = new MySqlCommand("Update cashreceipts set DOE=@DOE where  Sno=@sno");
-            cmd.Parameters.Add("@DOE", fromdate);
-            cmd.Parameters.Add("@sno", receiptsno);
+            cmd.Parameters.AddWithValue("@DOE", fromdate);
+            cmd.Parameters.AddWithValue("@sno", receiptsno);
             vdm.Update(cmd);
         }
         lblmsg.Text = "Assign Successfully";
@@ -186,10 +186,10 @@ public partial class TripEnd : System.Web.UI.Page
             //    }
             //    //DateTime dtFromdate = Convert.ToDateTime(txtdate.Text);
             //    cmd = new MySqlCommand("Update Tripdata set Status=@Status,SyncStatus=@SyncStatus,Cdate=@Cdate where  Sno=@sno");
-            //    cmd.Parameters.Add("@Status", Status);
-            //    cmd.Parameters.Add("@Sno", Sno);
-            //    cmd.Parameters.Add("@Cdate", fromdate);
-            //    cmd.Parameters.Add("@SyncStatus", "1");
+            //    cmd.Parameters.AddWithValue("@Status", Status);
+            //    cmd.Parameters.AddWithValue("@Sno", Sno);
+            //    cmd.Parameters.AddWithValue("@Cdate", fromdate);
+            //    cmd.Parameters.AddWithValue("@SyncStatus", "1");
             //    vdm.Update(cmd);
             //    lblmsg.Text = "Assign Successfully";
             //    grdReports.EditIndex = -1;
@@ -220,9 +220,9 @@ public partial class TripEnd : System.Web.UI.Page
             }
             //cmd = new MySqlCommand("SELECT empmanage.UserName, dispatch.DispName,tripdata.Sno , tripdata.Status, DATE_FORMAT(tripdata.Cdate,'%d %b %y') as Canceldate, tripdata.CollectedAmount, tripdata.SubmittedAmount FROM tripdata INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) and (empmanage.Branch=@BranchID)");
             cmd = new MySqlCommand("SELECT empmanage.UserName, dispatch.DispName, tripdata.Sno, tripdata.Status, DATE_FORMAT(tripdata.Cdate, '%d %b %y') AS Canceldate, tripdata.CollectedAmount, tripdata.SubmittedAmount,tripdata.ReceivedAmount FROM tripdata INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON empmanage.Branch = branchdata.sno INNER JOIN branchdata branchdata_1 ON empmanage.Branch = branchdata_1.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchdata.sno = @BranchID) OR (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchdata_1.SalesOfficeID = @BranchID) order by dispatch.DispName");  
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@BranchID", BranchID);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
             DataTable dtTrip = vdm.SelectQuery(cmd).Tables[0];
             if (dtTrip.Rows.Count > 0)
             {

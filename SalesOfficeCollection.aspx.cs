@@ -42,9 +42,9 @@ public partial class SalesOfficeCollection : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -55,8 +55,8 @@ public partial class SalesOfficeCollection : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -141,60 +141,60 @@ public partial class SalesOfficeCollection : System.Web.UI.Page
             string Status = ddlStatus.SelectedValue;
             if (Status == "ALL")
             {
-                // cmd.Parameters.Add("SELECT branchdata.sno, branchdata.BranchName, branchaccounts.Amount FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = 5)");
+                // cmd.Parameters.AddWithValue("SELECT branchdata.sno, branchdata.BranchName, branchaccounts.Amount FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = 5)");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) Group by collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             if (Status == "Cash")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "Cash");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "Cash");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
 
             }
             if (Status == "Cheque")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "Cheque");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "Cheque");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             if (Status == "DD")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "DD");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "DD");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             if (Status == "Bank Transfer")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "Bank Transfer");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "Bank Transfer");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             if (Status == "Incentive")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate, branchdata.sno");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "Incentive");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "Incentive");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             if (Status == "Journal Voucher")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime,collections.ChequeNo,collections.Remarks, collections.tripId, collections.ReceiptNo, dispatch.DispName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @brnchid) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
-                cmd.Parameters.Add("@brnchid", BranchID);
-                cmd.Parameters.Add("@pt", "Journal Voucher");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@brnchid", BranchID);
+                cmd.Parameters.AddWithValue("@pt", "Journal Voucher");
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             }
             DataTable dtroutecollection = vdm.SelectQuery(cmd).Tables[0];
 

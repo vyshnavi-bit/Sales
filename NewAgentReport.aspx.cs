@@ -51,9 +51,9 @@ public partial class NewAgentReport : System.Web.UI.Page
             {
                 //PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -65,8 +65,8 @@ public partial class NewAgentReport : System.Web.UI.Page
                 //PBranch.Visible = true;
                 //cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, branchdata_1.SalesType FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata_1.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -201,10 +201,10 @@ public partial class NewAgentReport : System.Web.UI.Page
                 Session["filename"] = "New Agent Report";
                 //cmd = new MySqlCommand("SELECT branchdata.sno AS AgentCode, branchdata.BranchName AS AgentName,branchdata.DateOfEntry AS CreatedDate, branchdata.Address, branchdata.phonenumber FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID) AND (branchdata.DateOfEntry BETWEEN @d1 AND @d2) and ( branchdata.flag=@flag)");
                 cmd = new MySqlCommand("SELECT branchroutes.RouteName, branchdata.sno AS AgentCode, branchdata.BranchName AS AgentName, branchdata.DateOfEntry AS CreatedDate, branchdata.Address,branchdata.phonenumber FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @BranchID) AND (branchdata.DateOfEntry BETWEEN @d1 AND @d2) ORDER BY branchroutes.Sno");
-                cmd.Parameters.Add("@flag", 1);
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@flag", 1);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 DataTable dtNewAgent = vdm.SelectQuery(cmd).Tables[0];
                 if (dtNewAgent.Rows.Count > 0)
                 {
@@ -220,17 +220,17 @@ public partial class NewAgentReport : System.Web.UI.Page
             {
                 Session["filename"] = "Stopped Agent Report";
                 cmd = new MySqlCommand("SELECT totaldata.sno, totaldata.BranchName, totaldata.flag, totaldata.phonenumber, totaldata.DateOfEntry, totaldata.Address, totaldata.CollectionType, totaldata.Due_Limit_Days, totaldata.Due_Limit_Type, totaldata.SalesRepresentative, totaldata.delqty, branchroutes.RouteName, branchaccounts.Amount FROM branchaccounts RIGHT OUTER JOIN (SELECT branchdata.sno, branchdata.BranchName, branchdata.flag, branchdata.phonenumber, branchdata.DateOfEntry, branchdata.Address,branchdata.CollectionType, branchdata.Due_Limit_Days, branchdata.Due_Limit_Type, branchdata.SalesRepresentative,SUM(indents_subtable.DeliveryQty) AS delqty FROM indents_subtable INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indnts ON indents_subtable.IndentNo = indnts.IndentNo RIGHT OUTER JOIN branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno ON indnts.Branch_id = branchdata.sno WHERE (branchmappingtable.SuperBranch = @BranchID) GROUP BY branchdata.sno) totaldata ON branchaccounts.BranchId = totaldata.sno LEFT OUTER JOIN branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo ON totaldata.sno = branchroutesubtable.BranchID WHERE (totaldata.delqty IS NULL) OR (totaldata.delqty < 0)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-30)));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-30)));
                 DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
 
                 cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, indnts.maxdate FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN (SELECT IndentNo, Branch_id, MAX(I_date) AS maxdate FROM indents GROUP BY Branch_id) indnts ON branchdata.sno = indnts.Branch_id WHERE (branchmappingtable.SuperBranch = @branchid) GROUP BY branchdata.sno");
-                cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
                 DataTable dtenddate = vdm.SelectQuery(cmd).Tables[0];
 
                 cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, inventory_monitor.Inv_Sno, inventory_monitor.Qty FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN inventory_monitor ON branchdata.sno = inventory_monitor.BranchId WHERE (branchmappingtable.SuperBranch = @branchid) GROUP BY branchdata.sno, inventory_monitor.Inv_Sno");
-                cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
                 DataTable dtinventory = vdm.SelectQuery(cmd).Tables[0];
                 Report = new DataTable();
                 Report.Columns.Add("SNo");

@@ -100,10 +100,10 @@ public partial class HelperCharges : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, dispatch.DispType, dispatch.DispMode FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (dispatch.DispType IS NULL) AND (branchdata.sno = @BranchID) OR (dispatch.DispType IS NULL) AND (branchdata_1.SalesOfficeID = @SOID)");
 
             }
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtRoutes = vdm.SelectQuery(cmd).Tables[0];
             if (Session["salestype"].ToString() == "Plant")
             {
@@ -114,19 +114,19 @@ public partial class HelperCharges : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, SUM(tripsubdata.Qty) AS dispatchqty, tripdat.AssignDate, tripdat.I_Date FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (dispatch.DispType IS NULL) AND (branchdata.sno = @BranchID) OR (dispatch.DispType IS NULL) AND (branchdata_1.SalesOfficeID = @SOID) GROUP BY dispatch.sno, tripdat.I_Date ORDER BY dispatch.sno");
 
             }
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtRoutesData = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT ROUND(SUM(t2.Qty), 2) AS dispatchqty, t1.AssignDate AS I_Date, t1.BranchID AS sno, t1.BranchName AS DispName FROM (SELECT triproutes.Tripdata_sno, tripdata.AssignDate, branchdata.BranchName, branchdata.sno AS Expr1, dispatch.BranchID FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN branchdata ON branchdata.sno = dispatch.BranchID INNER JOIN branchdata branchdata_1 ON dispatch.BranchID = branchdata_1.sno WHERE (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)) t1 INNER JOIN (SELECT  SUM(tripsubdata.Qty) AS Qty, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2) AND (tripdata_1.Status <> 'C') GROUP BY tripdata_1.Sno) t2 ON t1.Tripdata_sno = t2.Sno GROUP BY DATE_FORMAT(t1.AssignDate, '%d/%b/%y'), t1.BranchID");
             //cmd = new MySqlCommand("SELECT  dispatch.sno, dispatch.DispName, SUM(tripsubdata.Qty) AS dispatchqty, tripdat.AssignDate, tripdat.I_Date, dispatch.BranchID, branchdata.SalesOfficeID, branchdata.BranchName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno INNER JOIN branchdata ON dispatch.BranchID = branchdata.sno WHERE  (dispatch.BranchID = @BranchID) OR (branchdata.SalesOfficeID = @SOID) GROUP BY dispatch.BranchID, tripdat.I_Date, branchdata.BranchName ORDER BY tripdat.I_Date");
             //cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, SUM(tripsubdata.Qty) AS dispatchqty, tripdat.AssignDate, tripdat.I_Date, dispatch.BranchID, branchdata.SalesOfficeID FROM  dispatch INNER JOIN  triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno INNER JOIN branchdata ON dispatch.BranchID = branchdata.sno WHERE (dispatch.BranchID = @BranchID) OR (branchdata.SalesOfficeID = @SOID)GROUP BY dispatch.sno, tripdat.I_Date ORDER BY dispatch.sno");
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtPlantData = vdm.SelectQuery(cmd).Tables[0];
             if (dtRoutesData.Rows.Count > 0)
             {
@@ -178,7 +178,7 @@ public partial class HelperCharges : System.Web.UI.Page
                                 double dispatchqty = 0;
                                 double.TryParse(dr["dispatchqty"].ToString(), out dispatchqty);
                                 cmd = new MySqlCommand("SELECT helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (dispatch.DispName = @DispName)");
-                                cmd.Parameters.Add("@DispName", dr["DispName"].ToString());
+                                cmd.Parameters.AddWithValue("@DispName", dr["DispName"].ToString());
                                 DataTable dtHelper = vdm.SelectQuery(cmd).Tables[0];
                                 if (dtHelper.Rows.Count > 0)
                                 {
@@ -237,9 +237,9 @@ public partial class HelperCharges : System.Web.UI.Page
                                 double dispatchqty = 0;
                                 double.TryParse(drP["dispatchqty"].ToString(), out dispatchqty);
                                 cmd = new MySqlCommand("SELECT  helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName, dispatch.Branch_Id FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (dispatch.Branchid = @Branchid)");
-                                cmd.Parameters.Add("@Branchid", drP["sno"].ToString());
+                                cmd.Parameters.AddWithValue("@Branchid", drP["sno"].ToString());
                                 //cmd = new MySqlCommand("SELECT helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (dispatch.DispName = @DispName)");
-                                //cmd.Parameters.Add("@DispName", drP["DispName"].ToString());
+                                //cmd.Parameters.AddWithValue("@DispName", drP["DispName"].ToString());
                                 DataTable dtHelper = vdm.SelectQuery(cmd).Tables[0];
                                 if (dtHelper.Rows.Count > 0)
                                 {
@@ -315,7 +315,7 @@ public partial class HelperCharges : System.Web.UI.Page
                                 foreach (DataRow drdispsno in dtdispatchsno.Rows)
                                 {
                                     cmd = new MySqlCommand("SELECT helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (helpermaster.despsno = @DispName)");
-                                    cmd.Parameters.Add("@DispName", drdispsno["despsno"].ToString());
+                                    cmd.Parameters.AddWithValue("@DispName", drdispsno["despsno"].ToString());
                                     DataTable dtHelper = vdm.SelectQuery(cmd).Tables[0];
                                     if (dtHelper.Rows.Count > 0)
                                     {
@@ -338,9 +338,9 @@ public partial class HelperCharges : System.Web.UI.Page
                     Report.Rows.Add(newAvg);
                     Report.Rows.Add(newCharges);
                     cmd = new MySqlCommand("SELECT SUM(tripinvdata.Qty) AS issued, SUM(tripinvdata.Remaining) AS returnqty, invmaster.InvName, invmaster.sno, dispatch.sno AS dispatchsno,dispatch.DispName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripinvdata ON tripdat.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno WHERE (dispatch.Branch_Id = @brnchid) AND (dispatch.DispType IS NULL) OR (branchdata.SalesOfficeID = @brnchid) AND (dispatch.DispType IS NULL) GROUP BY dispatch.sno, invmaster.sno"); 
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
-                    cmd.Parameters.Add("@brnchid", Session["branch"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@brnchid", Session["branch"].ToString());
                     DataTable dtInventory = vdm.SelectQuery(cmd).Tables[0];
                     DataView view2 = new DataView(dtInventory);
                     DataTable distincttable = view2.ToTable(true, "DispName", "dispatchsno");
@@ -550,10 +550,10 @@ public partial class HelperCharges : System.Web.UI.Page
                                 double dispatchqty = 0;
                                 double.TryParse(drP["dispatchqty"].ToString(), out dispatchqty);
                                 cmd = new MySqlCommand("SELECT  helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName, dispatch.Branch_Id FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (dispatch.BranchID = @Branchid)");
-                                cmd.Parameters.Add("@Branchid", drP["sno"].ToString());
+                                cmd.Parameters.AddWithValue("@Branchid", drP["sno"].ToString());
 
                                 //cmd = new MySqlCommand("SELECT helpermaster.sno, helpermaster.despsno, helpermaster.first, helpermaster.second, helpermaster.third, helpermaster.fourth, helpermaster.amount, helpermaster.flag, helpermaster.doe, dispatch.DispName FROM helpermaster INNER JOIN dispatch ON helpermaster.despsno = dispatch.sno WHERE (dispatch.DispName = @DispName)");
-                                //cmd.Parameters.Add("@DispName", drP["DispName"].ToString());
+                                //cmd.Parameters.AddWithValue("@DispName", drP["DispName"].ToString());
                                 DataTable dtHelper = vdm.SelectQuery(cmd).Tables[0];
                                 if (dtHelper.Rows.Count > 0)
                                 {

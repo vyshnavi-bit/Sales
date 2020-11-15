@@ -46,9 +46,9 @@ public partial class Audit_report : System.Web.UI.Page
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
                 {
@@ -58,7 +58,7 @@ public partial class Audit_report : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtPlant.Rows)
                 {
@@ -68,8 +68,8 @@ public partial class Audit_report : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "23");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "23");
                 DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtNewPlant.Rows)
                 {
@@ -86,8 +86,8 @@ public partial class Audit_report : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -175,17 +175,17 @@ public partial class Audit_report : System.Web.UI.Page
             if (Status == "Approved")
             {
                 cmd = new MySqlCommand("SELECT cashpayables.VocherID, cashpayables.onNameof, empmanage.EmpName, DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS DOE , cashpayables.Amount, cashpayables.ApprovedAmount, cashpayables.Remarks, cashpayables.ApprovalRemarks,cashpayables.audit_remarks, cashpayables.BranchID, cashpayables.Status,cashpayables.vouchertype, cashpayables.Sno AS refno FROM cashpayables INNER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.DOE BETWEEN @d1 AND @d2) AND (cashpayables.audit_status = @Status) ORDER BY cashpayables.DOE");
-                cmd.Parameters.Add("@Status", 'A');
+                cmd.Parameters.AddWithValue("@Status", 'A');
             }
             if (Status == "Pending")
             {
                 cmd = new MySqlCommand("SELECT cashpayables.VocherID, cashpayables.onNameof, empmanage.EmpName, DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS DOE , cashpayables.Amount, cashpayables.ApprovedAmount, cashpayables.Remarks, cashpayables.ApprovalRemarks,cashpayables.audit_remarks, cashpayables.BranchID, cashpayables.Status,cashpayables.vouchertype, cashpayables.Sno AS refno FROM cashpayables INNER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.DOE BETWEEN @d1 AND @d2) AND (cashpayables.audit_status = @Status) ORDER BY cashpayables.DOE");
-                cmd.Parameters.Add("@Status", 'P');
+                cmd.Parameters.AddWithValue("@Status", 'P');
             }
             
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(Todate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
             DataTable dtCheque = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("VoucherDate");
@@ -238,7 +238,7 @@ public partial class Audit_report : System.Web.UI.Page
                     newrow["ApprovalRemarks"] = dr["ApprovalRemarks"].ToString();
                     newrow["AuditRemarks"] = dr["audit_remarks"].ToString();
                     cmd = new MySqlCommand("SELECT subpayable.RefNo, subpayable.HeadDesc, subpayable.Amount, subpayable.HeadSno, accountheads.HeadName FROM subpayable INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (subpayable.RefNo = @refno)");
-                    cmd.Parameters.Add("@refno", dr["refno"].ToString());
+                    cmd.Parameters.AddWithValue("@refno", dr["refno"].ToString());
                     DataTable dtheadacc = vdm.SelectQuery(cmd).Tables[0];
                     string head = "";
                     foreach (DataRow drhead in dtheadacc.Rows)

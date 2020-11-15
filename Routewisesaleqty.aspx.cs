@@ -44,8 +44,8 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 //if (ddlSalesOffice.SelectedIndex == -1)
                 //{
@@ -63,9 +63,9 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
 
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  and (DispType is NULL) AND (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID)  and (DispType is NULL) AND (dispatch.flag=@flag))");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlRouteName.DataSource = dtRoutedata;
                 ddlRouteName.DataTextField = "DispName";
@@ -81,9 +81,9 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  and (DispType is NULL) AND (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID)  and (DispType is NULL) AND (dispatch.flag=@flag))");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@flag", "1");
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@flag", "1");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlRouteName.DataSource = dtRoutedata;
         ddlRouteName.DataTextField = "DispName";
@@ -157,15 +157,15 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
             lbltodate.Text = txttodate.Text;
             Session["filename"] = ddlRouteName.SelectedItem.Text + fromdate.AddDays(1).ToString("dd/MM/yyyy");
             cmd = new MySqlCommand("SELECT DATE_FORMAT(indents.I_date, '%m-%d-%Y') AS IndentDate FROM dispatch INNER JOIN branchroutesubtable ON dispatch.Route_id = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispsno) GROUP BY IndentDate ORDER BY IndentDate ");
-            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(todate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
             DataTable dtindentdates = vdm.SelectQuery(cmd).Tables[0];
             //cmd = new MySqlCommand("SELECT branchdata.BranchName, SUM(indents_subtable.DeliveryQty) AS dqty, indents.I_date, branchdata.sno FROM dispatch INNER JOIN branchroutesubtable ON dispatch.Route_id = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispsno) GROUP BY indents.I_date ORDER BY branchdata.sno, indents.I_date");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, SUM(indents_subtable.DeliveryQty) AS dqty, SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS salevalue, indents.I_date,branchdata.sno FROM dispatch INNER JOIN branchroutesubtable ON dispatch.Route_id = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispsno) GROUP BY indents.IndentNo ORDER BY branchdata.sno, indents.I_date"); 
-            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(todate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
             DataTable dtsaleqty = vdm.SelectQuery(cmd).Tables[0];
 
             Report = new DataTable();

@@ -46,9 +46,9 @@ public partial class RouteWiseActivity : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -62,9 +62,9 @@ public partial class RouteWiseActivity : System.Web.UI.Page
                 PBranch.Visible = false;
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) AND (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) AND (dispatch.flag=@flag))");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlDispName.DataSource = dtRoutedata;
                 ddlDispName.DataTextField = "DispName";
@@ -83,9 +83,9 @@ public partial class RouteWiseActivity : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) AND (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) AND (dispatch.flag=@flag))");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@flag", "1");
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@flag", "1");
 
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlDispName.DataSource = dtRoutedata;
@@ -167,12 +167,12 @@ public partial class RouteWiseActivity : System.Web.UI.Page
             }
             //cmd = new MySqlCommand("SELECT Round(sum(indents_subtable.DeliveryQty),2) as DeliveryQty, indents_subtable.UnitCost, products_category.Categoryname, productsdata.ProductName, DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN tripdata ON indents_subtable.DTripId = tripdata.Sno INNER JOIN triproutes ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispatchsno) GROUP BY tripdata.Sno, productsdata.ProductName, products_category.Categoryname");
             cmd = new MySqlCommand("SELECT dispath.DispName, ROUND(SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost), 2) AS salevalue, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.UnitCost, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS IndentDate, productsdata.ProductName,products_category.Categoryname FROM (SELECT sno, DispName FROM dispatch WHERE (sno = @dispatchsno)) dispath INNER JOIN triproutes ON dispath.sno = triproutes.RouteID INNER JOIN (SELECT Sno, I_Date, Status FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2) AND (Status <> 'C')) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN indents_subtable ON tripdat.Sno = indents_subtable.DTripId INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno GROUP BY tripdat.Sno, productsdata.ProductName, products_category.Categoryname ORDER BY tripdat.I_Date");
-            cmd.Parameters.Add("@dispatchsno", ddlDispName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@dispatchsno", ddlDispName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT products_category.Categoryname, products_subcategory.SubCatName, productsdata.ProductName, productsdata.Units, invmaster.Qty FROM branchproducts INNER JOIN dispatch ON branchproducts.branch_sno = dispatch.Branch_Id INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN invmaster ON productsdata.Inventorysno = invmaster.sno WHERE (dispatch.sno = @dispatchSno) GROUP BY productsdata.ProductName ORDER BY productsdata.Rank");
-            cmd.Parameters.Add("@dispatchSno", ddlDispName.SelectedValue);
+            cmd.Parameters.AddWithValue("@dispatchSno", ddlDispName.SelectedValue);
             DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
             if (produtstbl.Rows.Count > 0)
             {

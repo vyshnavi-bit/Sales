@@ -45,10 +45,10 @@ public partial class TallyOthersSale : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchdata.flag = @flag) AND (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchdata.flag = @flag) AND (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
-            cmd.Parameters.Add("@flag", "1");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtRoutedata.Rows)
             {
@@ -66,9 +66,9 @@ public partial class TallyOthersSale : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.flag = @flag) AND (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.flag = @flag) AND (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
-            cmd.Parameters.Add("@flag", "1");
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -175,11 +175,11 @@ public partial class TallyOthersSale : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.Branchcode,branchdata.companycode, branchdata.incentivename, branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 }
                 DataTable dtstate = vdm.SelectQuery(cmd).Tables[0];
                 string statename = "";
@@ -199,10 +199,10 @@ public partial class TallyOthersSale : System.Web.UI.Page
                     companycode = dtstate.Rows[0]["companycode"].ToString();
                 }
                 cmd = new MySqlCommand("SELECT  dispatch.DispName, dispatch.sno, dispatch.BranchID, tripdata.I_Date,tripdata.dcno, tripdata.Sno AS TripSno, dispatch.DispMode, branchmappingtable.SuperBranch, triproutes.Tripdata_sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN branchmappingtable ON dispatch.BranchID = branchmappingtable.SubBranch WHERE (dispatch.BranchID = @BranchID) AND (tripdata.I_Date BETWEEN @d1 AND @d2)and (dispatch.DispType='SO') and (tripdata.Status<>'C') OR (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @SuperBranch)  and (dispatch.DispType='SO')and (tripdata.Status<>'C') GROUP BY tripdata.Sno ORDER BY dispatch.sno");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtDispnames = vdm.SelectQuery(cmd).Tables[0];
                 string DCNO = "";
                 foreach (DataRow dr in dtDispnames.Rows)
@@ -210,12 +210,12 @@ public partial class TallyOthersSale : System.Web.UI.Page
                     string tripID = ""; string soid = "";
                     cmd = new MySqlCommand("SELECT  SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory, productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst, leakages.ProductID FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) AND (productsdata.igst = 0) GROUP BY productsdata.tproduct, products_category.tcategory, leakages.ProductID");
                     //cmd = new MySqlCommand("SELECT SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory,productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) GROUP BY productsdata.tproduct, products_category.tcategory");
-                    cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable Dtfreemilk = vdm.SelectQuery(cmd).Tables[0];
                     cmd = new MySqlCommand("SELECT branchleaktrans.ShortQty, branchleaktrans.FreeQty AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, branchleaktrans.invoiceno, products_category.tcategory, productsdata.hsncode,productsdata.igst, productsdata.cgst, productsdata.sgst FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchleaktrans ON productsdata.sno = branchleaktrans.ProdId INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID) AND (branchleaktrans.TripId = @TripID) AND (productsdata.igst = 0) GROUP BY productsdata.tproduct, products_category.tcategory");
-                    cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable dtsalesofficeshortfree = vdm.SelectQuery(cmd).Tables[0];
                     DataTable newdt = new DataTable();
                     newdt = Dtfreemilk.Copy();
@@ -271,31 +271,31 @@ public partial class TallyOthersSale : System.Web.UI.Page
                             if (freeqty > 0)
                             {
                                 cmd = new MySqlCommand("SELECT IFNULL(MAX(agentdcno), 0) + 1 AS Sno FROM agentdc WHERE (soid = @soid)  AND (IndDate BETWEEN @d1 AND @d2)");
-                                cmd.Parameters.Add("@soid", soid);
-                                cmd.Parameters.Add("@d1", GetLowDate(dtapril));
-                                cmd.Parameters.Add("@d2", GetHighDate(dtmarch));
+                                cmd.Parameters.AddWithValue("@soid", soid);
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch));
                                 DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
                                 string invno = dtadcno.Rows[0]["Sno"].ToString();
                                 cmd = new MySqlCommand("Insert Into Agentdc (BranchId,IndDate,agentdcno,soid,stateid,companycode,moduleid,doe,invoicetype) Values(@BranchId,@IndDate,@agentdcno,@soid,@stateid,@companycode,@moduleid,@doe,@invoicetype)");
-                                cmd.Parameters.Add("@BranchId", dr["sno"].ToString());
-                                cmd.Parameters.Add("@IndDate", fromdate.AddDays(-1));
-                                cmd.Parameters.Add("@agentdcno", invno);
-                                cmd.Parameters.Add("@soid", soid);
-                                cmd.Parameters.Add("@stateid", gststatecode);
-                                cmd.Parameters.Add("@companycode", companycode);
-                                cmd.Parameters.Add("@doe", ReportDate);
-                                cmd.Parameters.Add("@moduleid", "4");// Module 4 is Credit Note (Ex...Leaks)
-                                cmd.Parameters.Add("@invoicetype", "TOSales");
+                                cmd.Parameters.AddWithValue("@BranchId", dr["sno"].ToString());
+                                cmd.Parameters.AddWithValue("@IndDate", fromdate.AddDays(-1));
+                                cmd.Parameters.AddWithValue("@agentdcno", invno);
+                                cmd.Parameters.AddWithValue("@soid", soid);
+                                cmd.Parameters.AddWithValue("@stateid", gststatecode);
+                                cmd.Parameters.AddWithValue("@companycode", companycode);
+                                cmd.Parameters.AddWithValue("@doe", ReportDate);
+                                cmd.Parameters.AddWithValue("@moduleid", "4");// Module 4 is Credit Note (Ex...Leaks)
+                                cmd.Parameters.AddWithValue("@invoicetype", "TOSales");
                                 vdm.insert(cmd);
                                 cmd = new MySqlCommand("UPDATE leakages t1 JOIN tripdata t2 ON t1.TripID=t2.Sno JOIN productsdata as t3 ON t3.sno=t1.ProductID SET  t1.Invoiceno = @invoiceno WHERE t2.ATripid=@TripID and  t3.igst=0");
                                 //cmd = new MySqlCommand("UPDATE leakages t1 JOIN tripdata t2 ON t1.TripID=t2 .Sno SET  t1.Invoiceno = @invoiceno WHERE t2 .ATripid=@TripID");
-                                cmd.Parameters.Add("@invoiceno", invno);
-                                cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
+                                cmd.Parameters.AddWithValue("@invoiceno", invno);
+                                cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
                                 vdm.Update(cmd);
                                 cmd = new MySqlCommand("Update branchleaktrans t1 join productsdata AS t2 ON t1.ProdId=t2.sno  set t1.invoiceno=@invoiceno where t1.TripID=@TripID and  t2.igst=0");
                                 //cmd = new MySqlCommand("Update branchleaktrans set invoiceno=@invoiceno where TripID=@TripID");
-                                cmd.Parameters.Add("@invoiceno", invno);
-                                cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
+                                cmd.Parameters.AddWithValue("@invoiceno", invno);
+                                cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
                                 vdm.Update(cmd);
                                 int.TryParse(invno, out new_countdc);
                             }
@@ -484,11 +484,11 @@ public partial class TallyOthersSale : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.Branchcode,branchdata.companycode, branchdata.incentivename, branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 }
                 DataTable dtstate = vdm.SelectQuery(cmd).Tables[0];
                 string statename = "";
@@ -508,10 +508,10 @@ public partial class TallyOthersSale : System.Web.UI.Page
                     companycode = dtstate.Rows[0]["companycode"].ToString();
                 }
                 cmd = new MySqlCommand("SELECT  dispatch.DispName, dispatch.sno, dispatch.BranchID, tripdata.I_Date,tripdata.dcno, tripdata.Sno AS TripSno, dispatch.DispMode, branchmappingtable.SuperBranch, triproutes.Tripdata_sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN branchmappingtable ON dispatch.BranchID = branchmappingtable.SubBranch WHERE (dispatch.BranchID = @BranchID) AND (tripdata.I_Date BETWEEN @d1 AND @d2)and (dispatch.DispType='SO') and (tripdata.Status<>'C') OR (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @SuperBranch)  and (dispatch.DispType='SO')and (tripdata.Status<>'C') GROUP BY tripdata.Sno ORDER BY dispatch.sno");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtDispnames = vdm.SelectQuery(cmd).Tables[0];
                 string DCNO = "";
                 foreach (DataRow dr in dtDispnames.Rows)
@@ -519,12 +519,12 @@ public partial class TallyOthersSale : System.Web.UI.Page
                     string tripID = ""; string soid = "";
                     cmd = new MySqlCommand("SELECT  SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory, productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) AND (productsdata.igst > 0) GROUP BY productsdata.tproduct, products_category.tcategory");
                     //cmd = new MySqlCommand("SELECT SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory,productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) GROUP BY productsdata.tproduct, products_category.tcategory");
-                    cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable Dtfreemilk = vdm.SelectQuery(cmd).Tables[0];
                     cmd = new MySqlCommand("SELECT branchleaktrans.ShortQty, branchleaktrans.FreeQty AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, branchleaktrans.invoiceno, products_category.tcategory, productsdata.hsncode,productsdata.igst, productsdata.cgst, productsdata.sgst FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchleaktrans ON productsdata.sno = branchleaktrans.ProdId INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID) AND (branchleaktrans.TripId = @TripID) AND (productsdata.igst > 0) GROUP BY productsdata.tproduct, products_category.tcategory");
-                    cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     DataTable dtsalesofficeshortfree = vdm.SelectQuery(cmd).Tables[0];
                     DataTable newdt = new DataTable();
                     newdt = Dtfreemilk.Copy();
@@ -579,30 +579,30 @@ public partial class TallyOthersSale : System.Web.UI.Page
                             if (freeqty > 0)
                             {
                                 cmd = new MySqlCommand("SELECT IFNULL(MAX(agentdcno), 0) + 1 AS Sno FROM agenttaxdc WHERE (soid = @soid)  AND (IndDate BETWEEN @d1 AND @d2)");
-                                cmd.Parameters.Add("@soid", soid);
-                                cmd.Parameters.Add("@d1", GetLowDate(dtapril));
-                                cmd.Parameters.Add("@d2", GetHighDate(dtmarch));
+                                cmd.Parameters.AddWithValue("@soid", soid);
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch));
                                 DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
                                 string invno = dtadcno.Rows[0]["Sno"].ToString();
                                 cmd = new MySqlCommand("Insert Into agenttaxdc (BranchId,IndDate,agentdcno,soid,stateid,companycode,moduleid,doe,invoicetype) Values(@BranchId,@IndDate,@agentdcno,@soid,@stateid,@companycode,@moduleid,@doe,@invoicetype)");
-                                cmd.Parameters.Add("@BranchId", dr["sno"].ToString());
-                                cmd.Parameters.Add("@IndDate", fromdate.AddDays(-1));
-                                cmd.Parameters.Add("@agentdcno", invno);
-                                cmd.Parameters.Add("@soid", soid);
-                                cmd.Parameters.Add("@stateid", gststatecode);
-                                cmd.Parameters.Add("@companycode", companycode);
-                                cmd.Parameters.Add("@doe", ReportDate);
-                                cmd.Parameters.Add("@moduleid", "4");// Module 4 is Credit Note (Ex...Leaks)
-                                cmd.Parameters.Add("@invoicetype", "TOSales");
+                                cmd.Parameters.AddWithValue("@BranchId", dr["sno"].ToString());
+                                cmd.Parameters.AddWithValue("@IndDate", fromdate.AddDays(-1));
+                                cmd.Parameters.AddWithValue("@agentdcno", invno);
+                                cmd.Parameters.AddWithValue("@soid", soid);
+                                cmd.Parameters.AddWithValue("@stateid", gststatecode);
+                                cmd.Parameters.AddWithValue("@companycode", companycode);
+                                cmd.Parameters.AddWithValue("@doe", ReportDate);
+                                cmd.Parameters.AddWithValue("@moduleid", "4");// Module 4 is Credit Note (Ex...Leaks)
+                                cmd.Parameters.AddWithValue("@invoicetype", "TOSales");
                                 vdm.insert(cmd);
                                 cmd = new MySqlCommand("UPDATE leakages t1 JOIN tripdata t2 ON t1.TripID=t2.Sno JOIN productsdata as t3 ON t3.sno=t1.ProductID SET  t1.Invoiceno = @invoiceno WHERE t2.ATripid=@TripID and  t3.igst>0");
                                 //cmd = new MySqlCommand("UPDATE leakages t1 JOIN tripdata t2 ON t1.TripID=t2.Sno JOIN productsdata as t3 ON t3.productid=t1.productid ON  SET  t1.Invoiceno = @invoiceno WHERE t2 .ATripid=@TripID and t3.igst>0)");
-                                cmd.Parameters.Add("@invoiceno", invno);
-                                cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
+                                cmd.Parameters.AddWithValue("@invoiceno", invno);
+                                cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
                                 vdm.Update(cmd);
                                 cmd = new MySqlCommand("Update branchleaktrans t1 join productsdata AS t2 ON t1.ProdId=t2.sno  set t1.invoiceno=@invoiceno where t1.TripID=@TripID and  t2.igst>0");
-                                cmd.Parameters.Add("@invoiceno", invno);
-                                cmd.Parameters.Add("@TripID", dr["TripSno"].ToString());
+                                cmd.Parameters.AddWithValue("@invoiceno", invno);
+                                cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
                                 vdm.Update(cmd);
                                 int.TryParse(invno, out new_countdc);
                             }

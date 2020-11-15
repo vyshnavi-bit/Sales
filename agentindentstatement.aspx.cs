@@ -72,14 +72,14 @@ public partial class agentindentstatement : System.Web.UI.Page
             string agentid = txtagentid.Text;
             string soid = txtsoid.Text;
             cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost),2) AS Totalsalevalue,ROUND(SUM(indents_subtable.DeliveryQty),2) AS DeliveryQty,products_category.Categoryname, productsdata.ProductName, DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate FROM productsdata INNER JOIN indents_subtable ON productsdata.sno = indents_subtable.Product_sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (branchdata.sno = @BranchID) and (indents_subtable.DeliveryQty<>'0') GROUP BY productsdata.sno, IndentDate ORDER BY products_category.sno,indents.I_date");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
             if (dtAgent.Rows.Count <= 0)
             {
                 cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost), 2) AS Totalsalevalue, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, MAX(indents.I_date) AS indentdate FROM productsdata INNER JOIN indents_subtable ON productsdata.sno = indents_subtable.Product_sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchdata.sno = @BranchID) AND (indents_subtable.DeliveryQty > 0)");
-                cmd.Parameters.Add("@BranchID", agentid);
+                cmd.Parameters.AddWithValue("@BranchID", agentid);
                 DataTable dtAgent_lastDelivery = vdm.SelectQuery(cmd).Tables[0];
                 if (dtAgent_lastDelivery.Rows.Count > 0)
                 {
@@ -89,18 +89,18 @@ public partial class agentindentstatement : System.Web.UI.Page
                         fromdate = Convert.ToDateTime(dtlastdel).AddDays(1);
                     }
                     cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost),2) AS Totalsalevalue,ROUND(SUM(indents_subtable.DeliveryQty),2) AS DeliveryQty,products_category.Categoryname, productsdata.ProductName, DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate FROM productsdata INNER JOIN indents_subtable ON productsdata.sno = indents_subtable.Product_sno INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (branchdata.sno = @BranchID) and (indents_subtable.DeliveryQty<>'0') GROUP BY productsdata.sno, IndentDate ORDER BY products_category.sno,indents.I_date");
-                    cmd.Parameters.Add("@BranchID", agentid);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@BranchID", agentid);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
                     dtAgent = vdm.SelectQuery(cmd).Tables[0];
                 }
             }
             cmd = new MySqlCommand("SELECT Sum(AmountPaid) as AmountPaid , Remarks,  PayTime, EmpID, ReceiptNo, VarifyDate, TransactionType, AmountDebited, DiffAmount, SalesOfficeID, Status FROM collections WHERE (Branchid = @BranchID) AND (TransactionType = @type) AND (Status = @status) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
-            cmd.Parameters.Add("@type", "Debit");
-            cmd.Parameters.Add("@status", "1");
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@type", "Debit");
+            cmd.Parameters.AddWithValue("@status", "1");
             DataTable dtdebitamount = vdm.SelectQuery(cmd).Tables[0];
             double debitprice = 0;
             foreach (DataRow dr in dtdebitamount.Rows)
@@ -113,34 +113,34 @@ public partial class agentindentstatement : System.Web.UI.Page
                 //}
             }
             cmd = new MySqlCommand("SELECT Branchid, AmountPaid, Remarks, DATE_FORMAT(PaidDate, '%d/%b/%y') AS PDate, PayTime, EmpID, ReceiptNo, VarifyDate, TransactionType, AmountDebited, DiffAmount, SalesOfficeID, Status FROM collections WHERE (Branchid = @BranchID) AND (TransactionType = @type) AND (Status = @status) AND (PaidDate BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
-            cmd.Parameters.Add("@type", "Debit");
-            cmd.Parameters.Add("@status", "1");
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@type", "Debit");
+            cmd.Parameters.AddWithValue("@status", "1");
             DataTable dtAgent_Debits = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT Amount FROM branchaccounts WHERE (BranchId = @BranchID)");
-            cmd.Parameters.Add("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
             DataTable dtAgent_presentopp = vdm.SelectQuery(cmd).Tables[0];
             double agentpresentopp = 0;
             double.TryParse(dtAgent_presentopp.Rows[0]["Amount"].ToString(), out agentpresentopp);
             agentpresentopp = agentpresentopp - debitprice;
             //cmd = new MySqlCommand("SELECT SUM(AmountPaid) AS AmountPaid, DATE_FORMAT(PaidDate, '%d/%b/%y') AS PaidDate, CheckStatus FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2) AND (CheckStatus <> 'P' OR  CheckStatus IS NULL) GROUP BY PaidDate");
             cmd = new MySqlCommand("SELECT SUM(AmountPaid) AS AmountPaid, DATE_FORMAT(PaidDate, '%d/%b/%y') AS PDate, CheckStatus,PaymentType FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2) AND (CheckStatus IS NULL)  GROUP BY PDate");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtAgentDayWiseCollection = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT SUM(AmountPaid) AS AmountPaid, DATE_FORMAT(PaidDate, '%d/%b/%y') AS PDate FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2) and (tripId is NULL) AND ((PaymentType = 'Incentive') OR (PaymentType = 'Journal Voucher')) GROUP BY PDate");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtAgentIncentive = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT SUM(AmountPaid) AS AmountPaid, DATE_FORMAT(VarifyDate, '%d/%b/%y') AS VarifyDate, CheckStatus FROM collections WHERE (Branchid = @BranchID) AND (CheckStatus = 'V') AND (VarifyDate BETWEEN @d1 AND @d2) GROUP BY VarifyDate");
-            cmd.Parameters.Add("@BranchID", agentid);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@BranchID", agentid);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtAgentchequeCollection = vdm.SelectQuery(cmd).Tables[0];
 
 
@@ -177,9 +177,9 @@ public partial class agentindentstatement : System.Web.UI.Page
                 double totdebitedamount = 0;
                 cmd = new MySqlCommand("SELECT totalsaleamount.totalsale, totalsaleamount.Branch_id, SUM(collections.AmountPaid) AS amountpaid FROM (SELECT SUM(indentssub.DeliveryQty * indentssub.UnitCost) AS totalsale, indents.Branch_id FROM indents INNER JOIN (SELECT IndentNo, Product_sno, Qty, Cost, Remark, DeliveryQty, Status, D_date, unitQty, UnitCost, Sno, PaymentStatus, LeakQty, OTripId, DTripId,DelTime FROM indents_subtable WHERE (D_date BETWEEN @starttime AND @endtime)) indentssub ON indents.IndentNo = indentssub.IndentNo WHERE (indents.Branch_id = @BranchID) GROUP BY indents.Branch_id) totalsaleamount INNER JOIN (SELECT Branchid, UserData_sno, AmountPaid, Denominations, Remarks, Sno, PaidDate, PaymentType, tripId, CheckStatus, ReturnDenomin, PayTime, VEmpID, ChequeNo, EmpID, ReceiptNo FROM collections collections_1 WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @starttime AND @endtime) AND (CheckStatus IS NULL) OR (Branchid = @BranchID) AND (CheckStatus = 'V') AND (VarifyDate BETWEEN @starttime AND @endtime)) collections ON totalsaleamount.Branch_id = collections.Branchid");
                 ////  cmd = new MySqlCommand("SELECT totalsaleamount.totalsale, totalsaleamount.Branch_id, SUM(collections.AmountPaid) AS amountpaid FROM (SELECT SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS totalsale, indents.Branch_id FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @starttime AND @endtime) AND (indents.Branch_id = @BranchID) GROUP BY indents.Branch_id) totalsaleamount INNER JOIN (SELECT Branchid, UserData_sno, AmountPaid, Denominations, Remarks, Sno, PaidDate, PaymentType, tripId, CheckStatus, ReturnDenomin, PayTime, VEmpID, ChequeNo, EmpID, ReceiptNo FROM collections collections_1 WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @starttime AND @endtime) AND (CheckStatus IS NULL) OR (Branchid = @BranchID) AND (CheckStatus = 'V') AND (VarifyDate BETWEEN @starttime AND @endtime)) collections ON totalsaleamount.Branch_id = collections.Branchid"); 
-                cmd.Parameters.Add("@BranchID", agentid);
-                cmd.Parameters.Add("@starttime", GetLowDate(fromdate));
-                cmd.Parameters.Add("@endtime", GetHighDate(ServerDateCurrentdate));
+                cmd.Parameters.AddWithValue("@BranchID", agentid);
+                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@endtime", GetHighDate(ServerDateCurrentdate));
                 DataTable dtSaleCollection = vdm.SelectQuery(cmd).Tables[0];
                 double totsale = 0;
                 double totamt = 0;

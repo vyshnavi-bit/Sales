@@ -47,9 +47,9 @@ public partial class SapSale : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtRoutedata.Rows)
             {
@@ -59,7 +59,7 @@ public partial class SapSale : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtPlant.Rows)
             {
@@ -69,8 +69,8 @@ public partial class SapSale : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "23");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "23");
             DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtNewPlant.Rows)
             {
@@ -88,8 +88,8 @@ public partial class SapSale : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -162,16 +162,16 @@ public partial class SapSale : System.Web.UI.Page
         //            {
         //                BranchID = "158";
         //            }
-        //            cmd.Parameters.Add("@BranchID", BranchID);
-        //            cmd.Parameters.Add("@SOID", BranchID);
+        //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+        //            cmd.Parameters.AddWithValue("@SOID", BranchID);
         //        }
         //        else
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
-        //            cmd.Parameters.Add("@SOID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
         //        }
-        //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-        //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
         //        DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
         //        DateTime ReportDate = VehicleDBMgr.GetTime(vdm.conn);
         //        DateTime dtapril = new DateTime();
@@ -219,11 +219,11 @@ public partial class SapSale : System.Web.UI.Page
         //            cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.branchcode,  branchdata.BranchName, branchdata.tax, branchdata.ntax, statemastar.statename,statemastar.statecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
         //            if (Session["salestype"].ToString() == "Plant")
         //            {
-        //                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        //                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         //            }
         //            else
         //            {
-        //                cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //            }
         //            DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
         //            string statename = "";
@@ -245,10 +245,10 @@ public partial class SapSale : System.Web.UI.Page
         //            {
         //                BranchID = "158";
         //            }
-        //            cmd.Parameters.Add("@BranchID", BranchID);
-        //            cmd.Parameters.Add("@SOID", BranchID);
-        //            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+        //            cmd.Parameters.AddWithValue("@SOID", BranchID);
+        //            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //            DataTable dtDc = vdm.SelectQuery(cmd).Tables[0];
         //            foreach (DataRow branch in dtble.Rows)
         //            {
@@ -283,48 +283,48 @@ public partial class SapSale : System.Web.UI.Page
         //                        {
         //                            if (socode == "527")
         //                            {
-        //                                cmd.Parameters.Add("@BranchID", "174");
+        //                                cmd.Parameters.AddWithValue("@BranchID", "174");
         //                                socode = "174";
         //                            }
         //                            else
         //                            {
-        //                                cmd.Parameters.Add("@BranchID", "2749");
+        //                                cmd.Parameters.AddWithValue("@BranchID", "2749");
         //                                socode = "2749";
         //                            }
         //                        }
         //                        else
         //                        {
-        //                            cmd.Parameters.Add("@BranchID", socode);
+        //                            cmd.Parameters.AddWithValue("@BranchID", socode);
         //                        }
-        //                        cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                        cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                        DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                        string agentdcNo = dtadcno.Rows[0]["Sno"].ToString();
         //                        cmd = new MySqlCommand("Insert Into Agentdc (BranchId,IndDate,soid,agentdcno) Values(@BranchId,@IndDate,@soid,@agentdcno)");
-        //                        cmd.Parameters.Add("@BranchId", branch["BSno"].ToString());
-        //                        cmd.Parameters.Add("@IndDate", GetLowDate(fromdate.AddDays(-1)));
-        //                        cmd.Parameters.Add("@soid", socode);
-        //                        cmd.Parameters.Add("@agentdcno", agentdcNo);
+        //                        cmd.Parameters.AddWithValue("@BranchId", branch["BSno"].ToString());
+        //                        cmd.Parameters.AddWithValue("@IndDate", GetLowDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@soid", socode);
+        //                        cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
         //                        DcNo = vdm.insertScalar(cmd);
         //                        cmd = new MySqlCommand("SELECT IndentNo FROM indents WHERE (Branch_id = @BranchId) AND (I_date BETWEEN @d1 AND @d2)");
-        //                        cmd.Parameters.Add("@BranchId", branch["BSno"].ToString());
-        //                        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@BranchId", branch["BSno"].ToString());
+        //                        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                        DataTable dtindentno = vdm.SelectQuery(cmd).Tables[0];
         //                        if (dtindentno.Rows.Count > 0)
         //                        {
         //                            foreach (DataRow dr in dtindentno.Rows)
         //                            {
         //                                cmd = new MySqlCommand("Insert Into dcsubTable (DcNo,IndentNo) Values(@DcNo,@IndentNo)");
-        //                                cmd.Parameters.Add("@DcNo", DcNo);
-        //                                cmd.Parameters.Add("@IndentNo", dr["IndentNo"].ToString());
+        //                                cmd.Parameters.AddWithValue("@DcNo", DcNo);
+        //                                cmd.Parameters.AddWithValue("@IndentNo", dr["IndentNo"].ToString());
         //                                vdm.insert(cmd);
         //                            }
         //                        }
         //                        cmd = new MySqlCommand("SELECT agentdcno FROM  agentdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-        //                        cmd.Parameters.Add("@BranchID", branch["BSno"].ToString());
-        //                        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@BranchID", branch["BSno"].ToString());
+        //                        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                        DataTable dtsubDc = vdm.SelectQuery(cmd).Tables[0];
         //                        if (dtsubDc.Rows.Count > 0)
         //                        {
@@ -473,23 +473,23 @@ public partial class SapSale : System.Web.UI.Page
         //            {
         //                BranchID = "158";
         //            }
-        //            cmd.Parameters.Add("@BranchID", BranchID);
-        //            cmd.Parameters.Add("@SOID", BranchID);
+        //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+        //            cmd.Parameters.AddWithValue("@SOID", BranchID);
         //        }
         //        else
         //        {
-        //            cmd.Parameters.Add("@BranchID", Session["branch"]);
-        //            cmd.Parameters.Add("@SOID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+        //            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
         //        }
-        //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-        //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+        //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
         //        DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
 
         //        cmd = new MySqlCommand("SELECT  products_category.categorycode AS tcategorycode,products_category.sno AS categoryid,  branchdata.BranchName, branchdata.sno AS BSno, indent.IndentType,indents_subtable.DeliveryQty AS DeliveryQty, indents_subtable.UnitCost, productsdata.tproduct, productsdata.ProductName, productsdata.Units,productsdata.sno AS productsno, productsdata.Itemcode, products_category.tcategory, branchproducts.VatPercent, addresstable.companyname AS tbranchname,branchdata.whcode, addresstable.customercode FROM (SELECT IndentNo, Branch_id, I_date, Status, IndentType FROM indents WHERE (I_date BETWEEN @starttime AND @endtime) AND (Status <> 'D')) indent INNER JOIN branchdata ON indent.Branch_id = branchdata.sno INNER JOIN tripdata ON tripdata.BranchID = branchdata.sno INNER JOIN addresstable ON addresstable.sno = tripdata.to_adr_Id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno AND productsdata.sno = branchproducts.product_sno WHERE (branchproducts.VatPercent > 0) AND (indents_subtable.DeliveryQty <> 0) AND (branchdata.sno = @BranchID) OR (branchproducts.VatPercent > 0) AND (indents_subtable.DeliveryQty <> 0) AND (branchdata.sno = @SOID) GROUP BY productsdata.sno, BSno, branchproducts.VatPercent ORDER BY branchdata.BranchName");
-        //        cmd.Parameters.Add("@BranchID", Session["branch"]);
-        //        cmd.Parameters.Add("@SOID", Session["branch"]);
-        //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate));
-        //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate));
+        //        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+        //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate));
+        //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate));
         //        DataTable dtothers = vdm.SelectQuery(cmd).Tables[0];
         //        DateTime ReportDate = VehicleDBMgr.GetTime(vdm.conn);
         //        DateTime dtapril = new DateTime();
@@ -537,11 +537,11 @@ public partial class SapSale : System.Web.UI.Page
         //            cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.branchcode, branchdata.BranchName, branchdata.tax, branchdata.ntax, statemastar.statename, statemastar.statecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
         //            if (Session["salestype"].ToString() == "Plant")
         //            {
-        //                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        //                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         //            }
         //            else
         //            {
-        //                cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //            }
         //            DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
         //            string statename = "";
@@ -563,9 +563,9 @@ public partial class SapSale : System.Web.UI.Page
         //                string DCNO = "0";
         //                long DcNo = 0;
         //                cmd = new MySqlCommand("SELECT sno, taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate FROM taxdc_table WHERE (branchid = @BranchID) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        //                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        //                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                DataTable dtDc = vdm.SelectQuery(cmd).Tables[0];
         //                if (dtDc.Rows.Count > 0)
         //                {
@@ -580,40 +580,40 @@ public partial class SapSale : System.Web.UI.Page
         //                    else
         //                    {
         //                        cmd = new MySqlCommand("SELECT IFNULL(MAX(taxdcno), 0) + 1 AS Sno FROM taxdc_table WHERE (branchid = @branchid) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-        //                        cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                        cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+        //                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                        DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                        DCNO = dtadcno.Rows[0]["Sno"].ToString();
         //                        string agentdcno = dtadcno.Rows[0]["Sno"].ToString();
         //                        cmd = new MySqlCommand("Insert Into taxdc_table (taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate) Values(@taxdcno, @invoiceno, @agentid, @branchid, @productid, @doe, @indentdate)");
-        //                        cmd.Parameters.Add("@taxdcno", agentdcno);
-        //                        cmd.Parameters.Add("@invoiceno", DCNO);
-        //                        cmd.Parameters.Add("@agentid", branch["BSno"].ToString());
-        //                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-        //                        cmd.Parameters.Add("@productid", branch["categoryid"].ToString());
-        //                        cmd.Parameters.Add("@doe", ReportDate);
-        //                        cmd.Parameters.Add("@indentdate", GetLowDate(fromdate.AddDays(-1)));
+        //                        cmd.Parameters.AddWithValue("@taxdcno", agentdcno);
+        //                        cmd.Parameters.AddWithValue("@invoiceno", DCNO);
+        //                        cmd.Parameters.AddWithValue("@agentid", branch["BSno"].ToString());
+        //                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+        //                        cmd.Parameters.AddWithValue("@productid", branch["categoryid"].ToString());
+        //                        cmd.Parameters.AddWithValue("@doe", ReportDate);
+        //                        cmd.Parameters.AddWithValue("@indentdate", GetLowDate(fromdate.AddDays(-1)));
         //                        vdm.insert(cmd);
         //                    }
         //                }
         //                else
         //                {
         //                    cmd = new MySqlCommand("SELECT IFNULL(MAX(taxdcno), 0) + 1 AS Sno FROM taxdc_table WHERE (branchid = @branchid) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                    cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-        //                    cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-        //                    cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+        //                    cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+        //                    cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+        //                    cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
         //                    DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
         //                    DCNO = dtadcno.Rows[0]["Sno"].ToString();
         //                    string agentdcno = dtadcno.Rows[0]["Sno"].ToString();
         //                    cmd = new MySqlCommand("Insert Into taxdc_table (taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate) Values(@taxdcno, @invoiceno, @agentid, @branchid, @productid, @doe, @indentdate)");
-        //                    cmd.Parameters.Add("@taxdcno", agentdcno);
-        //                    cmd.Parameters.Add("@invoiceno", DCNO);
-        //                    cmd.Parameters.Add("@agentid", branch["BSno"].ToString());
-        //                    cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-        //                    cmd.Parameters.Add("@productid", branch["categoryid"].ToString());
-        //                    cmd.Parameters.Add("@doe", ReportDate);
-        //                    cmd.Parameters.Add("@indentdate", GetLowDate(fromdate.AddDays(-1)));
+        //                    cmd.Parameters.AddWithValue("@taxdcno", agentdcno);
+        //                    cmd.Parameters.AddWithValue("@invoiceno", DCNO);
+        //                    cmd.Parameters.AddWithValue("@agentid", branch["BSno"].ToString());
+        //                    cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+        //                    cmd.Parameters.AddWithValue("@productid", branch["categoryid"].ToString());
+        //                    cmd.Parameters.AddWithValue("@doe", ReportDate);
+        //                    cmd.Parameters.AddWithValue("@indentdate", GetLowDate(fromdate.AddDays(-1)));
         //                    vdm.insert(cmd);
         //                }
         //                int countdc = 0;
@@ -722,11 +722,11 @@ public partial class SapSale : System.Web.UI.Page
         //                cmd = new MySqlCommand("SELECT sno,branchcode, BranchName, statename,tax,ntax  FROM branchdata WHERE (sno = @BranchID)");
         //                if (Session["salestype"].ToString() == "Plant")
         //                {
-        //                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+        //                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         //                }
         //                else
         //                {
-        //                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+        //                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         //                }
         //                DataTable dtstate = vdm.SelectQuery(cmd).Tables[0];
         //                string state = "";
@@ -746,9 +746,9 @@ public partial class SapSale : System.Web.UI.Page
         //                    string DCNO = "0";
         //                    long DcNo = 0;
         //                    cmd = new MySqlCommand("SELECT sno, taxdcno, invoiceno, agentid, branchid, productid, doe, indentdate FROM taxdc_table WHERE (branchid = @BranchID) AND (indentdate BETWEEN @d1 AND @d2)");
-        //                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        //                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-        //                    cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+        //                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        //                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+        //                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
         //                    DataTable dtotherDc = vdm.SelectQuery(cmd).Tables[0];
         //                    if (dtotherDc.Rows.Count > 0)
         //                    {
@@ -925,22 +925,22 @@ public partial class SapSale : System.Web.UI.Page
                     {
                         BranchID = "158";
                     }
-                    cmd.Parameters.Add("@BranchID", BranchID);
-                    cmd.Parameters.Add("@SOID", BranchID);
+                    cmd.Parameters.AddWithValue("@BranchID", BranchID);
+                    cmd.Parameters.AddWithValue("@SOID", BranchID);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@SOID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
                 }
-                cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT  products_category.sno AS categoryid, branchdata.tbranchname, branchdata.BranchName, branchdata.sno AS BSno, indent.IndentType,indents_subtable.DeliveryQty AS DeliveryQty, indents_subtable.UnitCost, productsdata.tproduct, productsdata.ProductName, productsdata.Units,productsdata.sno AS productsno, products_category.tcategory, branchproducts.VatPercent,branchdata.customercode, addresstable.companyname AS tbranchname,addresstable.customercode FROM (SELECT IndentNo, Branch_id, I_date, Status, IndentType FROM indents WHERE (I_date BETWEEN @starttime AND @endtime) AND (Status <> 'D')) indent INNER JOIN branchdata ON indent.Branch_id = branchdata.sno INNER JOIN tripdata ON tripdata.BranchID = branchdata.sno INNER JOIN addresstable ON addresstable.sno = tripdata.to_adr_Id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno AND productsdata.sno = branchproducts.product_sno WHERE  (indents_subtable.DeliveryQty <> 0) AND (branchdata.sno = @BranchID) OR  (indents_subtable.DeliveryQty <> 0) AND (branchdata.sno = @SOID) GROUP BY productsdata.sno, BSno, branchproducts.VatPercent ORDER BY branchdata.BranchName");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@starttime", GetLowDate(fromdate));
-                cmd.Parameters.Add("@endtime", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate));
                 DataTable dtothers = vdm.SelectQuery(cmd).Tables[0];
                 if (dtble.Rows.Count > 0)
                 {
@@ -977,11 +977,11 @@ public partial class SapSale : System.Web.UI.Page
                     cmd = new MySqlCommand("SELECT branchdata.whcode,branchdata.sno,branchdata.ntax,branchdata.tax,branchdata.Branchcode,branchdata.companycode,  branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                     if (Session["salestype"].ToString() == "Plant")
                     {
-                        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     }
                     else
                     {
-                        cmd.Parameters.Add("@BranchID", Session["branch"]);
+                        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                     }
                     DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
                     string statename = "";
@@ -1012,9 +1012,9 @@ public partial class SapSale : System.Web.UI.Page
                         string DCNO = "0";
                         long DcNo = 0;
                         cmd = new MySqlCommand("SELECT agentdcno FROM  agentdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-                        cmd.Parameters.Add("@BranchID", branch["BSno"].ToString());
-                        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@BranchID", branch["BSno"].ToString());
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                         DataTable dtDcnumber = vdm.SelectQuery(cmd).Tables[0];
                         string dcnumber = "";
                         if (dtDcnumber.Rows.Count > 0)
@@ -1025,41 +1025,41 @@ public partial class SapSale : System.Web.UI.Page
                         //else
                         //{
                         //    cmd = new MySqlCommand("SELECT IFNULL(MAX(agentdcno), 0) + 1 AS Sno FROM agentdc WHERE (stateid = @stateid) AND (companycode=@companycode) AND (IndDate BETWEEN @d1 AND @d2)");
-                        //    cmd.Parameters.Add("@stateid", gststatecode);
-                        //    cmd.Parameters.Add("@companycode", companycode);
-                        //    cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-                        //    cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@stateid", gststatecode);
+                        //    cmd.Parameters.AddWithValue("@companycode", companycode);
+                        //    cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
                         //    DataTable dtadcno = vdm.SelectQuery(cmd).Tables[0];
                         //    string agentdcNo = dtadcno.Rows[0]["Sno"].ToString();
                         //    cmd = new MySqlCommand("Insert Into Agentdc (BranchId,IndDate,soid,agentdcno,stateid,companycode,moduleid,doe) Values(@BranchId,@IndDate,@soid,@agentdcno,@stateid,@companycode,@moduleid,@doe)");
-                        //    cmd.Parameters.Add("@BranchId", branch["BSno"].ToString());
-                        //    cmd.Parameters.Add("@IndDate", GetLowDate(fromdate.AddDays(-1)));
-                        //    cmd.Parameters.Add("@soid", ddlSalesOffice.SelectedValue);
-                        //    cmd.Parameters.Add("@agentdcno", agentdcNo);
-                        //    cmd.Parameters.Add("@stateid", gststatecode);
-                        //    cmd.Parameters.Add("@companycode", companycode);
-                        //    cmd.Parameters.Add("@doe", ReportDate);
-                        //    cmd.Parameters.Add("@moduleid", Session["moduleid"].ToString());
+                        //    cmd.Parameters.AddWithValue("@BranchId", branch["BSno"].ToString());
+                        //    cmd.Parameters.AddWithValue("@IndDate", GetLowDate(fromdate.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@soid", ddlSalesOffice.SelectedValue);
+                        //    cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
+                        //    cmd.Parameters.AddWithValue("@stateid", gststatecode);
+                        //    cmd.Parameters.AddWithValue("@companycode", companycode);
+                        //    cmd.Parameters.AddWithValue("@doe", ReportDate);
+                        //    cmd.Parameters.AddWithValue("@moduleid", Session["moduleid"].ToString());
                         //    DcNo = vdm.insertScalar(cmd);
                         //    cmd = new MySqlCommand("SELECT IndentNo FROM indents WHERE (Branch_id = @BranchId) AND (I_date BETWEEN @d1 AND @d2)");
-                        //    cmd.Parameters.Add("@BranchId", branch["BSno"].ToString());
-                        //    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                        //    cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@BranchId", branch["BSno"].ToString());
+                        //    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                         //    DataTable dtindentno = vdm.SelectQuery(cmd).Tables[0];
                         //    if (dtindentno.Rows.Count > 0)
                         //    {
                         //        foreach (DataRow dr in dtindentno.Rows)
                         //        {
                         //            cmd = new MySqlCommand("Insert Into dcsubTable (DcNo,IndentNo) Values(@DcNo,@IndentNo)");
-                        //            cmd.Parameters.Add("@DcNo", DcNo);
-                        //            cmd.Parameters.Add("@IndentNo", dr["IndentNo"].ToString());
+                        //            cmd.Parameters.AddWithValue("@DcNo", DcNo);
+                        //            cmd.Parameters.AddWithValue("@IndentNo", dr["IndentNo"].ToString());
                         //            vdm.insert(cmd);
                         //        }
                         //    }
                         //    cmd = new MySqlCommand("SELECT agentdcno FROM  agentdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-                        //    cmd.Parameters.Add("@BranchID", branch["BSno"].ToString());
-                        //    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                        //    cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@BranchID", branch["BSno"].ToString());
+                        //    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                        //    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                         //    DataTable dtsubDc = vdm.SelectQuery(cmd).Tables[0];
                         //    if (dtsubDc.Rows.Count > 0)
                         //    {
@@ -1192,16 +1192,16 @@ public partial class SapSale : System.Web.UI.Page
                     {
                         BranchID = "158";
                     }
-                    cmd.Parameters.Add("@BranchID", BranchID);
-                    cmd.Parameters.Add("@SOID", BranchID);
+                    cmd.Parameters.AddWithValue("@BranchID", BranchID);
+                    cmd.Parameters.AddWithValue("@SOID", BranchID);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@SOID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
                 }
-                cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                 if (dtble.Rows.Count > 0)
                 {
@@ -1238,11 +1238,11 @@ public partial class SapSale : System.Web.UI.Page
                     cmd = new MySqlCommand("SELECT branchdata.whcode,branchdata.sno,branchdata.Branchcode,branchdata.tax,branchdata.ntax,branchdata.companycode,  branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                     if (Session["salestype"].ToString() == "Plant")
                     {
-                        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                     }
                     else
                     {
-                        cmd.Parameters.Add("@BranchID", Session["branch"]);
+                        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                     }
                     DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
                     string statename = "";
@@ -1273,9 +1273,9 @@ public partial class SapSale : System.Web.UI.Page
                         string DCNO = "0";
                         long DcNo = 0;
                         cmd = new MySqlCommand("SELECT agentdcno FROM  agenttaxdc WHERE (BranchID = @BranchID) AND (IndDate BETWEEN @d1 AND @d2)");
-                        cmd.Parameters.Add("@BranchID", branch["BSno"].ToString());
-                        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@BranchID", branch["BSno"].ToString());
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                         DataTable dtDcnumber = vdm.SelectQuery(cmd).Tables[0];
                         string dcnumber = "";
                         if (dtDcnumber.Rows.Count > 0)
@@ -1516,7 +1516,7 @@ public partial class SapSale : System.Web.UI.Page
                 fromdate = fromdate;
             }
             cmd = new MySqlCommand("SELECT sno, BranchName, whcode, ladger_dr_code, tax, ntax, ledger_jv_code FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
             DataTable dtwhscode = vdm.SelectQuery(cmd).Tables[0];
             if (ddltype.SelectedValue == "Tax")
             {

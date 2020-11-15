@@ -163,10 +163,10 @@ public partial class MonthlyProductwiseTransaction : System.Web.UI.Page
                     firstmonth = GetLowMonthRetrive(fromdate.AddMonths(j));
                     lastmonth = GetHighMonth(firstmonth);
                     cmd = new MySqlCommand("SELECT productsdata.ProductName, ROUND(SUM(tripsubdata.Qty), 2) AS Qty, tripdata.I_Date FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE (dispatch.Branch_Id = @BranchID) AND (tripdata.AssignDate BETWEEN @d1 AND @d2) GROUP BY productsdata.ProductName");
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                     DateTime dtF = firstmonth;
-                    cmd.Parameters.Add("@d1", dtF);
-                    cmd.Parameters.Add("@d2", lastmonth);
+                    cmd.Parameters.AddWithValue("@d1", dtF);
+                    cmd.Parameters.AddWithValue("@d2", lastmonth);
                     DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
                     string ChangedTime1 = firstmonth.ToString("MMM/yyyy");
                     if (Report.Columns.Count == 2)

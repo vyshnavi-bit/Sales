@@ -43,9 +43,9 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
                 {
@@ -55,7 +55,7 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtPlant.Rows)
                 {
@@ -65,8 +65,8 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "23");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "23");
                 DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtNewPlant.Rows)
                 {
@@ -85,8 +85,8 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -108,32 +108,32 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
         if (ddlrptType.Text == "Approved")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'A');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'A');
 
         }
         if (ddlrptType.Text == "Pending")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'P');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'P');
 
         }
         if (ddlrptType.Text == "Rejected")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'R');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'R');
 
         }
         if (ddlrptType.Text == "Raised")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus is NULL)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
 
         }
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
@@ -150,32 +150,32 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
     //    if (ddlrptType.Text == "Approved")
     //    {
     //        cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-    //        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@As", 'A');
+    //        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@As", 'A');
 
     //    }
     //    if (ddlrptType.Text == "Pending")
     //    {
     //        cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-    //        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@As", 'P');
+    //        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@As", 'P');
 
     //    }
     //    if (ddlrptType.Text == "Rejected")
     //    {
     //        cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-    //        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@As", 'R');
+    //        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@As", 'R');
 
     //    }
     //    if (ddlrptType.Text == "Raised")
     //    {
     //        cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus is NULL)");
-    //        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
 
     //    }
     //    DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
@@ -192,32 +192,32 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
         if (ddlrptType.Text == "Approved")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'A');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'A');
 
         }
         if (ddlrptType.Text == "Pending")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'P');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'P');
 
         }
         if (ddlrptType.Text == "Rejected")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus = @As)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@As", 'R');
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@As", 'R');
 
         }
         if (ddlrptType.Text == "Raised")
         {
             cmd = new MySqlCommand("SELECT sno, StructureName, BranchID, EntryDate, ModifiedDate, ModifySno, Flag, ApprovalStatus FROM incentive_structure WHERE (BranchID = @BranchID) AND (ApprovalStatus is NULL)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
 
         }
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
@@ -268,7 +268,7 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
             lblStructureName.Text = ddlIncentiveStructure.SelectedItem.Text;
             //cmd = new MySqlCommand("SELECT incentive_structure.StructureName, incentive_structure.sno, incentive_structure.ApprovalStatus,incentive_structure.ApprovedBy, product_clubbing.sno AS clubsno, product_clubbing.ClubName,subproductsclubbing.Productid, productsdata.ProductName FROM incentive_structure INNER JOIN incentive_struct_sub ON incentive_structure.sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno INNER JOIN subproductsclubbing ON product_clubbing.sno = subproductsclubbing.Clubsno INNER JOIN productsdata ON subproductsclubbing.Productid = productsdata.sno WHERE (incentive_structure.sno = @structuresno)");
             cmd = new MySqlCommand("SELECT incentive_structure.StructureName, incentive_structure.sno, incentive_structure.ApprovalStatus, incentive_structure.ApprovedBy, product_clubbing.sno AS clubsno,product_clubbing.ClubName, subproductsclubbing.Productid, productsdata.ProductName, incentive_structure.ApprovedDate, empmanage.EmpName FROM incentive_structure INNER JOIN incentive_struct_sub ON incentive_structure.sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno INNER JOIN subproductsclubbing ON product_clubbing.sno = subproductsclubbing.Clubsno INNER JOIN productsdata ON subproductsclubbing.Productid = productsdata.sno LEFT OUTER JOIN empmanage ON incentive_structure.ApprovedBy = empmanage.Sno WHERE (incentive_structure.sno = @structuresno)");  
-            cmd.Parameters.Add("@structuresno", ddlIncentiveStructure.SelectedValue);
+            cmd.Parameters.AddWithValue("@structuresno", ddlIncentiveStructure.SelectedValue);
             DataTable dtclubproducts = vdm.SelectQuery(cmd).Tables[0];
             DataView incentiveview = new DataView(dtclubproducts);
             DataView incentiveview1 = new DataView(dtclubproducts);
@@ -289,7 +289,7 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
                 string products = "";
                 string slabs = "";
                 cmd = new MySqlCommand("SELECT club_sno, SlotQty, Amt FROM slabs WHERE (club_sno = @clubsno)");
-                cmd.Parameters.Add("@clubsno", branch["clubsno"].ToString());
+                cmd.Parameters.AddWithValue("@clubsno", branch["clubsno"].ToString());
                 DataTable dtslabs = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow clubs in dtclubproducts.Rows)
                 {
@@ -376,18 +376,18 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
             {
                 // cmd = new MySqlCommand("UPDATE incentive_structure SET ApprovalStatus = 'A' WHERE (sno = @incentivesno)");
                 cmd = new MySqlCommand("UPDATE incentive_structure SET ApprovalStatus = 'A', ApprovedDate = @dt, ApprovedBy = @empid WHERE (sno = @incentivesno)");
-                cmd.Parameters.Add("@incentivesno", ddlIncentiveStructure.SelectedValue);
-                cmd.Parameters.Add("@dt", ServerDateCurrentdate);
-                cmd.Parameters.Add("@empid", empid);
+                cmd.Parameters.AddWithValue("@incentivesno", ddlIncentiveStructure.SelectedValue);
+                cmd.Parameters.AddWithValue("@dt", ServerDateCurrentdate);
+                cmd.Parameters.AddWithValue("@empid", empid);
                 vdm.Update(cmd);
                 lblmsg.Text = "Selected Structure Aprroved";
             }
             if (buttontext == "Disable")
             {
                 cmd = new MySqlCommand("UPDATE incentive_structure SET ApprovalStatus = 'P', ApprovedDate = @dt, ApprovedBy = @empid WHERE (sno = @incentivesno)");
-                cmd.Parameters.Add("@incentivesno", ddlIncentiveStructure.SelectedValue);
-                cmd.Parameters.Add("@dt", ServerDateCurrentdate);
-                cmd.Parameters.Add("@empid", empid);
+                cmd.Parameters.AddWithValue("@incentivesno", ddlIncentiveStructure.SelectedValue);
+                cmd.Parameters.AddWithValue("@dt", ServerDateCurrentdate);
+                cmd.Parameters.AddWithValue("@empid", empid);
                 vdm.Update(cmd);
                 lblmsg.Text = "Selected Structure Aprroval Cancelled";
             }
@@ -404,7 +404,7 @@ public partial class IncentiveStructureApproval : System.Web.UI.Page
             vdm = new VehicleDBMgr();
 
             cmd = new MySqlCommand("UPDATE incentive_structure SET ApprovalStatus = 'R' WHERE (sno = @incentivesno)");
-            cmd.Parameters.Add("@incentivesno", ddlIncentiveStructure.SelectedValue);
+            cmd.Parameters.AddWithValue("@incentivesno", ddlIncentiveStructure.SelectedValue);
             vdm.Update(cmd);
             lblmsg.Text = "Selected Structure Rejected";
         }

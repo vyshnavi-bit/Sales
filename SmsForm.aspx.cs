@@ -47,8 +47,8 @@ public partial class SmsForm : System.Web.UI.Page
             vdm = new VehicleDBMgr();
             cmd = new MySqlCommand(" SELECT branchroutes.RouteName, branchroutes.Sno, branchroutes.BranchID FROM branchroutes INNER JOIN branchdata ON branchroutes.BranchID = branchdata.sno WHERE (branchroutes.BranchID = @brnchid) OR (branchdata.SalesOfficeID = @SOID)");
             //cmd = new MySqlCommand("SELECT RouteName, Sno, BranchID FROM branchroutes WHERE (BranchID = @brnchid)");
-            cmd.Parameters.Add("@SOID", BranchID);
-            cmd.Parameters.Add("@brnchid", BranchID);
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@brnchid", BranchID);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlRouteName.DataSource = dtRoutedata;
             ddlRouteName.DataTextField = "RouteName";
@@ -91,7 +91,7 @@ public partial class SmsForm : System.Web.UI.Page
                 lblmsg.Text = "";
                 vdm = new VehicleDBMgr();
                 cmd = new MySqlCommand("SELECT sno, BranchName, phonenumber, emailid FROM branchdata WHERE (sno = @branchid)");
-                cmd.Parameters.Add("@branchid", ddlAgentName.SelectedValue);
+                cmd.Parameters.AddWithValue("@branchid", ddlAgentName.SelectedValue);
                 DataTable dtbranchdetails = vdm.SelectQuery(cmd).Tables[0];
                 string MobNo = dtbranchdetails.Rows[0]["phonenumber"].ToString();
                 MobNo = "9677056895";
@@ -128,8 +128,8 @@ public partial class SmsForm : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand(" SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchroutesubtable ON branchmappingtable.SubBranch = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @SuperBranch) AND (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
-        cmd.Parameters.Add("@SuperBranch", BranchID);
-        cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
+        cmd.Parameters.AddWithValue("@SuperBranch", BranchID);
+        cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
         DataTable dtbranchdata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtbranchdata;
         ddlAgentName.DataTextField = "BranchName";

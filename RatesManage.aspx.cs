@@ -54,15 +54,15 @@ public partial class RatesManage : System.Web.UI.Page
             Session["filename"] = branchname + " RateSheet " + DateTime.Now.ToString("dd/MM/yyyy");
             //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchproducts.product_sno, branchproducts.unitprice, productsdata.ProductName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchroutes.Sno = 73) ORDER BY branchproducts.Rank");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchproducts.product_sno, productsdata.ProductName, branchproducts.unitprice, branchdata.sno FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE ((branchmappingtable.SuperBranch = @BranchID) and (branchdata.flag='1') and branchproducts.unitprice<>'0') OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1') and branchproducts.unitprice<>'0') ORDER BY branchdata.sno");
-            cmd.Parameters.Add("@Flag", "1");
-            cmd.Parameters.Add("@BranchID", BranchID);
-            cmd.Parameters.Add("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@Flag", "1");
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
             DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.product_sno, branchproducts.unitprice, branchdata.BranchName, branchdata.sno FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (branchdata.flag='1')) OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1')) ORDER BY branchproducts.Rank");
-            cmd.Parameters.Add("@Flag", "1");
-            cmd.Parameters.Add("@SOID", BranchID);
-            cmd.Parameters.Add("@BranchID", BranchID);
+            cmd.Parameters.AddWithValue("@Flag", "1");
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
             DataTable dtBranch = vdm.SelectQuery(cmd).Tables[0];
             if (dtBranch.Rows.Count > 0)
             {
@@ -78,8 +78,8 @@ public partial class RatesManage : System.Web.UI.Page
                 }
             }
             cmd = new MySqlCommand("SELECT products_category.Categoryname, productsdata.sno, productsdata.ProductName, branchproducts.product_sno FROM productsdata INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchID)  ORDER BY branchproducts.Rank");
-            //cmd.Parameters.Add("@Flag", "1");
-            cmd.Parameters.Add("@BranchID", BranchID);
+            //cmd.Parameters.AddWithValue("@Flag", "1");
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
             DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
             if (produtstbl.Rows.Count > 0)
             {
@@ -367,29 +367,29 @@ public partial class RatesManage : System.Web.UI.Page
     //        //    string AgentDcno = dr["AgentDcno"].ToString();
 
     //        //    cmd = new MySqlCommand("Update tripdata  set DCNo=@DCNO where Sno=@Sno");
-    //        //    cmd.Parameters.Add("@DCNO", AgentDcno);
-    //        //    cmd.Parameters.Add("@Sno", DCNO);
+    //        //    cmd.Parameters.AddWithValue("@DCNO", AgentDcno);
+    //        //    cmd.Parameters.AddWithValue("@Sno", DCNO);
     //        //    vdm.Update(cmd);
 
     //        //    cmd = new MySqlCommand("Update agentdc set agentdcno=@AgentDcno where DcNo=@DcNo");
-    //        //    cmd.Parameters.Add("@AgentDcno", AgentDcno);
-    //        //    cmd.Parameters.Add("@DcNo", DCNO);
+    //        //    cmd.Parameters.AddWithValue("@AgentDcno", AgentDcno);
+    //        //    cmd.Parameters.AddWithValue("@DcNo", DCNO);
     //        //    vdm.Update(cmd);
 
     //            //cmd = new MySqlCommand("Update tripdata  set taxdcno=@DCNO where Sno=@Sno");
-    //            //cmd.Parameters.Add("@DCNO", AgentDcno);
-    //            //cmd.Parameters.Add("@Sno", DCNO);
+    //            //cmd.Parameters.AddWithValue("@DCNO", AgentDcno);
+    //            //cmd.Parameters.AddWithValue("@Sno", DCNO);
     //            //vdm.Update(cmd);
 
     //            //cmd = new MySqlCommand("Update agenttaxdc set agentdcno=@AgentDcno where DcNo=@DcNo");
-    //            //cmd.Parameters.Add("@DCNO", AgentDcno);
-    //            //cmd.Parameters.Add("@Sno", DCNO);
+    //            //cmd.Parameters.AddWithValue("@DCNO", AgentDcno);
+    //            //cmd.Parameters.AddWithValue("@Sno", DCNO);
     //            //vdm.Update(cmd);
     //        //}
 
     //        //cmd = new MySqlCommand("SELECT    modifiedroutes.Sno, modifiedroutesubtable.BranchID FROM  modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo WHERE (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime)");
-    //        //cmd.Parameters.Add("@BranchID", "271");
-    //        //cmd.Parameters.Add("@starttime", GetLowDate(ServerDateCurrentdate));
+    //        //cmd.Parameters.AddWithValue("@BranchID", "271");
+    //        //cmd.Parameters.AddWithValue("@starttime", GetLowDate(ServerDateCurrentdate));
     //        //DataTable dtroute = vdm.SelectQuery(cmd).Tables[0];
     //        //string Routeid = "";
 
@@ -404,18 +404,18 @@ public partial class RatesManage : System.Web.UI.Page
     //        //    }
 
     //        //    cmd = new MySqlCommand("insert into tempduetrasactions (OppBalance,SaleValue,paidamount,ClosingBalance,IndentDate,EntryDate,agentid,salesofficeid,SaleQty,ReceivedAmount,DiffAmount,RouteId) values (@opningamount,@salevalue,@paidamount,@ClosingBalance,@indentdate,@doe,@agentid,@salesofficeid,@saleqty,@ReceivedAmount,@DiffAmount,@RouteId)");
-    //        //    cmd.Parameters.Add("@opningamount", "0");
-    //        //    cmd.Parameters.Add("@salevalue", "0");
-    //        //    cmd.Parameters.Add("@paidamount", "0");
-    //        //    cmd.Parameters.Add("@ClosingBalance", presentamt);
-    //        //    cmd.Parameters.Add("@indentdate", GetLowDate(ServerDateCurrentdate).AddDays(-3));
-    //        //    cmd.Parameters.Add("@doe", ServerDateCurrentdate);
-    //        //    cmd.Parameters.Add("@agentid", AgentId);
-    //        //    cmd.Parameters.Add("@salesofficeid", "271");
-    //        //    cmd.Parameters.Add("@saleqty", "0");
-    //        //    cmd.Parameters.Add("@ReceivedAmount", "0");
-    //        //    cmd.Parameters.Add("@DiffAmount", "0");
-    //        //    cmd.Parameters.Add("@RouteId", Routeid);
+    //        //    cmd.Parameters.AddWithValue("@opningamount", "0");
+    //        //    cmd.Parameters.AddWithValue("@salevalue", "0");
+    //        //    cmd.Parameters.AddWithValue("@paidamount", "0");
+    //        //    cmd.Parameters.AddWithValue("@ClosingBalance", presentamt);
+    //        //    cmd.Parameters.AddWithValue("@indentdate", GetLowDate(ServerDateCurrentdate).AddDays(-3));
+    //        //    cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+    //        //    cmd.Parameters.AddWithValue("@agentid", AgentId);
+    //        //    cmd.Parameters.AddWithValue("@salesofficeid", "271");
+    //        //    cmd.Parameters.AddWithValue("@saleqty", "0");
+    //        //    cmd.Parameters.AddWithValue("@ReceivedAmount", "0");
+    //        //    cmd.Parameters.AddWithValue("@DiffAmount", "0");
+    //        //    cmd.Parameters.AddWithValue("@RouteId", Routeid);
     //        //    vdm.insert(cmd);
     //        //}
     //        ////////DataTable dt = (DataTable)Session["dtImport"];
@@ -433,18 +433,18 @@ public partial class RatesManage : System.Web.UI.Page
     //        ////////    if (HSNCODE.Length > 3)
     //        ////////    {
     //        ////////        cmd = new MySqlCommand("Update productsdata  set igst=@igst,cgst=@cgst,sgst=@sgst,hsncode=@hsncode where sno=@sno");
-    //        ////////        cmd.Parameters.Add("@igst", IGST);
-    //        ////////        cmd.Parameters.Add("@cgst", CGST);
-    //        ////////        cmd.Parameters.Add("@sgst", SGST);
-    //        ////////        cmd.Parameters.Add("@hsncode", HSNCODE);
-    //        ////////        cmd.Parameters.Add("@sno", ProductID);
+    //        ////////        cmd.Parameters.AddWithValue("@igst", IGST);
+    //        ////////        cmd.Parameters.AddWithValue("@cgst", CGST);
+    //        ////////        cmd.Parameters.AddWithValue("@sgst", SGST);
+    //        ////////        cmd.Parameters.AddWithValue("@hsncode", HSNCODE);
+    //        ////////        cmd.Parameters.AddWithValue("@sno", ProductID);
     //        ////////        vdm.Update(cmd);
     //        ////////    }
     //        ////////}
     //        //DataTable dt = (DataTable)Session["dtImport"];
     //        //cmd = new MySqlCommand("SELECT branch_sno, product_sno, unitprice FROM branchproducts  ");
     //        //cmd = new MySqlCommand("SELECT branch_sno, product_sno, unitprice FROM branchproducts WHERE (branch_sno = @branchsno) UNION SELECT branchproducts_1.branch_sno, branchproducts_1.product_sno, branchproducts_1.unitprice FROM branchmappingtable INNER JOIN branchproducts branchproducts_1 ON branchmappingtable.SubBranch = branchproducts_1.branch_sno WHERE (branchmappingtable.SuperBranch = @branchsno)");
-    //        //cmd.Parameters.Add("@branchsno", Session["branch"]);
+    //        //cmd.Parameters.AddWithValue("@branchsno", Session["branch"]);
     //        //DataTable dtBrnchPrdt = vdm.SelectQuery(cmd).Tables[0];
     //        //int i = 0;
     //        //foreach (DataRow dr in dt.Rows)
@@ -480,7 +480,7 @@ public partial class RatesManage : System.Web.UI.Page
     //        //                UnitPrice = "0";
     //        //            }
     //        //            cmd = new MySqlCommand("Select Sno from productsdata where ProductName=@ProductName");
-    //        //            cmd.Parameters.Add("@ProductName", dc.ColumnName);
+    //        //            cmd.Parameters.AddWithValue("@ProductName", dc.ColumnName);
     //        //            DataTable dtProduct = vdm.SelectQuery(cmd).Tables[0];
     //        //            string ProductID = "";
     //        //            if (dtProduct.Rows.Count > 0)
@@ -499,20 +499,20 @@ public partial class RatesManage : System.Web.UI.Page
     //        //                else
     //        //                {
     //        //                    cmd = new MySqlCommand("insert into branchproducts (branch_sno,product_sno,unitprice,userdata_sno,DTarget,WTarget,MTarget,flag) values (@branchname,@productname,@unitprice, @username,@DTarget,@WTarget,@MTarget,@flag)");
-    //        //                    cmd.Parameters.Add("@branchname", AgentCode);
-    //        //                    cmd.Parameters.Add("@productname", ProductID);
+    //        //                    cmd.Parameters.AddWithValue("@branchname", AgentCode);
+    //        //                    cmd.Parameters.AddWithValue("@productname", ProductID);
     //        //                    float UntCost = 0;
     //        //                    float.TryParse(UnitPrice, out UntCost);
-    //        //                    cmd.Parameters.Add("@unitprice", UntCost);
-    //        //                    cmd.Parameters.Add("@unitprice", 0);
-    //        //                    cmd.Parameters.Add("@username", Session["userdata_sno"]);
+    //        //                    cmd.Parameters.AddWithValue("@unitprice", UntCost);
+    //        //                    cmd.Parameters.AddWithValue("@unitprice", 0);
+    //        //                    cmd.Parameters.AddWithValue("@username", Session["userdata_sno"]);
     //        //                    int productDaytarget = 0;
     //        //                    int productWeektarget = 0;
     //        //                    int productMonthtarget = 0;
-    //        //                    cmd.Parameters.Add("@DTarget", productDaytarget);
-    //        //                    cmd.Parameters.Add("@WTarget", productWeektarget);
-    //        //                    cmd.Parameters.Add("@MTarget", productMonthtarget);
-    //        //                    cmd.Parameters.Add("@flag", 1);
+    //        //                    cmd.Parameters.AddWithValue("@DTarget", productDaytarget);
+    //        //                    cmd.Parameters.AddWithValue("@WTarget", productWeektarget);
+    //        //                    cmd.Parameters.AddWithValue("@MTarget", productMonthtarget);
+    //        //                    cmd.Parameters.AddWithValue("@flag", 1);
     //        //                    vdm.insert(cmd);
     //        //                }
     //        //            }
@@ -541,18 +541,18 @@ public partial class RatesManage : System.Web.UI.Page
     //        //                else
     //        //                {
     //        //                    cmd = new MySqlCommand("Update branchproducts set UnitPrice=@UnitPrice,flag=@flag where Branch_sno=@Branch_sno and Product_sno=@Product_sno");
-    //        //                    cmd.Parameters.Add("@UnitPrice", UnitCost);
-    //        //                    cmd.Parameters.Add("@Branch_sno", AgentCode);
-    //        //                    cmd.Parameters.Add("@Product_sno", ProductID);
-    //        //                    cmd.Parameters.Add("@flag", 1);
+    //        //                    cmd.Parameters.AddWithValue("@UnitPrice", UnitCost);
+    //        //                    cmd.Parameters.AddWithValue("@Branch_sno", AgentCode);
+    //        //                    cmd.Parameters.AddWithValue("@Product_sno", ProductID);
+    //        //                    cmd.Parameters.AddWithValue("@flag", 1);
     //        //                    vdm.Update(cmd);
     //        //                    cmd = new MySqlCommand("insert into productsrateslogs (PrdtSno,BranchId,OldPrice,EditedPrice,EditedUserid,DateOfEdit) values (@PrdtSno,@BranchId,@OldPrice,@EditedPrice,@EditedUserid,@DateOfEdit)");
-    //        //                    cmd.Parameters.Add("@PrdtSno", ProductID);
-    //        //                    cmd.Parameters.Add("@BranchId", AgentCode);
-    //        //                    cmd.Parameters.Add("@OldPrice", oldUnitCost);
-    //        //                    cmd.Parameters.Add("@EditedPrice", UnitCost);
-    //        //                    cmd.Parameters.Add("@EditedUserid", Session["UserSno"]);
-    //        //                    cmd.Parameters.Add("@DateOfEdit", ServerDateCurrentdate);
+    //        //                    cmd.Parameters.AddWithValue("@PrdtSno", ProductID);
+    //        //                    cmd.Parameters.AddWithValue("@BranchId", AgentCode);
+    //        //                    cmd.Parameters.AddWithValue("@OldPrice", oldUnitCost);
+    //        //                    cmd.Parameters.AddWithValue("@EditedPrice", UnitCost);
+    //        //                    cmd.Parameters.AddWithValue("@EditedUserid", Session["UserSno"]);
+    //        //                    cmd.Parameters.AddWithValue("@DateOfEdit", ServerDateCurrentdate);
     //        //                    vdm.insert(cmd);
     //        //                }
     //        //            }
@@ -622,7 +622,7 @@ public partial class RatesManage : System.Web.UI.Page
                             UnitPrice = "0";
                         }
                         cmd = new MySqlCommand("Select Sno from productsdata where ProductName=@ProductName");
-                        cmd.Parameters.Add("@ProductName", dc.ColumnName);
+                        cmd.Parameters.AddWithValue("@ProductName", dc.ColumnName);
                         pname = dc.ColumnName;
                         DataTable dtProduct = vdm.SelectQuery(cmd).Tables[0];
                         string ProductID = dtProduct.Rows[0]["Sno"].ToString();
@@ -638,18 +638,18 @@ public partial class RatesManage : System.Web.UI.Page
                             else
                             {
                                 cmd = new MySqlCommand("insert into branchproducts (branch_sno,product_sno,unitprice,userdata_sno,DTarget,WTarget,MTarget) values (@branchname,@productname,@unitprice, @username,@DTarget,@WTarget,@MTarget)");
-                                cmd.Parameters.Add("@branchname", AgentCode);
-                                cmd.Parameters.Add("@productname", ProductID);
+                                cmd.Parameters.AddWithValue("@branchname", AgentCode);
+                                cmd.Parameters.AddWithValue("@productname", ProductID);
                                 float UntCost = 0;
                                 float.TryParse(UnitPrice, out UntCost);
-                                cmd.Parameters.Add("@unitprice", UntCost);
-                                cmd.Parameters.Add("@username", Session["userdata_sno"]);
+                                cmd.Parameters.AddWithValue("@unitprice", UntCost);
+                                cmd.Parameters.AddWithValue("@username", Session["userdata_sno"]);
                                 int productDaytarget = 0;
                                 int productWeektarget = 0;
                                 int productMonthtarget = 0;
-                                cmd.Parameters.Add("@DTarget", productDaytarget);
-                                cmd.Parameters.Add("@WTarget", productWeektarget);
-                                cmd.Parameters.Add("@MTarget", productMonthtarget);
+                                cmd.Parameters.AddWithValue("@DTarget", productDaytarget);
+                                cmd.Parameters.AddWithValue("@WTarget", productWeektarget);
+                                cmd.Parameters.AddWithValue("@MTarget", productMonthtarget);
                                 vdm.insert(cmd);
                             }
                         }
@@ -678,17 +678,17 @@ public partial class RatesManage : System.Web.UI.Page
                             else
                             {
                                 cmd = new MySqlCommand("Update branchproducts set UnitPrice=@UnitPrice where Branch_sno=@Branch_sno and Product_sno=@Product_sno");
-                                cmd.Parameters.Add("@UnitPrice", UnitCost);
-                                cmd.Parameters.Add("@Branch_sno", AgentCode);
-                                cmd.Parameters.Add("@Product_sno", ProductID);
+                                cmd.Parameters.AddWithValue("@UnitPrice", UnitCost);
+                                cmd.Parameters.AddWithValue("@Branch_sno", AgentCode);
+                                cmd.Parameters.AddWithValue("@Product_sno", ProductID);
                                 vdm.Update(cmd);
                                 cmd = new MySqlCommand("insert into productsrateslogs (PrdtSno,BranchId,OldPrice,EditedPrice,EditedUserid,DateOfEdit) values (@PrdtSno,@BranchId,@OldPrice,@EditedPrice,@EditedUserid,@DateOfEdit)");
-                                cmd.Parameters.Add("@PrdtSno", ProductID);
-                                cmd.Parameters.Add("@BranchId", AgentCode);
-                                cmd.Parameters.Add("@OldPrice", oldUnitCost);
-                                cmd.Parameters.Add("@EditedPrice", UnitCost);
-                                cmd.Parameters.Add("@EditedUserid", Session["UserSno"]);
-                                cmd.Parameters.Add("@DateOfEdit", ServerDateCurrentdate);
+                                cmd.Parameters.AddWithValue("@PrdtSno", ProductID);
+                                cmd.Parameters.AddWithValue("@BranchId", AgentCode);
+                                cmd.Parameters.AddWithValue("@OldPrice", oldUnitCost);
+                                cmd.Parameters.AddWithValue("@EditedPrice", UnitCost);
+                                cmd.Parameters.AddWithValue("@EditedUserid", Session["UserSno"]);
+                                cmd.Parameters.AddWithValue("@DateOfEdit", ServerDateCurrentdate);
                                 vdm.insert(cmd);
                             }
                         }

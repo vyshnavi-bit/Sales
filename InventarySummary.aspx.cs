@@ -44,7 +44,7 @@ public partial class InventarySummary : System.Web.UI.Page
             vdm = new VehicleDBMgr();
             //cmd = new MySqlCommand(" SELECT  sno, Categoryname, flag, userdata_sno, tcategory, categorycode, rank, description, tempcatsno FROM products_category");
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
 
             DataTable dtCategory = vdm.SelectQuery(cmd).Tables[0];
             ddlCategoryName.DataSource = dtCategory;
@@ -130,18 +130,18 @@ public partial class InventarySummary : System.Web.UI.Page
             }
 
             cmd = new MySqlCommand("SELECT  inventarytransactions.sno, inventarytransactions.invsno, branchdata.branchcode, SUM(inventarytransactions.openinginv) AS openinginv, SUM(inventarytransactions.isuue_invqty) AS isuue_invqty,SUM(inventarytransactions.receive_invqty) AS receive_invqty, SUM(inventarytransactions.closing_invqty) AS closing_invqty, inventarytransactions.doe, inventarytransactions.closing_date,inventarytransactions.branchid, branchdata.BranchName, invmaster.InvName, branchmappingtable.SuperBranch FROM inventarytransactions INNER JOIN branchdata ON inventarytransactions.branchid = branchdata.sno INNER JOIN invmaster ON inventarytransactions.invsno = invmaster.sno INNER JOIN branchmappingtable ON inventarytransactions.branchid = branchmappingtable.SubBranch WHERE (inventarytransactions.closing_date BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @BranchId)  GROUP BY inventarytransactions.branchid");
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
-            //cmd.Parameters.Add("@InvSno", "1");
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
+            //cmd.Parameters.AddWithValue("@InvSno", "1");
             DataTable dtdue = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT    sno, InvName, Userdata_sno, flag, Qty, tempinvname FROM  invmaster order by sno");
-            //cmd.Parameters.Add("@sno", "1");
+            //cmd.Parameters.AddWithValue("@sno", "1");
             produtstbl1 = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT   branchdata.BranchName, branchdata.sno,branchdata.branchcode FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE  (branchmappingtable.SuperBranch = @SuperBranch) AND (branchdata.SalesType = @SalesType) AND (branchdata.flag=@flag) order by branchdata.sno");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@flag", "1");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dtBranches = vdm.SelectQuery(cmd).Tables[0];
 
             if (produtstbl1.Rows.Count > 0)

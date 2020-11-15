@@ -48,8 +48,8 @@ public partial class RouteInventory : System.Web.UI.Page
             }
             cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
             //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlDispName.DataSource = dtRoutedata;
             ddlDispName.DataTextField = "DispName";
@@ -136,9 +136,9 @@ public partial class RouteInventory : System.Web.UI.Page
             Session["filename"] = "AGENT WISE INVENTORY TRANSACTION";
             lblAgent.Text = ddlDispName.SelectedItem.Text;
             cmd = new MySqlCommand("SELECT  tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName, invmaster.sno, tripdata.I_Date FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (dispatch.sno = @dispatchSno) AND (tripdata.I_Date BETWEEN @d1 AND @d2) AND invmaster.sno <> 6  order by invmaster.sno,tripdata.I_Date");
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
-            cmd.Parameters.Add("@dispatchSno", ddlDispName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@dispatchSno", ddlDispName.SelectedValue);
             DataTable dtInventory = vdm.SelectQuery(cmd).Tables[0];
             if (dtInventory.Rows.Count > 0)
             {
@@ -264,16 +264,16 @@ public partial class RouteInventory : System.Web.UI.Page
                 //ravi
                 cmd = new MySqlCommand("SELECT        InvInfo.InvName, InvInfo.sno AS Invsno, ff.I_Date, InvInfo.VehicleNo, ff.DispName, InvInfo.Qty, InvInfo.Remaining, ff.Despsno FROM            (SELECT        invmaster.InvName, invmaster.sno, tripdata.Sno AS Tripsno, tripdata.VehicleNo, tripinvdata.Qty, tripinvdata.Remaining FROM            tripdata INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE        (tripdata.I_Date BETWEEN @d1 AND @d2) AND (invmaster.sno <> 6)) InvInfo INNER JOIN (SELECT        I_Date, Branch_Id, Sno, DispName, Despsno FROM            (SELECT        tripdata_1.I_Date, dispatch.Branch_Id, tripdata_1.Sno, dispatch.DispName, dispatch.sno AS Despsno                                                          FROM            dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata tripdata_1 ON triproutes.Tripdata_sno = tripdata_1.Sno WHERE        (tripdata_1.I_Date BETWEEN @d1 AND @d2) AND (dispatch.Branch_Id = @BranchID)) TripInfo) ff ON ff.Sno = InvInfo.Tripsno GROUP BY ff.DispName, InvInfo.InvName ORDER BY Invsno");
                 //cmd = new MySqlCommand("SELECT tripdata.Sno,tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, tripdata.Sno, tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName,invmaster.sno as invsno,tripinvdata.invid FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (dispatch.branch_id = @branch) AND (tripdata.I_Date BETWEEN @d1 AND @d2) AND invmaster.sno <> 6 order by invmaster.sno ");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             }
             else
             {
                 cmd = new MySqlCommand("SELECT tripdata.Sno,tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, tripdata.Sno, tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName,invmaster.sno as invsno,tripinvdata.invid FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (dispatch.Sno = @DispSno) AND (tripdata.I_Date BETWEEN @d1 AND @d2) AND invmaster.sno <> 6 group by dispatch.DispName order by invmaster.sno ");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
-                cmd.Parameters.Add("@DispSno", ddlDispName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@DispSno", ddlDispName.SelectedValue);
             }
             //cmd = new MySqlCommand("SELECT tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, tripdata.Sno, tripinvdata.invid, tripinvdata.Qty, tripinvdata.Remaining FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno WHERE (dispatch.Branch_Id = @branch) AND (tripdata.I_Date BETWEEN @d1 AND @d2)"); 
            

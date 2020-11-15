@@ -49,7 +49,7 @@ public partial class PlantSales : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtPlant.Rows)
             {
@@ -178,12 +178,12 @@ public partial class PlantSales : System.Web.UI.Page
                         cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, indents_subtable.UnitCost, products_category.Categoryname, productsdata.ProductName, DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchmappingtable_1.SuperBranch FROM indents INNER JOIN  indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchmappingtable ON indents.Branch_id = branchmappingtable.SubBranch INNER JOIN branchmappingtable branchmappingtable_1 ON branchmappingtable.SuperBranch = branchmappingtable_1.SubBranch WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (branchmappingtable_1.SuperBranch = @brnchid) and (products_category.Categoryname=@Cat) GROUP BY productsdata.ProductName, products_category.Categoryname, IndentDate ORDER BY indents.I_date");
                     }
                     
-                    cmd.Parameters.Add("@Cat", ddlType.SelectedItem.Text);
+                    cmd.Parameters.AddWithValue("@Cat", ddlType.SelectedItem.Text);
                 }
             }
-            cmd.Parameters.Add("@brnchid", BranchID);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@brnchid", BranchID);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
             if (ddlType.SelectedValue == "All")
             {
@@ -220,12 +220,12 @@ public partial class PlantSales : System.Web.UI.Page
                     {
                         cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.Rank, productsdata.sno, products_category.Categoryname FROM branchmappingtable INNER JOIN indents ON branchmappingtable.SubBranch = indents.Branch_id INNER JOIN branchmappingtable branchmappingtable_1 ON branchmappingtable.SuperBranch = branchmappingtable_1.SubBranch INNER JOIN branchproducts ON branchmappingtable_1.SuperBranch = branchproducts.branch_sno INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo AND branchproducts.product_sno = indents_subtable.Product_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (branchmappingtable_1.SuperBranch = @brnchid) and (products_category.Categoryname=@Cat) GROUP BY productsdata.ProductName, productsdata.sno, products_category.Categoryname ORDER BY branchproducts.Rank");
                     }
-                    cmd.Parameters.Add("@Cat", ddlType.SelectedItem.Text);
+                    cmd.Parameters.AddWithValue("@Cat", ddlType.SelectedItem.Text);
                 }
             }
-            cmd.Parameters.Add("@brnchid", BranchID);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@brnchid", BranchID);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
             if (produtstbl.Rows.Count > 0)
             {

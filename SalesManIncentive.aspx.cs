@@ -36,9 +36,9 @@ public partial class SalesManIncentive : System.Web.UI.Page
             string salestype = Session["salestype"].ToString();
             vdm = new VehicleDBMgr();
             cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) and (dispatch.flag=@flag))");
-            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-            cmd.Parameters.Add("@flag", "1");
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlRouteName.DataSource = dtRoutedata;
             ddlRouteName.DataTextField = "DispName";

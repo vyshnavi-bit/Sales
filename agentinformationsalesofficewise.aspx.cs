@@ -39,9 +39,9 @@ public partial class agentinformationsalesofficewise : System.Web.UI.Page
             if (Session["salestype"].ToString() == "Plant")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -51,8 +51,8 @@ public partial class agentinformationsalesofficewise : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -153,7 +153,7 @@ public partial class agentinformationsalesofficewise : System.Web.UI.Page
             Session["filename"] = "AGENT Details REPORT";
 
             cmd = new MySqlCommand("SELECT branchdata.sno AS Agentid, branchdata.BranchName AS AgentName, branchroutes.RouteName, branchroutes.BranchID AS SalesOfficeID, salestypemanagement.salestype, branchdata.SalesRepresentative FROM            branchroutes INNER JOIN  branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN  branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN  salestypemanagement ON salestypemanagement.sno = branchdata.SalesType WHERE (branchroutes.BranchID = @soid) AND (branchroutes.flag = '1') ORDER BY branchroutes.Sno");
-            cmd.Parameters.Add("@soid", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@soid", ddlSalesOffice.SelectedValue);
             DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
             if (dtble.Rows.Count > 0)
             {

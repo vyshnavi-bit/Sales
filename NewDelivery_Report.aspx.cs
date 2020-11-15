@@ -44,9 +44,9 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //            dtBranch.Columns.Add("BranchName");
     //            dtBranch.Columns.Add("sno");
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-    //            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-    //            cmd.Parameters.Add("@SalesType", "21");
-    //            cmd.Parameters.Add("@SalesType1", "26");
+    //            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+    //            cmd.Parameters.AddWithValue("@SalesType", "21");
+    //            cmd.Parameters.AddWithValue("@SalesType1", "26");
     //            DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //            foreach (DataRow dr in dtRoutedata.Rows)
     //            {
@@ -56,7 +56,7 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //                dtBranch.Rows.Add(newrow);
     //            }
     //            cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-    //            cmd.Parameters.Add("@BranchID", Session["branch"]);
+    //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
     //            DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
     //            foreach (DataRow dr in dtPlant.Rows)
     //            {
@@ -66,8 +66,8 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //                dtBranch.Rows.Add(newrow);
     //            }
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-    //            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-    //            cmd.Parameters.Add("@SalesType", "23");
+    //            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+    //            cmd.Parameters.AddWithValue("@SalesType", "23");
     //            DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
     //            foreach (DataRow dr in dtNewPlant.Rows)
     //            {
@@ -87,9 +87,9 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //            PBranch.Visible = false;
     //            cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  and (DispType is NULL) AND   (dispatch.flag=@flag))  OR ((branchdata_1.SalesOfficeID = @SOID)  and (DispType is NULL) AND  (dispatch.flag=@flag))");
     //            //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-    //            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-    //            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-    //            cmd.Parameters.Add("@flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@flag", "1");
     //            DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //            ddlRouteName.DataSource = dtRoutedata;
     //            ddlRouteName.DataTextField = "DispName";
@@ -110,9 +110,9 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //{
     //    vdm = new VehicleDBMgr();
     //    cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) AND   (dispatch.flag=@flag) OR (branchdata_1.SalesOfficeID = @SOID) AND   (dispatch.flag=@flag)");
-    //    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //    cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //    cmd.Parameters.Add("@flag", "1");
+    //    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //    cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //    cmd.Parameters.AddWithValue("@flag", "1");
     //    DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //    ddlRouteName.DataSource = dtRoutedata;
     //    ddlRouteName.DataTextField = "DispName";
@@ -176,14 +176,14 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, dispatch.Branch_Id, dispatch.Route_id, tripdata.SyncStatus, tripdata.Sno AS tripid, tripdata.EmpId, tripdata.AssignDate,tripdata.Status FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.sno = @dispatchSno) AND (tripdata.I_Date BETWEEN @d1 AND @d2) AND (tripdata.SyncStatus <> '0')");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
     //        DataTable dtsyncstatus = vdm.SelectQuery(cmd).Tables[0];
     //        if (dtsyncstatus.Rows.Count > 0)
     //        {
@@ -198,52 +198,52 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.unitQty), 2) AS unitQty, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty,ROUND(SUM(indents_subtable.LeakQty), 2) AS LeakQty, indents_subtable.UnitCost, indent.IndentNo, indent.Branch_id,ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS Total, indents_subtable.Product_sno FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN (SELECT IndentNo, Branch_id, I_date, IndentType FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indent ON modifiedroutesubtable.BranchID = indent.Branch_id AND dispatch_sub.IndentType = indent.IndentType INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime) GROUP BY indents_subtable.Product_sno");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //        DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
     //        // cmd = new MySqlCommand("SELECT branchaccounts.BranchId, branchaccounts.Amount, branchdata.BranchName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = @dispsno)");
     //        cmd = new MySqlCommand("SELECT branchdata.BranchName,branchdata.SalesType, branchaccounts.BranchId, branchaccounts.Amount FROM dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId WHERE (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @dt) AND (branchdata.flag=1) OR (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate > @dt) AND (modifiedroutesubtable.CDate <= @dt) and (branchdata.flag=1) order by branchdata.BranchName");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispsno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispsno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@dt", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@dt", GetLowDate(fromdate.AddDays(-1)));
 
     //        DataTable dtbranchammount = vdm.SelectQuery(cmd).Tables[0];
     //        cmd = new MySqlCommand("SELECT  inventory_monitor.Inv_Sno, inventory_monitor.Qty,modifiedroutesubtable.BranchID FROM dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN inventory_monitor ON modifiedroutesubtable.BranchID = inventory_monitor.BranchId WHERE (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @dt) OR (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate > @dt) AND (modifiedroutesubtable.CDate <= @dt) ");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispsno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispsno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@dt", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@dt", GetLowDate(fromdate.AddDays(-1)));
 
     //        DataTable dtAgentInventory = vdm.SelectQuery(cmd).Tables[0];
     //        // cmd = new MySqlCommand("SELECT  MIN(Ind.D_date) AS midate, MAX(collect.PaidDate) AS madate FROM dispatch INNER JOIN branchroutesubtable ON dispatch.Route_id = branchroutesubtable.RefNo INNER JOIN (SELECT indents.Branch_id, MIN(indents_subtable.D_date) AS D_date, MAX(indents_subtable.DTripId) AS DTripId FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @starttime AND @endtime) AND (indents_subtable.D_date IS NOT NULL) GROUP BY indents.Branch_id) Ind ON branchroutesubtable.BranchID = Ind.Branch_id INNER JOIN (SELECT PaidDate, tripId FROM collections) collect ON Ind.DTripId = collect.tripId WHERE (dispatch.sno = @dispatchSno)");
     //        cmd = new MySqlCommand("SELECT MIN(Ind.D_date) AS midate, MAX(collect.PaidDate) AS madate FROM dispatch INNER JOIN modifiedroutesubtable ON dispatch.Route_id = modifiedroutesubtable.RefNo INNER JOIN (SELECT indents.Branch_id, MIN(indents_subtable.D_date) AS D_date, MAX(indents_subtable.DTripId) AS DTripId FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @starttime AND @endtime) AND (indents_subtable.D_date IS NOT NULL) GROUP BY indents.Branch_id) Ind ON modifiedroutesubtable.BranchID = Ind.Branch_id INNER JOIN (SELECT PaidDate, tripId FROM collections) collect ON Ind.DTripId = collect.tripId WHERE (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime)");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(ServerDateCurrentdate));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(ServerDateCurrentdate));
     //        DataTable dtminmax = vdm.SelectQuery(cmd).Tables[0];
     //        string mindate = dtminmax.Rows[0]["midate"].ToString();
     //        string maxdate = dtminmax.Rows[0]["madate"].ToString();
@@ -253,41 +253,41 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        //  cmd = new MySqlCommand("SELECT branchdata.BranchName, SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS totalamount, indents_subtable.D_date, collections.AmountPaid,indent.Branch_id FROM dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo LEFT OUTER JOIN collections ON indents_subtable.DTripId = collections.tripId AND branchdata.sno = collections.Branchid WHERE (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (dispatch.sno = @dispatchSno) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime) GROUP BY branchdata.BranchName"); 
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate).AddDays(-1));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate).AddDays(-1));
-    //        cmd.Parameters.Add("@Paidstime", GetLowDate(fromdate));
-    //        cmd.Parameters.Add("@Paidetime", GetHighDate(fromdate));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@Paidstime", GetLowDate(fromdate));
+    //        cmd.Parameters.AddWithValue("@Paidetime", GetHighDate(fromdate));
     //        DataTable dttodaycollection = vdm.SelectQuery(cmd).Tables[0];// Today SaleValue
     //        if (dttodaycollection.Rows.Count > 0)
     //        {
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, collections.Branchid, branchdata.sno, collections.AmountPaid, collections.PaidDate, collections.PaymentType, collections.CheckStatus, collections.PayTime, collections.ChequeNo, collections.tripId, collections.ReceiptNo FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN  branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (dispatch.sno = @dispatchsno) AND (collections.AmountPaid <> 0) AND (collections.tripId = @TripID)");
     //            if (chkDispatch.Checked == true)
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //            }
     //            else
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //            }
     //            if (dttodaycollection.Rows[0]["DTripId"].ToString() == "")
     //            {
-    //                cmd.Parameters.Add("@TripID", dttodaycollection.Rows[1]["DTripId"].ToString());
+    //                cmd.Parameters.AddWithValue("@TripID", dttodaycollection.Rows[1]["DTripId"].ToString());
     //            }
     //            else
     //            {
     //                if (dttodaycollection.Rows[0]["D_date"].ToString() == "")
     //                {
-    //                    cmd.Parameters.Add("@TripID", dttodaycollection.Rows[1]["DTripId"].ToString());
+    //                    cmd.Parameters.AddWithValue("@TripID", dttodaycollection.Rows[1]["DTripId"].ToString());
     //                }
     //                else
     //                {
-    //                    cmd.Parameters.Add("@TripID", dttodaycollection.Rows[0]["DTripId"].ToString());
+    //                    cmd.Parameters.AddWithValue("@TripID", dttodaycollection.Rows[0]["DTripId"].ToString());
     //                }
     //            }
     //        }
@@ -295,77 +295,77 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        cmd = new MySqlCommand("SELECT  result.Branch_id, result.BranchName, result.totalamount, result.D_date, result.DTripId, result.DelTime, SUM(collections.AmountPaid) AS AmountPaid,collections.PayTime FROM (SELECT branchdata.sno AS Branch_id, branchdata.BranchName, SUM(indentssub.DeliveryQty * indentssub.UnitCost) AS totalamount, indentssub.D_date,indentssub.DTripId, indentssub.DelTime FROM (SELECT IndentNo, Product_sno, DeliveryQty, D_date, UnitCost, DTripId, DelTime FROM indents_subtable WHERE (D_date BETWEEN @starttime AND @endtime)) indentssub INNER JOIN (SELECT IndentNo, Branch_id, TotalQty, TotalPrice, I_date, D_date, Status, UserData_sno, PaymentStatus, I_createdby, I_modifiedby,IndentType FROM indents WHERE (I_date BETWEEN @Indd1 AND @indd2)) ind ON indentssub.IndentNo = ind.IndentNo RIGHT OUTER JOIN dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, BranchID, CDate, EDate FROM  modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifroutessub ON modifiedroutes.Sno = modifroutessub.RefNo INNER JOIN branchdata ON modifroutessub.BranchID = branchdata.sno ON ind.Branch_id = branchdata.sno WHERE (dispatch.sno = @dispatchSno) GROUP BY branchdata.sno) result INNER JOIN collections ON result.Branch_id = collections.Branchid WHERE (collections.PaidDate BETWEEN @starttime AND @endtime) AND (collections.tripId <> 'NULL') GROUP BY result.Branch_id");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@starttime", midate);
-    //        cmd.Parameters.Add("@endtime", madate);
-    //        cmd.Parameters.Add("@Paidstime", midate);
-    //        cmd.Parameters.Add("@Paidetime", GetHighDate(fromdate));
-    //        cmd.Parameters.Add("@Indd1", GetLowDate(fromdate).AddDays(-1));
-    //        cmd.Parameters.Add("@Indd2", GetHighDate(madate));
+    //        cmd.Parameters.AddWithValue("@starttime", midate);
+    //        cmd.Parameters.AddWithValue("@endtime", madate);
+    //        cmd.Parameters.AddWithValue("@Paidstime", midate);
+    //        cmd.Parameters.AddWithValue("@Paidetime", GetHighDate(fromdate));
+    //        cmd.Parameters.AddWithValue("@Indd1", GetLowDate(fromdate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@Indd2", GetHighDate(madate));
     //        DataTable dtBranchcollection = vdm.SelectQuery(cmd).Tables[0];
 
     //        cmd = new MySqlCommand("SELECT  result.Branch_id, result.BranchName, result.totalamount, result.D_date, result.DTripId, result.DelTime, SUM(collections.AmountPaid) AS AmountPaid,collections.PayTime, collections.PaymentType, collections.CheckStatus, collections.VarifyDate FROM (SELECT branchdata.sno AS Branch_id, branchdata.BranchName, SUM(indentssub.DeliveryQty * indentssub.UnitCost) AS totalamount, indentssub.D_date,indentssub.DTripId, indentssub.DelTime FROM (SELECT IndentNo, Product_sno, DeliveryQty, D_date, UnitCost, DTripId, DelTime FROM indents_subtable WHERE (D_date BETWEEN @starttime AND @endtime)) indentssub INNER JOIN (SELECT IndentNo, Branch_id, TotalQty, TotalPrice, I_date, D_date, Status, UserData_sno, PaymentStatus, I_createdby, I_modifiedby,IndentType FROM indents WHERE (I_date BETWEEN @Indd1 AND @indd2)) ind ON indentssub.IndentNo = ind.IndentNo RIGHT OUTER JOIN dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, BranchID, CDate, EDate FROM  modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifroutessub ON modifiedroutes.Sno = modifroutessub.RefNo INNER JOIN branchdata ON modifroutessub.BranchID = branchdata.sno ON ind.Branch_id = branchdata.sno WHERE (dispatch.sno = @dispatchSno) GROUP BY branchdata.sno) result INNER JOIN collections ON result.Branch_id = collections.Branchid WHERE (collections.PaidDate BETWEEN @starttime AND @endtime) AND (collections.tripId IS NULL) GROUP BY result.Branch_id");
-    //        cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
-    //        cmd.Parameters.Add("@starttime", midate);
-    //        cmd.Parameters.Add("@endtime", madate);
-    //        cmd.Parameters.Add("@Paidstime", GetLowDate(fromdate));
-    //        cmd.Parameters.Add("@Paidetime", GetHighDate(fromdate));
-    //        cmd.Parameters.Add("@Indd1", GetLowDate(fromdate).AddDays(-1));
-    //        cmd.Parameters.Add("@Indd2", GetHighDate(madate));
+    //        cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@starttime", midate);
+    //        cmd.Parameters.AddWithValue("@endtime", madate);
+    //        cmd.Parameters.AddWithValue("@Paidstime", GetLowDate(fromdate));
+    //        cmd.Parameters.AddWithValue("@Paidetime", GetHighDate(fromdate));
+    //        cmd.Parameters.AddWithValue("@Indd1", GetLowDate(fromdate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@Indd2", GetHighDate(madate));
     //        DataTable dtsalesofficecollection = vdm.SelectQuery(cmd).Tables[0];
     //        cmd = new MySqlCommand("SELECT products_category.Categoryname,productsdata.Sno, productsdata.ProductName, products_subcategory.SubCatName  FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID) Group by productsdata.ProductName ORDER BY productsdata.Rank");
     //        if (Session["salestype"].ToString() == "Plant")
     //        {
-    //            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
     //        }
     //        DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
     //        cmd = new MySqlCommand("SELECT tripdata.Sno, tripdata.Denominations, tripdata.Remarks, tripdata.CollectedAmount, tripdata.SubmittedAmount, tripdata.Cdate, empmanage.EmpName FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime) AND (dispatch.sno = @dispatchSno) AND (tripdata.Status <> 'C')");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
     //        DataTable dtDenomin = vdm.SelectQuery(cmd).Tables[0];
     //        ///09/01/2016  Ravi
     //        cmd = new MySqlCommand("SELECT  ff.TripID, Triproutes.RouteID, ff.DispQty, ff.sno FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (RouteID = @dispatchSno)) Triproutes INNER JOIN (SELECT TripID, DispQty, sno FROM  (SELECT tripdata.Sno AS TripID, tripsubdata.Qty AS DispQty, tripsubdata.ProductId AS sno FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
     //        //cmd = new MySqlCommand("SELECT tripdata.sno as TripID,tripsubdata.Qty as DispQty, productsdata.ProductName,productsdata.sno FROM tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN triproutes ON triproutes.Tripdata_sno = tripsubdata.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE  (tripdata.I_Date BETWEEN @starttime AND @endtime) AND (dispatch.sno = @dispatchsno)");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
     //        DataTable dtSubData = vdm.SelectQuery(cmd).Tables[0];
 
     //        cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, ROUND(SUM(offer_indents_sub.offer_indent_qty), 2) AS unitQty, productsdata.ProductName, productsdata.Units, productsdata.sno AS productid, ROUND(SUM(offer_indents_sub.offer_delivered_qty), 2) AS Delqty, products_category.Categoryname FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN (SELECT idoffer_indents, idoffers_assignment, salesoffice_id, route_id, agent_id, indent_date, indents_id, IndentType, I_modified_by FROM offer_indents WHERE (indent_date BETWEEN @starttime AND @endtime) ) offerindents ON modifiedroutesubtable.BranchID = offerindents.agent_id INNER JOIN offer_indents_sub ON offerindents.idoffer_indents = offer_indents_sub.idoffer_indents INNER JOIN productsdata ON offer_indents_sub.product_id = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) AND (dispatch.sno = @dispatchSno) OR (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime) AND (dispatch.sno = @dispatchSno) GROUP BY productsdata.sno");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //        DataTable dt_offertble = vdm.SelectQuery(cmd).Tables[0];
 
 
@@ -431,10 +431,10 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        {
     //            string Sno = dtSubData.Rows[0]["TripID"].ToString();
     //            cmd = new MySqlCommand("select LeakQty,ShortQty,FreeMilk,ProductID from Leakages where TripId=@TripId and VarifyStatus IS NULL Group by ProductID order by ProductID ");
-    //            cmd.Parameters.Add("@TripId", Sno);
+    //            cmd.Parameters.AddWithValue("@TripId", Sno);
     //            dtLeakages = vdm.SelectQuery(cmd).Tables[0];
     //            cmd = new MySqlCommand("SELECT tripinvdata.Qty, tripinvdata.Remaining,invmaster.sno, invmaster.InvName FROM tripinvdata INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (tripinvdata.Tripdata_sno = @Tripdata_sno) GROUP BY invmaster.InvName ORDER BY invmaster.sno");
-    //            cmd.Parameters.Add("@Tripdata_sno", Sno);
+    //            cmd.Parameters.AddWithValue("@Tripdata_sno", Sno);
     //            dtInventory = vdm.SelectQuery(cmd).Tables[0];
     //        }
     //        dtble.DefaultView.Sort = "Product_sno ASC";
@@ -829,23 +829,23 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //            // Report.Rows.Add(drnew1);
     //            //cmd = new MySqlCommand("SELECT modifiedroutes.Sno AS routesno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, inventory_monitor.Inv_Sno, SUM(inventory_monitor.Qty) AS opp FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo LEFT OUTER JOIN inventory_monitor ON modifidroutssubtab.BranchID = inventory_monitor.BranchId WHERE (dispatch.sno = @routesno) GROUP BY routesno, inventory_monitor.Inv_Sno ORDER BY routesno");
     //            cmd = new MySqlCommand("SELECT modifiedroutes.Sno AS routesno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, inventory_monitor.Inv_Sno, SUM(inventory_monitor.Qty) AS opp, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN branchdata ON modifidroutssubtab.BranchID = branchdata.sno LEFT OUTER JOIN inventory_monitor ON modifidroutssubtab.BranchID = inventory_monitor.BranchId WHERE (dispatch.sno = @routesno) AND (branchdata.flag <> 0) GROUP BY routesno, inventory_monitor.Inv_Sno ORDER BY routesno");
-    //            cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
     //            DataTable dtclosing = vdm.SelectQuery(cmd).Tables[0];
 
     //            cmd = new MySqlCommand("SELECT modifiedroutes.Sno AS routesno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, SUM(invtran.Qty) AS deliverd, invtran.B_inv_sno FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, B_inv_sno, DOE FROM invtransactions12 WHERE (TransType = 1) AND (DOE BETWEEN @d1 AND @d2) OR (TransType = 3) AND (DOE BETWEEN @d1 AND @d2)) invtran ON modifidroutssubtab.BranchID = invtran.FromTran WHERE (dispatch.sno = @routesno) GROUP BY routesno, invtran.B_inv_sno ORDER BY routesno");
-    //            cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
     //            DateTime dtmin = GetLowDate(fromdate.AddDays(-1));
     //            DateTime dtmax = GetLowDate(ServerDateCurrentdate);
-    //            cmd.Parameters.Add("@d1", dtmin.AddHours(15));
-    //            cmd.Parameters.Add("@d2", dtmax.AddHours(15));
+    //            cmd.Parameters.AddWithValue("@d1", dtmin.AddHours(15));
+    //            cmd.Parameters.AddWithValue("@d2", dtmax.AddHours(15));
     //            DataTable dtinvcollection = vdm.SelectQuery(cmd).Tables[0];
     //            cmd = new MySqlCommand("SELECT modifiedroutes.Sno AS routesno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, SUM(invtran.Qty) AS deliverd, invtran.B_inv_sno FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN modifiedroutes ON dispatch_sub.Route_id = modifiedroutes.Sno INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN (SELECT TransType, FromTran, ToTran, Qty, B_inv_sno, DOE FROM invtransactions12 WHERE (TransType = 1) AND (DOE BETWEEN @d1 AND @d2) OR (TransType = 2) AND (DOE BETWEEN @d1 AND @d2)) invtran ON modifidroutssubtab.BranchID = invtran.ToTran WHERE (dispatch.sno = @routesno) GROUP BY routesno, invtran.B_inv_sno ORDER BY routesno");
-    //            cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //            cmd.Parameters.Add("@d1", dtmin.AddHours(15));
-    //            cmd.Parameters.Add("@d2", dtmax.AddHours(15));
+    //            cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@d1", dtmin.AddHours(15));
+    //            cmd.Parameters.AddWithValue("@d2", dtmax.AddHours(15));
     //            DataTable dtinvdelivery = vdm.SelectQuery(cmd).Tables[0];
     //            foreach (DataRow dr in dtInventory.Rows)
     //            {
@@ -1509,7 +1509,7 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        string BranchSno = "";
     //        BranchSno = Session["branch"].ToString();
     //        cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch where  (Branch_ID = @BranchID) and (DispType='SM') and (DispMode is NULL)");
-    //        cmd.Parameters.Add("@BranchID", BranchSno);
+    //        cmd.Parameters.AddWithValue("@BranchID", BranchSno);
     //        dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //        ddlPlantDispName.DataSource = dtRoutedata;
     //        ddlPlantDispName.DataTextField = "DispName";
@@ -1548,52 +1548,52 @@ public partial class NewDelivery_Report : System.Web.UI.Page
     //        cmd = new MySqlCommand("SELECT tripdata.Sno FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno WHERE (triproutes.RouteID = @DispSno) AND (tripdata.I_Date BETWEEN @d1 AND @d2)");
     //        if (chkDispatch.Checked == true)
     //        {
-    //            cmd.Parameters.Add("@DispSno", ddlPlantDispName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@DispSno", ddlPlantDispName.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@DispSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@DispSno", ddlRouteName.SelectedValue);
     //        }
-    //        cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
     //        DataTable dtTripdata = vdm.SelectQuery(cmd).Tables[0];
     //        if (dtTripdata.Rows.Count > 0)
     //        {
     //            //cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.unitQty), 2) AS unitQty, indents_subtable.Product_sno, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, ROUND(SUM(indents_subtable.LeakQty), 2) AS LeakQty, indents_subtable.UnitCost, indents.IndentNo, indents.Branch_id, ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS Total FROM  dispatch RIGHT OUTER JOIN branchroutesubtable INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno ON dispatch.Route_id = branchroutes.Sno LEFT OUTER JOIN indents_subtable INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo RIGHT OUTER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno ON branchdata.sno = indents.Branch_id WHERE (indents.I_date between @starttime AND  @endtime) AND (indents_subtable.DtripID = @DtripID) GROUP BY productsdata.ProductName");
     //            cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.unitQty), 2) AS unitQty, indents_subtable.Product_sno, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty, ROUND(SUM(indents_subtable.LeakQty), 2) AS LeakQty, indents_subtable.UnitCost, ROUND(SUM(indents_subtable.UnitCost * indents_subtable.DeliveryQty), 2) AS Total FROM indents_subtable INNER JOIN indents ON indents_subtable.IndentNo = indents.IndentNo RIGHT OUTER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents_subtable.DTripId = @DtripID) GROUP BY productsdata.ProductName");
-    //            cmd.Parameters.Add("@DtripID", dtTripdata.Rows[0]["Sno"].ToString());
+    //            cmd.Parameters.AddWithValue("@DtripID", dtTripdata.Rows[0]["Sno"].ToString());
     //            DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
     //            cmd = new MySqlCommand("SELECT indents.Branch_id, branchdata.BranchName, collections.Branchid, collections.AmountPaid, indents_subtable.DeliveryQty * indents_subtable.UnitCost AS totalamount, collections.PaidDate, indents_subtable.D_date FROM indents INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN branchroutesubtable ON branchdata.sno = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN collections ON indents.Branch_id = collections.Branchid INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN dispatch ON branchroutes.Sno = dispatch.Route_id WHERE (indents.I_date between @starttime AND  @endtime) AND (collections.PaidDate between @Paidstime AND  @Paidetime) AND (dispatch.sno = @dispatchSno) and (branchdata.CollectionType =@CollectionType) GROUP BY branchdata.BranchName, indents_subtable.DeliveryQty, indents_subtable.UnitCost, collections.PaidDate, indents_subtable.D_date,indents_subtable.Product_sno");
-    //            cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
-    //            cmd.Parameters.Add("@CollectionType", "due");
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //            cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
-    //            cmd.Parameters.Add("@Paidstime", GetLowDate(fromdate));
-    //            cmd.Parameters.Add("@Paidetime", GetHighDate(fromdate));
+    //            cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@CollectionType", "due");
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@Paidstime", GetLowDate(fromdate));
+    //            cmd.Parameters.AddWithValue("@Paidetime", GetHighDate(fromdate));
     //            DataTable dtBranch = vdm.SelectQuery(cmd).Tables[0];
     //            //cmd = new MySqlCommand("SELECT tripdata.Denominations, tripdata.Remarks, tripdata.CollectedAmount FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno WHERE (triproutes.RouteID = @TripID) AND (tripdata.Status = 'P')");
     //            cmd = new MySqlCommand("SELECT tripdata.sno,tripdata.Denominations, tripdata.Remarks, tripdata.SubmittedAmount, tripdata.Cdate, empmanage.EmpName FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime) AND (dispatch.sno = @dispatchSno)");
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //            cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //            if (chkDispatch.Checked == true)
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //            }
     //            else
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //            }
     //            DataTable dtDenomin = vdm.SelectQuery(cmd).Tables[0];
     //            cmd = new MySqlCommand("SELECT tripdata.sno as TripID,tripsubdata.Qty as DispQty, productsdata.ProductName,productsdata.sno FROM tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN triproutes ON triproutes.Tripdata_sno = tripsubdata.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE  (tripdata.I_Date BETWEEN @starttime AND @endtime) AND (dispatch.sno = @dispatchsno)");
-    //            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //            cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //            cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
     //            if (chkDispatch.Checked == true)
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlPlantDispName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlPlantDispName.SelectedValue);
     //            }
     //            else
     //            {
-    //                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //            }
     //            DataTable dtSubData = vdm.SelectQuery(cmd).Tables[0];
     //            DataTable dtLeakages = new DataTable();
@@ -1603,10 +1603,10 @@ public partial class NewDelivery_Report : System.Web.UI.Page
 
     //                string Sno = dtSubData.Rows[0]["TripID"].ToString();
     //                cmd = new MySqlCommand("select LeakQty,ShortQty,FreeMilk,ProductID from Leakages where TripId=@TripId Group by ProductID order by ProductID");
-    //                cmd.Parameters.Add("@TripId", Sno);
+    //                cmd.Parameters.AddWithValue("@TripId", Sno);
     //                dtLeakages = vdm.SelectQuery(cmd).Tables[0];
     //                cmd = new MySqlCommand("SELECT tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName FROM tripinvdata INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (tripinvdata.Tripdata_sno = @Tripdata_sno) GROUP BY invmaster.InvName ORDER BY invmaster.sno");
-    //                cmd.Parameters.Add("@Tripdata_sno", Sno);
+    //                cmd.Parameters.AddWithValue("@Tripdata_sno", Sno);
     //                dtInventory = vdm.SelectQuery(cmd).Tables[0];
     //            }
     //            dtble.DefaultView.Sort = "Product_sno ASC";

@@ -45,9 +45,9 @@ public partial class BranchWiseDispatch : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -58,9 +58,9 @@ public partial class BranchWiseDispatch : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag=@flag)) OR ((branchdata.sno = @BranchID) AND (branchdata.flag=@flag))");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -149,13 +149,13 @@ public partial class BranchWiseDispatch : System.Web.UI.Page
             Session["RouteName"] = ddlSalesOffice.SelectedItem.Text + " REPORT " + fromdate.AddDays(1).ToString("dd/MM/yyyy");
             Session["filename"] = ddlSalesOffice.SelectedItem.Text + " REPORT " + fromdate.AddDays(1).ToString("dd/MM/yyyy");
             cmd = new MySqlCommand("SELECT dispatch.sno,  SUM(tripsubdata.Qty) AS Qty, DATE_FORMAT(tripdata.AssignDate, '%d %b %y') AS AssignDate, tripsubdata.ProductId, productsdata.ProductName,products_subcategory.SubCatName, products_category.Categoryname FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripsubdata ON triproutes.Tripdata_sno = tripsubdata.Tripdata_sno INNER JOIN tripdata ON tripsubdata.Tripdata_sno = tripdata.Sno INNER JOIN (SELECT branch_sno, product_sno, unitprice, flag, userdata_sno, DTarget, WTarget, MTarget, BranchQty, LeakQty, Rank FROM branchproducts WHERE (branch_sno = @salesoffice)) brnchprdts ON tripsubdata.ProductId = brnchprdts.product_sno INNER JOIN productsdata ON brnchprdts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (dispatch.BranchID = @salesoffice) AND (tripdata.AssignDate BETWEEN @d1 AND @d2) GROUP BY tripsubdata.ProductId, tripdata.AssignDate ORDER BY AssignDate, brnchprdts.Rank");
-            cmd.Parameters.Add("@salesoffice", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@salesoffice", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtsalesofficeTotalDispatch = vdm.SelectQuery(cmd).Tables[0];
 
             cmd = new MySqlCommand("SELECT products_category.Categoryname,branchproducts.product_sno, productsdata.ProductName, products_subcategory.SubCatName,branchproducts.unitprice FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @salesoffice) ORDER BY branchproducts.Rank");
-            cmd.Parameters.Add("@salesoffice", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@salesoffice", ddlSalesOffice.SelectedValue);
             DataTable dtsalesofficeproducts = vdm.SelectQuery(cmd).Tables[0];
 
             if (dtsalesofficeTotalDispatch.Rows.Count > 0)

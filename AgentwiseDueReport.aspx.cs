@@ -49,9 +49,9 @@ public partial class AgentwiseDueReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -63,9 +63,9 @@ public partial class AgentwiseDueReport : System.Web.UI.Page
             {
                 PBranch.Visible = false;
                 cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE  (branchdata.CollectionType = @CollectionType) and ((branchmappingtable.SuperBranch = @SuperBranch)  OR (branchdata_1.SalesOfficeID = @SOID))");
-                cmd.Parameters.Add("@SuperBranch", BranchID);
-                cmd.Parameters.Add("@SOID", BranchID);
-                cmd.Parameters.Add("@CollectionType", "Due");
+                cmd.Parameters.AddWithValue("@SuperBranch", BranchID);
+                cmd.Parameters.AddWithValue("@SOID", BranchID);
+                cmd.Parameters.AddWithValue("@CollectionType", "Due");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlAgentName.DataSource = dtRoutedata;
                 ddlAgentName.DataTextField = "BranchName";
@@ -148,10 +148,10 @@ public partial class AgentwiseDueReport : System.Web.UI.Page
             //cmd = new MySqlCommand("SELECT branchroutes.RouteName, productsdata.ProductName, ROUND(SUM(indents_subtable.DeliveryQty), 2) AS DeliveryQty,indents_subtable.UnitCost, products_category.Categoryname, ROUND(SUM(indents_subtable.LeakQty), 2) AS LeakQty FROM indents INNER JOIN branchroutesubtable ON indents.Branch_id = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN  productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE  (indents.I_date >= @starttime) AND (indents.I_date <= @endtime) AND (branchroutes.Sno BETWEEN 29 AND 33)GROUP BY branchroutes.RouteName, productsdata.ProductName, products_category.Categoryname, indents_subtable.LeakQty");
             //cmd = new MySqlCommand("SELECT DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchdata.BranchName, indents_subtable.DeliveryQty * indents_subtable.UnitCost AS Amount FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN branchdata ON indents.Branch_id = branchdata.sno WHERE (branchdata.CollectionType = 'Due') AND (indents.I_date BETWEEN @d1 AND @d2) AND (branchdata.sno = @BranchID) GROUP BY indents.I_date, branchdata.BranchName");
             cmd = new MySqlCommand("SELECT DATE_FORMAT(indents.I_date, '%d %b %y') AS IndentDate, branchdata.BranchName, indents_subtable.DeliveryQty * indents_subtable.UnitCost AS Amount, productsdata.ProductName, indents_subtable.DeliveryQty,indents_subtable.UnitCost FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN branchdata ON indents.Branch_id = branchdata.sno INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (branchdata.CollectionType = 'Due') AND (indents.I_date BETWEEN @d1 AND @d2) AND (branchdata.sno = @BranchID) and (indents_subtable.Status=@Status) GROUP BY indents.I_date, branchdata.BranchName, productsdata.ProductName, indents_subtable.DeliveryQty");
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
-            cmd.Parameters.Add("@Status", "Delivered");
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Status", "Delivered");
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtdue = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("IndentDate");
@@ -235,9 +235,9 @@ public partial class AgentwiseDueReport : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE  (branchdata.CollectionType = @CollectionType) and ((branchmappingtable.SuperBranch = @SuperBranch)  OR (branchdata_1.SalesOfficeID = @SOID))");
-        cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@CollectionType", "Due");
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@CollectionType", "Due");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtRoutedata;
         ddlAgentName.DataTextField = "BranchName";

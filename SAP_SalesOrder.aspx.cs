@@ -48,9 +48,9 @@ public partial class SAP_SalesOrder : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -61,8 +61,8 @@ public partial class SAP_SalesOrder : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -134,16 +134,16 @@ public partial class SAP_SalesOrder : System.Web.UI.Page
                 {
                     BranchID = "158";
                 }
-                cmd.Parameters.Add("@BranchID", BranchID);
-                cmd.Parameters.Add("@SOID", BranchID);
+                cmd.Parameters.AddWithValue("@BranchID", BranchID);
+                cmd.Parameters.AddWithValue("@SOID", BranchID);
             }
             else
             {
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
             }
-            cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
             DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
             DateTime ReportDate = VehicleDBMgr.GetTime(vdm.conn);
             DateTime dtapril = new DateTime();
@@ -190,11 +190,11 @@ public partial class SAP_SalesOrder : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT branchdata.whcode,branchdata.sno,branchdata.Branchcode,branchdata.companycode,branchdata.tax,branchdata.ntax,  branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 }
                 else
                 {
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 }
                 DataTable dtstatename = vdm.SelectQuery(cmd).Tables[0];
                 string statename = "";
@@ -499,7 +499,7 @@ public partial class SAP_SalesOrder : System.Web.UI.Page
 
 
             cmd = new MySqlCommand("SELECT sno, BranchName, whcode, ladger_dr_code, tax, ntax, ledger_jv_code FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
             DataTable dtwhscode = vdm.SelectQuery(cmd).Tables[0];
             ////sqlcmd = new SqlCommand("SELECT CreateDate, CardCode, CardName, TaxDate, DocDate, DocDueDate, DiscPercent, ReferenceNo FROM  EMRORDR WHERE (TaxDate BETWEEN @d1 AND @d2)  AND (WhsCode = @WhsCode) AND CardCode=@CardCode");
             ////sqlcmd.Parameters.Add("@d1", GetLowDate(fromdate));

@@ -112,10 +112,10 @@ public partial class ReceiptReport : System.Web.UI.Page
             {
                 ColStatus = "SalesMen";
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE,cashreceipts.Sno,cashreceipts.Receipt ,cashreceipts.ReceivedFrom AS Type,dispatch.DispName, empmanage.EmpName, cashreceipts.AmountPaid FROM cashreceipts INNER JOIN dispatch ON cashreceipts.dispatchid = dispatch.sno INNER JOIN empmanage ON cashreceipts.Empid = empmanage.Sno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) ORDER BY cashreceipts.DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", ColStatus);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", ColStatus);
                 DataTable dtReceipt = vdm.SelectQuery(cmd).Tables[0];
                 grdReports.DataSource = dtReceipt;
                 grdReports.DataBind();
@@ -124,11 +124,11 @@ public partial class ReceiptReport : System.Web.UI.Page
             {
                 ColStatus = "Agent";
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno, cashreceipts.Receipt, cashreceipts.ReceivedFrom AS Type, branchdata.BranchName, cashreceipts.AmountPaid FROM cashreceipts INNER JOIN branchdata ON cashreceipts.AgentID = branchdata.sno INNER JOIN branchdata branchdata_1 ON cashreceipts.BranchId = branchdata_1.sno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) OR (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) AND (branchdata_1.SalesOfficeID = @SalesOfficeID )ORDER BY DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", ColStatus);
-                cmd.Parameters.Add("@SalesOfficeID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", ColStatus);
+                cmd.Parameters.AddWithValue("@SalesOfficeID", Session["branch"]);
                 DataTable dtReceipt = vdm.SelectQuery(cmd).Tables[0];
                 grdReports.DataSource = dtReceipt;
                 grdReports.DataBind();
@@ -138,10 +138,10 @@ public partial class ReceiptReport : System.Web.UI.Page
                 ColStatus = "Others";
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(DOE, '%d %b %y') AS DOE,Sno,Receiptno,PaymentType AS Type, Name, Amount  FROM cashcollections WHERE (Branchid = @BranchID) AND (DOE BETWEEN @d1 AND @d2) ORDER BY DOE");
                // cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno, cashreceipts.Receipt, cashreceipts.AmountPaid, cashcoll.Name, cashcoll.Amount FROM cashreceipts INNER JOIN (SELECT Branchid, Name, Amount, Remarks, DOE, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, ChequeDate, BankName, Sno, VEmpID FROM cashcollections WHERE (DOE BETWEEN @d1 AND @d2)) cashcoll ON cashreceipts.Receipt = cashcoll.Receiptno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) ORDER BY DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", ColStatus);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", ColStatus);
                 DataTable dtReceipt = vdm.SelectQuery(cmd).Tables[0];
                 grdReports.DataSource = dtReceipt;
                 grdReports.DataBind();
@@ -156,9 +156,9 @@ public partial class ReceiptReport : System.Web.UI.Page
                 Report.Columns.Add("Name");
                 Report.Columns.Add("Amount").DataType = typeof(Double);
                 cmd = new MySqlCommand("SELECT branchdata.BranchName,DATE_FORMAT(collections.PaidDate, '%d %b %y') AS DOE , collections.PaymentType, collections.AmountPaid, collections.Sno, collections.ReceiptNo FROM collections INNER JOIN branchmappingtable ON collections.Branchid = branchmappingtable.SubBranch INNER JOIN branchdata ON collections.Branchid = branchdata.sno WHERE (collections.PaymentType <> 'Cash') AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @BranchID) ORDER BY branchdata.BranchName");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 DataTable dtothers = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtothers.Rows)
                 {
@@ -175,10 +175,10 @@ public partial class ReceiptReport : System.Web.UI.Page
                     Report.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE,cashreceipts.Sno, cashreceipts.Receipt ,cashreceipts.ReceivedFrom AS Type,dispatch.DispName, empmanage.EmpName, cashreceipts.AmountPaid FROM cashreceipts INNER JOIN dispatch ON cashreceipts.dispatchid = dispatch.sno INNER JOIN empmanage ON cashreceipts.Empid = empmanage.Sno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) ORDER BY cashreceipts.DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", "SalesMen");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", "SalesMen");
                 DataTable dtRoute = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoute.Rows)
                 {
@@ -195,11 +195,11 @@ public partial class ReceiptReport : System.Web.UI.Page
                     Report.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno, cashreceipts.Receipt, cashreceipts.ReceivedFrom AS Type, branchdata.BranchName, cashreceipts.AmountPaid,cashreceipts.PaymentStatus FROM cashreceipts INNER JOIN branchdata ON cashreceipts.AgentID = branchdata.sno INNER JOIN branchdata branchdata_1 ON cashreceipts.BranchId = branchdata_1.sno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) OR (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) AND (branchdata_1.SalesOfficeID = @SalesOfficeID )ORDER BY DOE");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", "Agent");
-                cmd.Parameters.Add("@SalesOfficeID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", "Agent");
+                cmd.Parameters.AddWithValue("@SalesOfficeID", Session["branch"]);
                 DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtAgent.Rows)
                 {
@@ -220,10 +220,10 @@ public partial class ReceiptReport : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT Sno,DATE_FORMAT(DOE, '%d %b %y') AS DOE,Receiptno,PaymentType as Type, Name, Amount  FROM cashcollections WHERE (Branchid = @BranchID) AND (DOE BETWEEN @d1 AND @d2) ORDER BY DOE");
                 //cmd = new MySqlCommand("SELECT DATE_FORMAT(cashreceipts.DOE, '%d %b %y') AS DOE, cashreceipts.Sno, cashreceipts.Receipt, cashreceipts.AmountPaid, cashcoll.Name, cashcoll.Amount FROM cashreceipts INNER JOIN (SELECT Branchid, Name, Amount, Remarks, DOE, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, ChequeDate, BankName, Sno, VEmpID FROM cashcollections WHERE (DOE BETWEEN @d1 AND @d2)) cashcoll ON cashreceipts.Receipt = cashcoll.Receiptno WHERE (cashreceipts.BranchId = @BranchID) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) AND (cashreceipts.ReceivedFrom = @Type) ORDER BY DOE");
 
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
-                cmd.Parameters.Add("@Type", "Others");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@Type", "Others");
                 DataTable dtOthers = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtOthers.Rows)
                 {

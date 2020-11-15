@@ -158,7 +158,7 @@ public class SAPdbmanger
                     {
                         UpdateString += fieldNames[i] + ", ";
                         param = new SqlParameter(fieldNames[i].Split('=')[1], fieldValues[i]);
-                        cmd.Parameters.Add(param);
+                        cmd.Parameters.AddWithValue(param);
                     }
                     UpdateString = UpdateString.Substring(0, UpdateString.LastIndexOf(","));
 
@@ -166,7 +166,7 @@ public class SAPdbmanger
                     {
                         ConditionStr += conFieldNames[j] + Operators[j];
                         param = new SqlParameter(conFieldNames[j].Split('=')[1], conFieldValues[j]);
-                        cmd.Parameters.Add(param);
+                        cmd.Parameters.AddWithValue(param);
                     }
 
                     cmd.CommandText = "update " + table + " set " + UpdateString + " where " + ConditionStr;

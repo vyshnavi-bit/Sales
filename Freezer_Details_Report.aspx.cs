@@ -43,8 +43,8 @@ public partial class Freezer_Details_Report : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 //if (ddlSalesOffice.SelectedIndex == -1)
                 //{
@@ -61,9 +61,9 @@ public partial class Freezer_Details_Report : System.Web.UI.Page
                 PBranch.Visible = false;
 
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) and (dispatch.flag=@flag))");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlDispName.DataSource = dtRoutedata;
                 ddlDispName.DataTextField = "DispName";
@@ -79,9 +79,9 @@ public partial class Freezer_Details_Report : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) and (dispatch.flag=@flag))");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@flag", "1");
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@flag", "1");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlDispName.DataSource = dtRoutedata;
         ddlDispName.DataTextField = "DispName";
@@ -93,7 +93,7 @@ public partial class Freezer_Details_Report : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
         cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno)");
-        cmd.Parameters.Add("@dispsno", ddlDispName.SelectedValue);
+        cmd.Parameters.AddWithValue("@dispsno", ddlDispName.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtRoutedata;
         ddlAgentName.DataTextField = "BranchName";
@@ -179,7 +179,7 @@ public partial class Freezer_Details_Report : System.Web.UI.Page
             double credit = 0;
             double debit = 0;
             cmd = new MySqlCommand("SELECT DOE, freezertype, TransType, Amount FROM cashcollections WHERE (Agentid = @BranchID)");
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
             DataTable dtFreezer = vdm.SelectQuery(cmd).Tables[0];
             if (dtFreezer.Rows.Count > 0)
             {

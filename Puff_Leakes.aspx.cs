@@ -48,7 +48,7 @@ public partial class Puff_Leakes : System.Web.UI.Page
             {
                 PPlant.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlPlant.DataSource = dtRoutedata;
                 ddlPlant.DataTextField = "BranchName";
@@ -60,9 +60,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -73,8 +73,8 @@ public partial class Puff_Leakes : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -91,9 +91,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         PBranch.Visible = true;
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-        cmd.Parameters.Add("@SuperBranch", ddlPlant.SelectedValue);
-        cmd.Parameters.Add("@SalesType", "21");
-        cmd.Parameters.Add("@SalesType1", "26");
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlPlant.SelectedValue);
+        cmd.Parameters.AddWithValue("@SalesType", "21");
+        cmd.Parameters.AddWithValue("@SalesType1", "26");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlSalesOffice.DataSource = dtRoutedata;
         ddlSalesOffice.DataTextField = "BranchName";
@@ -170,9 +170,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
     //    {
     //        lblDispatchName.Text = ddlSalesOffice.SelectedItem.Text;
     //        cmd = new MySqlCommand("SELECT   ROUND(SUM(T3.Expr1), 2) AS QTY, ROUND(SUM(T4.LeakQty), 2) AS leakqty, T3.AssignDate, T3.Tripdata_sno FROM (SELECT t1.ATripid, T2.Expr1, T2.Tripdata_sno, t1.AssignDate FROM (SELECT tripdata.Sno AS ATripid, dispatch.BranchID, tripdata.AssignDate FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno WHERE (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @BranchID) GROUP BY tripdata.Sno) t1 LEFT OUTER JOIN (SELECT SUM(Qty) AS Expr1, Tripdata_sno FROM tripsubdata GROUP BY Tripdata_sno) T2 ON t1.ATripid = T2.Tripdata_sno) T3 LEFT OUTER JOIN (SELECT SUM(LeakQty) AS LeakQty, SUM(LeakQty) / 100 AS LEAKperc, TripId, DOE FROM branchleaktrans WHERE (BranchID = @BranchID) GROUP BY TripId) T4 ON T3.Tripdata_sno = T4.TripId GROUP BY T3.AssignDate");
-    //        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //        cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-    //        cmd.Parameters.Add("@d2", GetHighDate(todate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+    //        cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
     //        DataTable dtpuffleaks = vdm.SelectQuery(cmd).Tables[0];
     //        if (dtpuffleaks.Rows.Count > 0)
     //        {
@@ -266,9 +266,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
             ////cmd = new MySqlCommand("SELECT tripdat.Sno, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS DATE, leakages.TotalLeaks, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID,leakages.LeakQty, leakages.TripID, leakages.VarifyStatus FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN leakages ON tripdat.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.VarifyStatus <> 'NULL') AND (dispatch.BranchID = @sobranchid)"); 
             //Ravindra 30/01/2017
             cmd = new MySqlCommand("SELECT   Leaks.LeakQty, Leaks.UnitPrice, Leaks.ProdId, Leaks.ProductName,DATE_FORMAT(ff.I_Date, '%d %b %y') AS DATE, ff.DispName, Leaks.Sno FROM  (SELECT branchleaktrans.LeakQty,branchleaktrans.ProdId, productsdata.UnitPrice, productsdata.ProductName, productsdata.sno AS productsno, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN branchleaktrans ON tripdata_1.Sno = branchleaktrans.TripId INNER JOIN productsdata ON branchleaktrans.ProdId = productsdata.sno WHERE (tripdata_1.I_Date BETWEEN @d1 AND @d2)) Leaks INNER JOIN (SELECT DispName, Sno, DespSno, I_Date FROM  (SELECT dispatch.DispName, tripdata.Sno, dispatch.sno AS DespSno, tripdata.I_Date FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @BranchID)) TripInfo) ff ON ff.Sno = Leaks.Sno ORDER BY ff.I_Date");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtpuffleaks = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("Date");
@@ -290,9 +290,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
             DataTable dtproductdispatch1 = new DataTable();
             double totalqty = 0;
             cmd = new MySqlCommand("SELECT  t2.ProductId,ROUND(SUM(t2.Qty),2) AS QTY,t2.ProductName,  t1.Tripdata_sno, t1.Tripdata_sno AS Expr1, t1.AssignDate, t1.BranchID FROM (SELECT triproutes.Tripdata_sno, tripdata.AssignDate, dispatch.BranchID, tripdata.Sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @branchid)) t1 INNER JOIN (SELECT tripsubdata.ProductId, tripsubdata.Qty, productsdata.ProductName, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2) AND (tripdata_1.Status <> 'C') GROUP BY tripsubdata.ProductId, tripdata_1.Sno) t2 ON t1.Tripdata_sno = t2.Sno GROUP BY t2.ProductId");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             dtproductdispatch = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow branch in distincttable.Rows)
             {
@@ -301,9 +301,9 @@ public partial class Puff_Leakes : System.Web.UI.Page
                 string IndentDate = branch["Date"].ToString();
                 DateTime dtIndentDate = Convert.ToDateTime(IndentDate);
                 cmd = new MySqlCommand("SELECT t2.ProductId, ROUND(SUM(t2.Qty), 2) AS disqty, t1.BranchID FROM (SELECT triproutes.Tripdata_sno, tripdata.AssignDate, dispatch.BranchID, tripdata.Sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE        (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @branchid)) t1 INNER JOIN (SELECT        tripsubdata.ProductId, tripsubdata.Qty, productsdata.ProductName, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE        (tripdata_1.AssignDate BETWEEN @d1 AND @d2) AND (tripdata_1.Status <> 'C') GROUP BY tripsubdata.ProductId, tripdata_1.Sno) t2 ON t1.Tripdata_sno = t2.Sno");
-                cmd.Parameters.Add("@Branchid", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(dtIndentDate));
-                cmd.Parameters.Add("@d2", GetHighDate(dtIndentDate));
+                cmd.Parameters.AddWithValue("@Branchid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(dtIndentDate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(dtIndentDate));
                 DataTable dtdispatch = vdm.SelectQuery(cmd).Tables[0];
                 string ChangedTime = dtIndentDate.AddDays(1).ToString("dd/MMM/yyyy");
                 newrow["Date"] = ChangedTime;

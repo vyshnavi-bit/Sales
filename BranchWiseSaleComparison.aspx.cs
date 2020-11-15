@@ -40,8 +40,8 @@ public partial class BranchWiseSaleComparison : System.Web.UI.Page
     //        {
     //            PBranch.Visible = true;
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-    //            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-    //            cmd.Parameters.Add("@SalesType", "21");
+    //            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+    //            cmd.Parameters.AddWithValue("@SalesType", "21");
     //            DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //            //if (ddlSalesOffice.SelectedIndex == -1)
     //            //{
@@ -58,8 +58,8 @@ public partial class BranchWiseSaleComparison : System.Web.UI.Page
     //            PBranch.Visible = false;
     //            //cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
     //            ////cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-    //            //cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-    //            //cmd.Parameters.Add("@SOID", Session["branch"].ToString());
+    //            //cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+    //            //cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
     //            //DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //            //ddlRouteName.DataSource = dtRoutedata;
     //            //ddlRouteName.DataTextField = "DispName";
@@ -68,9 +68,9 @@ public partial class BranchWiseSaleComparison : System.Web.UI.Page
 
     //            cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  and (DispType is NULL) AND (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID)  and (DispType is NULL) AND (dispatch.flag=@flag))");
     //            //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-    //            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-    //            cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-    //            cmd.Parameters.Add("@flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@flag", "1");
     //            DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //            ddlRouteName.DataSource = dtRoutedata;
     //            ddlRouteName.DataTextField = "DispName";
@@ -86,9 +86,9 @@ public partial class BranchWiseSaleComparison : System.Web.UI.Page
     //{
     //    vdm = new VehicleDBMgr();
     //    cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) AND (dispatch.flag=@flag)) OR ( (dispatch.flag=@flag) AND (branchdata_1.SalesOfficeID = @SOID))");
-    //    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //    cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //    cmd.Parameters.Add("@flag", "1");
+    //    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //    cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //    cmd.Parameters.AddWithValue("@flag", "1");
     //    DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
     //    ddlRouteName.DataSource = dtRoutedata;
     //    ddlRouteName.DataTextField = "DispName";
@@ -155,39 +155,39 @@ public partial class BranchWiseSaleComparison : System.Web.UI.Page
     //        DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdm.conn);
     //        lblDate.Text = fromdate.ToString("dd/MMM/yyyy");
     //        cmd = new MySqlCommand("SELECT  ff.TripID, Triproutes.RouteID, ff.DispQty, ff.sno FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (RouteID = @dispatchSno)) Triproutes INNER JOIN (SELECT TripID, DispQty, sno FROM  (SELECT tripdata.Sno AS TripID, tripsubdata.Qty AS DispQty, tripsubdata.ProductId AS sno FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
-    //        cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
+    //        cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        DataTable dtSub_yesterdayData = vdm.SelectQuery(cmd).Tables[0];
 
     //        cmd = new MySqlCommand("SELECT  ff.TripID, Triproutes.RouteID, ff.DispQty, ff.sno FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (RouteID = @dispatchSno)) Triproutes INNER JOIN (SELECT TripID, DispQty, sno FROM  (SELECT tripdata.Sno AS TripID, tripsubdata.Qty AS DispQty, tripsubdata.ProductId AS sno FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-8)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-8)));
-    //        cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-8)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-8)));
+    //        cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        DataTable dtSub_LastWeekData = vdm.SelectQuery(cmd).Tables[0];
 
     //        cmd = new MySqlCommand("SELECT  ff.TripID, Triproutes.RouteID, ff.DispQty, ff.sno FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (RouteID = @dispatchSno)) Triproutes INNER JOIN (SELECT TripID, DispQty, sno FROM  (SELECT tripdata.Sno AS TripID, tripsubdata.Qty AS DispQty, tripsubdata.ProductId AS sno FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-31)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-31)));
-    //        cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-31)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-31)));
+    //        cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        DataTable dtSub_lastMonthData = vdm.SelectQuery(cmd).Tables[0];
 
 
 
     //        cmd = new MySqlCommand("SELECT  ff.TripID, Triproutes.RouteID, ff.DispQty, ff.sno FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (RouteID = @dispatchSno)) Triproutes INNER JOIN (SELECT TripID, DispQty, sno FROM  (SELECT tripdata.Sno AS TripID, tripsubdata.Qty AS DispQty, tripsubdata.ProductId AS sno FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
-    //        cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-365)));
-    //        cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-365)));
-    //        cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+    //        cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-365)));
+    //        cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-365)));
+    //        cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
     //        DataTable dtSub_lastYearData = vdm.SelectQuery(cmd).Tables[0];
 
     //        cmd = new MySqlCommand("SELECT products_category.Categoryname,productsdata.Sno, productsdata.ProductName, products_subcategory.SubCatName  FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchproducts.branch_sno = @BranchID) Group by productsdata.ProductName ORDER BY productsdata.Rank");
     //        if (Session["salestype"].ToString() == "Plant")
     //        {
-    //            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
     //        }
     //        else
     //        {
-    //            cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
+    //            cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
     //        }
     //        DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
     //        DataTable dtallprdts = new DataTable();

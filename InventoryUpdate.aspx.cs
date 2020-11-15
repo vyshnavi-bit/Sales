@@ -48,14 +48,14 @@ public partial class InventoryUpdate : System.Web.UI.Page
             string branchname = Session["branchname"].ToString();
             Session["filename"] = branchname + " InventorySheetUpdate " + DateTime.Now.ToString("dd/MM/yyyy");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, invmaster.InvName, inventory_monitor.Qty,inventory_monitor.Inv_Sno  FROM  branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno INNER JOIN inventory_monitor ON branchdata.sno = inventory_monitor.BranchId INNER JOIN invmaster ON inventory_monitor.Inv_Sno = invmaster.sno INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE (branchmappingtable.SuperBranch = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID) ORDER BY invmaster.sno");
-            //cmd.Parameters.Add("@Flag", "1");
-            cmd.Parameters.Add("@BranchID", BranchID);
-            cmd.Parameters.Add("@SOID", BranchID);
+            //cmd.Parameters.AddWithValue("@Flag", "1");
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
             DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, invmaster.InvName, inventory_monitor.Qty,inventory_monitor.Inv_Sno FROM branchdata branchdata_1 INNER JOIN branchdata ON branchdata_1.sno = branchdata.sno INNER JOIN inventory_monitor ON branchdata.sno = inventory_monitor.BranchId INNER JOIN invmaster ON inventory_monitor.Inv_Sno = invmaster.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID) ORDER BY invmaster.sno");
-            //cmd.Parameters.Add("@Flag", "1");
-            cmd.Parameters.Add("@SOID", BranchID);
-            cmd.Parameters.Add("@BranchID", BranchID);
+            //cmd.Parameters.AddWithValue("@Flag", "1");
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
             DataTable dtBranch = vdm.SelectQuery(cmd).Tables[0];
             if (dtBranch.Rows.Count > 0)
             {
@@ -328,14 +328,14 @@ public partial class InventoryUpdate : System.Web.UI.Page
                     else
                     {
                         cmd = new MySqlCommand("Select sno from invmaster where InvName=@InvName");
-                        cmd.Parameters.Add("@InvName", dc.ColumnName);
+                        cmd.Parameters.AddWithValue("@InvName", dc.ColumnName);
                         DataTable dtProduct = vdm.SelectQuery(cmd).Tables[0];
                         string invsno = dtProduct.Rows[0]["Sno"].ToString();
                         string Qty = dt.Rows[i][j].ToString();
                         cmd = new MySqlCommand("update inventory_monitor set Qty=@Qty where BranchId=@BranchId and Inv_Sno=@Inv_Sno");
-                        cmd.Parameters.Add("@Qty", Qty);
-                        cmd.Parameters.Add("@BranchId", AgentCode);
-                        cmd.Parameters.Add("@Inv_Sno", invsno);
+                        cmd.Parameters.AddWithValue("@Qty", Qty);
+                        cmd.Parameters.AddWithValue("@BranchId", AgentCode);
+                        cmd.Parameters.AddWithValue("@Inv_Sno", invsno);
                         vdm.Update(cmd);
                     }
                     j++;

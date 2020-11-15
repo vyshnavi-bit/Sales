@@ -37,9 +37,9 @@ public partial class StockClosing : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -50,8 +50,8 @@ public partial class StockClosing : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -120,13 +120,13 @@ public partial class StockClosing : System.Web.UI.Page
                 SalesOfficeId = "158";
             }
             cmd = new MySqlCommand("SELECT  branchroutes.Sno as RouteID,branchroutes.RouteName,branchdata.Sno as AgentCode,  branchdata.BranchName, branchaccounts.Amount, branchdata.SalesType, branchdata.CollectionType, inventory_monitor.Inv_Sno,invmaster.InvName, inventory_monitor.Qty FROM  branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchaccounts ON branchdata.sno = branchaccounts.BranchId INNER JOIN inventory_monitor ON branchaccounts.BranchId = inventory_monitor.BranchId INNER JOIN invmaster ON inventory_monitor.Inv_Sno = invmaster.sno WHERE (branchroutes.BranchID = @BranchID) GROUP BY branchroutes.RouteName, branchdata.BranchName,inventory_monitor.Inv_Sno");
-            cmd.Parameters.Add("@BranchID", SalesOfficeId);
+            cmd.Parameters.AddWithValue("@BranchID", SalesOfficeId);
             DataTable DtStockInv = vdm.SelectQuery(cmd).Tables[0];
             //cmd = new MySqlCommand("SELECT productsdata.ProductName, branchdata.SalesType, branchdata.sno,branchproducts.Product_sno, branchproducts.BranchQty, branchproducts.LeakQty FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchdata.sno = @BranchID) GROUP BY productsdata.ProductName order by branchproducts.Rank");
-            //cmd.Parameters.Add("@BranchID", SalesOfficeId);
+            //cmd.Parameters.AddWithValue("@BranchID", SalesOfficeId);
             //DataTable dtStockProduct = vdm.SelectQuery(cmd).Tables[0];
             //cmd = new MySqlCommand("SELECT invmaster.sno, invmaster.InvName, inventory_monitor.Qty FROM inventory_monitor INNER JOIN invmaster ON inventory_monitor.Inv_Sno = invmaster.sno WHERE (inventory_monitor.BranchId = @BranchID)");
-            //cmd.Parameters.Add("@BranchID", SalesOfficeId);
+            //cmd.Parameters.AddWithValue("@BranchID", SalesOfficeId);
             //DataTable dtStockInvProduct = vdm.SelectQuery(cmd).Tables[0];
             Report.Columns.Add("RouteName");
             Report.Columns.Add("BranchName");
@@ -259,13 +259,13 @@ public partial class StockClosing : System.Web.UI.Page
                     try
                     {
                         cmd = new MySqlCommand("Insert into clotrans(BranchID,Amount,IndDate,SalesType,BranchType,BranchRouteID,EmpID) Values(@BranchID,@Amount,@IndDate,@SalesType,@BranchType,@BranchRouteID,@EmpID)");
-                        cmd.Parameters.Add("@BranchID", dr["AgentCode"].ToString());
-                        cmd.Parameters.Add("@Amount", dr["Amount"].ToString());
-                        cmd.Parameters.Add("@IndDate", DateTime.Now.AddDays(-1));
-                        cmd.Parameters.Add("@SalesType", 20);
-                        cmd.Parameters.Add("@EmpID", Session["UserSno"].ToString());
-                        cmd.Parameters.Add("@BranchType", dr["CollectionType"].ToString());
-                        cmd.Parameters.Add("@BranchRouteID", dr["RouteID"].ToString());
+                        cmd.Parameters.AddWithValue("@BranchID", dr["AgentCode"].ToString());
+                        cmd.Parameters.AddWithValue("@Amount", dr["Amount"].ToString());
+                        cmd.Parameters.AddWithValue("@IndDate", DateTime.Now.AddDays(-1));
+                        cmd.Parameters.AddWithValue("@SalesType", 20);
+                        cmd.Parameters.AddWithValue("@EmpID", Session["UserSno"].ToString());
+                        cmd.Parameters.AddWithValue("@BranchType", dr["CollectionType"].ToString());
+                        cmd.Parameters.AddWithValue("@BranchRouteID", dr["RouteID"].ToString());
                         long Sno = vdm.insertScalar(cmd);
                         //long Sno = 0;
                         DataRow[] drInvData = dtInvReport.Select("AgentCode=" + dr["AgentCode"].ToString());
@@ -275,9 +275,9 @@ public partial class StockClosing : System.Web.UI.Page
                             foreach (DataRow drv in dtInv.Rows)
                             {
                                 cmd = new MySqlCommand("Insert into closubtraninventory (RefNo,InvSno,StockQty) values(@RefNo,@InvSno,@StockQty)");
-                                cmd.Parameters.Add("@RefNo", Sno);
-                                cmd.Parameters.Add("@InvSno", drv["Inv_Sno"].ToString());
-                                cmd.Parameters.Add("@StockQty", drv["Qty"].ToString());
+                                cmd.Parameters.AddWithValue("@RefNo", Sno);
+                                cmd.Parameters.AddWithValue("@InvSno", drv["Inv_Sno"].ToString());
+                                cmd.Parameters.AddWithValue("@StockQty", drv["Qty"].ToString());
                                 vdm.insert(cmd);
                             }
                         }
@@ -288,22 +288,22 @@ public partial class StockClosing : System.Web.UI.Page
                     }
                 }
                 //cmd = new MySqlCommand("Insert into clotrans(BranchID,IndDate,SalesType,EmpID) Values(@BranchID,@IndDate,@SalesType,@EmpID)");
-                //cmd.Parameters.Add("@BranchID", SalesOfficeId);
-                //cmd.Parameters.Add("@IndDate", DateTime.Now);
-                //cmd.Parameters.Add("@SalesType", 21);
-                //cmd.Parameters.Add("@EmpID", Session["UserSno"].ToString());
+                //cmd.Parameters.AddWithValue("@BranchID", SalesOfficeId);
+                //cmd.Parameters.AddWithValue("@IndDate", DateTime.Now);
+                //cmd.Parameters.AddWithValue("@SalesType", 21);
+                //cmd.Parameters.AddWithValue("@EmpID", Session["UserSno"].ToString());
                 //long RefSno = vdm.insertScalar(cmd);
                 //foreach (DataRow drv in dtProReport.Rows)
                 //{
                 //    cmd = new MySqlCommand("Insert into closubtranprodcts (RefNo,ProductID,StockQty,LeakQty) values(@RefNo,@ProductID,@StockQty,@LeakQty)");
-                //    cmd.Parameters.Add("@RefNo", RefSno);
-                //    cmd.Parameters.Add("@ProductID", drv["Product_sno"].ToString());
+                //    cmd.Parameters.AddWithValue("@RefNo", RefSno);
+                //    cmd.Parameters.AddWithValue("@ProductID", drv["Product_sno"].ToString());
                 //    float BranchQty = 0;
                 //    float LeakQty = 0;
                 //    float.TryParse(drv["BranchQty"].ToString(), out BranchQty);
                 //    float.TryParse(drv["LeakQty"].ToString(), out LeakQty);
-                //    cmd.Parameters.Add("@StockQty", BranchQty);
-                //    cmd.Parameters.Add("@LeakQty", LeakQty);
+                //    cmd.Parameters.AddWithValue("@StockQty", BranchQty);
+                //    cmd.Parameters.AddWithValue("@LeakQty", LeakQty);
                 //    if (BranchQty != 0 || LeakQty != 0)
                 //    {
                 //        vdm.insert(cmd);
@@ -312,11 +312,11 @@ public partial class StockClosing : System.Web.UI.Page
                 //foreach (DataRow drv in dtStockInvProduct.Rows)
                 //{
                 //    cmd = new MySqlCommand("Insert into closubtraninventory (RefNo,InvSno,StockQty) values(@RefNo,@InvSno,@StockQty)");
-                //    cmd.Parameters.Add("@RefNo", RefSno);
+                //    cmd.Parameters.AddWithValue("@RefNo", RefSno);
                 //    int Qty = 0;
                 //    int.TryParse(drv["Qty"].ToString(), out Qty);
-                //    cmd.Parameters.Add("@InvSno", drv["sno"].ToString());
-                //    cmd.Parameters.Add("@StockQty", Qty);
+                //    cmd.Parameters.AddWithValue("@InvSno", drv["sno"].ToString());
+                //    cmd.Parameters.AddWithValue("@StockQty", Qty);
                 //    if (Qty != 0)
                 //    {
                 //        vdm.insert(cmd);

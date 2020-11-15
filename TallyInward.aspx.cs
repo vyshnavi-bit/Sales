@@ -46,9 +46,9 @@ public partial class TallyInward : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtRoutedata.Rows)
             {
@@ -58,7 +58,7 @@ public partial class TallyInward : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtPlant.Rows)
             {
@@ -68,8 +68,8 @@ public partial class TallyInward : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "23");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "23");
             DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtNewPlant.Rows)
             {
@@ -89,8 +89,8 @@ public partial class TallyInward : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -154,7 +154,7 @@ public partial class TallyInward : System.Web.UI.Page
             Session["filename"] = ddlSalesOffice.SelectedItem.Text + " Tally Inward" + fromdate.ToString("dd/MM/yyyy");
 
             cmd = new MySqlCommand("SELECT branchdata.branchcode, branchdata.sno, salestypemanagement.salestype FROM branchdata INNER JOIN salestypemanagement ON branchdata.SalesType = salestypemanagement.sno WHERE (branchdata.sno = @Branchid)");
-            cmd.Parameters.Add("@Branchid", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@Branchid", ddlSalesOffice.SelectedValue);
             DataTable dtbranch = vdm.SelectQuery(cmd).Tables[0];
             string branchtype = "";
             string branchcode = "";
@@ -166,16 +166,16 @@ public partial class TallyInward : System.Web.UI.Page
             if (branchtype == "Plant")
             {
                 cmd = new MySqlCommand("SELECT TripInfo.Sno, TripInfo.DCNo,ProductInfo.ProductName,ProductInfo.categorycode,ProductInfo.Categoryname,ProductInfo.UnitPrice,ProductInfo.tproduct, ProductInfo.Qty,ProductInfo.Productid,ProductInfo.Itemcode, TripInfo.I_Date, TripInfo.VehicleNo, TripInfo.Status,TripInfo.whcode,TripInfo.DispName, TripInfo.DispType, TripInfo.DispMode FROM (SELECT tripdata.Sno, tripdata.DCNo, tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, dispatch.DispType, dispatch.DispMode,branchdata.whcode FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE        (dispatch.Branch_Id = @branch) AND (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (tripdata.status <>'C')) TripInfo INNER JOIN (SELECT Categoryname,categorycode, ProductName,tproduct, Sno, Qty,Productid,Itemcode,UnitPrice FROM (SELECT products_category.Categoryname,products_category.categorycode, productsdata.ProductName,productsdata.tproduct,productsdata.sno as Productid, productsdata.Itemcode,productsdata.UnitPrice,tripdata_1.Sno, tripsubdata.Qty FROM            tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2)) TripSubInfo) ProductInfo ON TripInfo.Sno = ProductInfo.Sno");
-                cmd.Parameters.Add("@branch", Session["branch"]);
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
                 DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT productsdata.sno,productsdata.Itemcode,products_category.Categoryname, products_subcategory.SubCatName, branchproducts.Rank, productsdata.ProductName,productsdata.tproduct, branchproducts.branch_sno FROM tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (branchproducts.branch_sno = @Branch) AND (tripdata.BranchID = @BranchID) GROUP BY productsdata.ProductName ORDER BY branchproducts.Rank");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate));
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@Branch", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@Branch", Session["branch"].ToString());
                 DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
                 DateTime ReportDate = VehicleDBMgr.GetTime(vdm.conn);
                 DateTime dtapril = new DateTime();
@@ -258,11 +258,11 @@ public partial class TallyInward : System.Web.UI.Page
             else if (branchtype == "SALES OFFICE" || branchtype == "C & F")
             {
                 cmd = new MySqlCommand("SELECT productsdata.tproduct, ROUND(SUM(tripsubdata.Qty), 2) AS qty,tripdata.sno, tripdata.I_Date, empmanage.UserName  FROM tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (empmanage.Branch = @BranchID)  AND (tripdata.BranchID = @PlantID) GROUP BY productsdata.tproduct");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@PlantID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
-                cmd.Parameters.Add("@Type", "Agent");
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@PlantID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@Type", "Agent");
                 DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
                 Report.Columns.Add("Voucher Date");
                 Report.Columns.Add("Voucher No");
@@ -297,10 +297,10 @@ public partial class TallyInward : System.Web.UI.Page
                     }
                 }
                 cmd = new MySqlCommand("SELECT  dispatch.DispName,dispatch.Branch_ID, dispatch.sno, dispatch.BranchID, tripdata.I_Date, tripdata.Sno AS TripSno, dispatch.DispMode, branchmappingtable.SuperBranch, triproutes.Tripdata_sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN branchmappingtable ON dispatch.BranchID = branchmappingtable.SubBranch WHERE (dispatch.BranchID = @BranchID) AND (tripdata.I_Date BETWEEN @d1 AND @d2)and (dispatch.DispType ='SO') and (tripdata.Status<>'C') OR (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchmappingtable.SuperBranch = @SuperBranch)  and (dispatch.DispType = 'SO')and (tripdata.Status<>'C')  ORDER BY dispatch.sno");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                 DataTable dtDispnames = vdm.SelectQuery(cmd).Tables[0];
                 if (dtDispnames.Rows.Count > 0)
                 {
@@ -317,9 +317,9 @@ public partial class TallyInward : System.Web.UI.Page
                             else
                             {
                                 cmd = new MySqlCommand("SELECT ff.TripID, Triproutes.RouteID, ff.Qty, ff.ProductId, Triproutes.Tripdata_sno,  ff.I_Date, ff.tproduct FROM (SELECT Tripdata_sno, RouteID, Sno FROM triproutes triproutes_1 WHERE (Tripdata_sno = @TripSno)) Triproutes INNER JOIN (SELECT TripID, Qty, ProductId,I_Date, tproduct FROM (SELECT        tripdata.Sno AS TripID, tripsubdata.Qty, tripsubdata.ProductId, tripdata.I_Date, productsdata.tproduct FROM  tripdata INNER JOIN tripsubdata ON tripdata.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE (tripdata.I_Date BETWEEN @starttime AND @endtime)) tripinfo) ff ON ff.TripID = Triproutes.Tripdata_sno");
-                                cmd.Parameters.Add("@TripSno", drSub["TripSno"].ToString());
-                                cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                                cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                                cmd.Parameters.AddWithValue("@TripSno", drSub["TripSno"].ToString());
+                                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                                cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
                                 DataTable DtTripSubData = vdm.SelectQuery(cmd).Tables[0];
                                 foreach (DataRow branch in DtTripSubData.Rows)
                                 {
@@ -366,10 +366,10 @@ public partial class TallyInward : System.Web.UI.Page
                 {
                     cmd = new MySqlCommand("SELECT TripInfo.Sno, TripInfo.DCNo, ProductInfo.tproduct, ProductInfo.Categoryname, ProductInfo.Qty, TripInfo.I_Date, TripInfo.VehicleNo, TripInfo.Status, TripInfo.DispName, TripInfo.DispType, TripInfo.DispMode FROM (SELECT tripdata.Sno, tripdata.DCNo, tripdata.I_Date, tripdata.VehicleNo, tripdata.Status, dispatch.DispName, dispatch.DispType, dispatch.DispMode FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.DispMode = 'Staff') AND (dispatch.Branch_Id = @branch) AND (tripdata.AssignDate BETWEEN @d1 AND @d2)) TripInfo INNER JOIN (SELECT Categoryname, ProductName, Sno, Qty, tproduct FROM  (SELECT products_category.Categoryname, productsdata.ProductName, tripdata_1.Sno, tripsubdata.Qty, productsdata.tproduct FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2)) TripSubInfo) ProductInfo ON TripInfo.Sno = ProductInfo.Sno");
                 }
-                cmd.Parameters.Add("@branch", Session["branch"]);
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@branch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
                 DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                 int i = 1;
                 foreach (DataRow branch in dtble.Rows)

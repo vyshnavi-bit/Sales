@@ -26,7 +26,7 @@ public partial class ChangePassWord : System.Web.UI.Page
                 UserName = Session["UserSno"].ToString();
                 vdm = new VehicleDBMgr();
                 cmd = new MySqlCommand("SELECT Password FROM empmanage WHERE Sno = @Sno");
-                cmd.Parameters.Add("@Sno", UserName);
+                cmd.Parameters.AddWithValue("@Sno", UserName);
                 DataTable dt = vdm.SelectQuery(cmd).Tables[0];//"ManageData", "UserName", new string[] { "UserName=@UserName" }, new string[] { UserName }, new string[] { "" }).Tables[0];
                 if (dt.Rows.Count > 0)
                 {
@@ -34,8 +34,8 @@ public partial class ChangePassWord : System.Web.UI.Page
                     {
                         txtNewPassWord.Text = txtConformPassWord.Text;
                         cmd = new MySqlCommand("Update empmanage set Password=@Password where Sno=@Sno ");
-                        cmd.Parameters.Add("@Sno", UserName);
-                        cmd.Parameters.Add("@Password", txtNewPassWord.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Sno", UserName);
+                        cmd.Parameters.AddWithValue("@Password", txtNewPassWord.Text.Trim());
                         vdm.Update(cmd);
                         lblMessage.Text = "Your Password has been Changed successfully";
                         Response.Redirect("Login.aspx", false);

@@ -47,8 +47,8 @@ public partial class TotalIncentive : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 //if (ddlSalesOffice.SelectedIndex == -1)
                 //{
@@ -66,9 +66,9 @@ public partial class TotalIncentive : System.Web.UI.Page
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-                cmd.Parameters.Add("@BranchD", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@BranchD", Session["branch"].ToString());
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlRouteName.DataSource = dtRoutedata;
                 ddlRouteName.DataTextField = "DispName";
@@ -85,7 +85,7 @@ public partial class TotalIncentive : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-        cmd.Parameters.Add("@BranchD", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchD", ddlSalesOffice.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlRouteName.DataSource = dtRoutedata;
         ddlRouteName.DataTextField = "DispName";
@@ -161,9 +161,9 @@ public partial class TotalIncentive : System.Web.UI.Page
             //cmd = new MySqlCommand("SELECT result.BranchName, result.StructureName, result.BranchId, result.EntryDate, result.leakagepercent, result.structure_sno, product_clubbing.ClubName FROM (SELECT branchdata.BranchName, incentivetransactions.StructureName, incentivetransactions.BranchId, incentivetransactions.EntryDate, incentivetransactions.structure_sno, incentivetransactions.leakagepercent FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId WHERE (dispatch.sno = 10)) result INNER JOIN incentive_struct_sub ON result.structure_sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno");
             // cmd = new MySqlCommand("SELECT result.BranchName, result.BranchId, result.StructureName, result.leakagepercent, result.EntryDate, result.structure_sno, product_clubbing.ClubName FROM (SELECT        branchdata.BranchName, incentivetransactions.BranchId, incentivetransactions.StructureName, incentivetransactions.structure_sno, incentivetransactions.leakagepercent, incentivetransactions.EntryDate FROM branchroutesubtable INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId WHERE (branchroutes.Sno = @dispsno)) result INNER JOIN incentive_struct_sub ON result.structure_sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno");
             cmd = new MySqlCommand("SELECT product_clubbing.ClubName, incentivetransactions.FromDate, incentivetransactions.Todate FROM dispatch_sub INNER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId INNER JOIN incentive_structure ON incentivetransactions.structure_sno = incentive_structure.sno INNER JOIN incentive_struct_sub ON incentive_structure.sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno WHERE (dispatch.sno = @dispsno) AND (incentivetransactions.FromDate BETWEEN @d1 AND @d2) GROUP BY product_clubbing.ClubName,incentivetransactions.FromDate ");
-            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtincentivetranc = vdm.SelectQuery(cmd).Tables[0];
             DataView Dateview = new DataView(dtincentivetranc);
             DataTable distinctDate = Dateview.ToTable(true, "FromDate", "Todate");
@@ -206,15 +206,15 @@ public partial class TotalIncentive : System.Web.UI.Page
                     Report.Rows.Add(br5);
 
                     //cmd = new MySqlCommand("SELECT branchroutes.RouteName, productsdata.ProductName, ROUND(SUM(indents_subtable.unitQty), 2) AS unitQty, products_category.Categoryname FROM indents INNER JOIN branchroutesubtable ON indents.Branch_id = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN dispatch_sub ON branchroutes.Sno = dispatch_sub.Route_id INNER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno WHERE (indents.I_date BETWEEN @starttime AND @endtime) AND (dispatch.sno = @dispatchSno)GROUP BY branchroutes.RouteName, productsdata.ProductName, products_category.Categoryname");
-                    //cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
-                    //cmd.Parameters.Add("@starttime", GetLowDate(fromdate));
-                    //cmd.Parameters.Add("@endtime", GetHighDate(fromdate));
+                    //cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
+                    //cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate));
+                    //cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate));
                     //DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
                     //modified cmd = new MySqlCommand("SELECT branchdata.BranchName,branchdata.sno,incentivetransactions.StructureName, incentivetransactions.structure_sno, incentivetransactions.FromDate,incentivetransactions.Todate, incentivetransactions.Remarks, incentivetransactions.leakagepercent, incentivetransactions.ActualDiscount,incentivetransactions.TotalDiscount AS givendiscount  FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutesubtable ON dispatch_sub.Route_id = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId WHERE (dispatch.sno = @dispatchSno)");
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, incentivetransactions.StructureName, incentivetransactions.structure_sno, incentivetransactions.FromDate, incentivetransactions.Todate, incentivetransactions.Remarks, incentivetransactions.leakagepercent, incentivetransactions.ActualDiscount,incentivetransactions.TotalDiscount AS givendiscount FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutesubtable ON dispatch_sub.Route_id = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId WHERE (dispatch.sno = @dispatchSno) AND (incentivetransactions.FromDate= @d1) AND (incentivetransactions.ToDate= @d2)");
-                    cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", dtfrom);
-                    cmd.Parameters.Add("@d2", dtto);
+                    cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", dtfrom);
+                    cmd.Parameters.AddWithValue("@d2", dtto);
                     DataTable dtbranchsno = vdm.SelectQuery(cmd).Tables[0];
                     //DataTable dtagents = vdm.SelectQuery(cmd).Tables[0];
                     DataView view1 = new DataView(dtbranchsno);
@@ -237,16 +237,16 @@ public partial class TotalIncentive : System.Web.UI.Page
                         actdiscount += Adic;
                         Gdiscount += Gdic;
                         cmd = new MySqlCommand("SELECT productsdata.sno, productsdata.ProductName, product_clubbing.ClubName, incentive_structure.StructureName, product_clubbing.sno AS clubbingsno,products_category.Categoryname, products_subcategory.category_sno FROM incentive_structure INNER JOIN incentive_struct_sub ON incentive_structure.sno = incentive_struct_sub.is_sno INNER JOIN product_clubbing ON incentive_struct_sub.clubbingID = product_clubbing.sno INNER JOIN subproductsclubbing ON product_clubbing.sno = subproductsclubbing.Clubsno INNER JOIN productsdata ON subproductsclubbing.Productid = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (incentive_structure.sno = @StructureID) ");
-                        cmd.Parameters.Add("@StructureID", drbrnch["structure_sno"].ToString());
+                        cmd.Parameters.AddWithValue("@StructureID", drbrnch["structure_sno"].ToString());
                         DataTable dtincentivestructure = vdm.SelectQuery(cmd).Tables[0];
 
 
                         DataView incentiveview = new DataView(dtincentivestructure);
                         DataTable dticentive = incentiveview.ToTable(true, "ClubName", "clubbingsno", "category_sno");
                         cmd = new MySqlCommand("SELECT result.deliveryqty, result.ClubName, result.Clubsno FROM (SELECT ROUND(SUM(indents_subtable.DeliveryQty), 2) AS deliveryqty, subproductsclubbing.Clubsno, product_clubbing.ClubName FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo INNER JOIN subproductsclubbing ON indents_subtable.Product_sno = subproductsclubbing.Productid INNER JOIN product_clubbing ON subproductsclubbing.Clubsno = product_clubbing.sno WHERE (indents.Branch_id = @selectedbrnch) AND (indents.I_date BETWEEN @d1 AND @d2) GROUP BY subproductsclubbing.Clubsno) result INNER JOIN slabs ON result.Clubsno = slabs.club_sno Group By result.Clubsno");
-                        cmd.Parameters.Add("@selectedbrnch", drbrnch["sno"].ToString());
-                        cmd.Parameters.Add("@d1", GetLowDate(dtfrom.AddDays(-1)));
-                        cmd.Parameters.Add("@d2", GetHighDate(dtto.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@selectedbrnch", drbrnch["sno"].ToString());
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtfrom.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtto.AddDays(-1)));
                         DataTable dtclubtotal = vdm.SelectQuery(cmd).Tables[0];
                         foreach (DataRow drincetiveclub in dticentive.Rows)
                         {
@@ -298,9 +298,9 @@ public partial class TotalIncentive : System.Web.UI.Page
 
                 Report.Rows.Add(newvartical);
                 cmd = new MySqlCommand("SELECT SUM(incentivetransactions.ActualDiscount) AS actdisc, SUM(incentivetransactions.TotalDiscount) AS totdiscount,branchdata.sno,branchdata.BranchName FROM dispatch_sub INNER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId WHERE (dispatch.sno = @dispsno) AND (incentivetransactions.FromDate BETWEEN @d1 AND @d2) GROUP BY branchdata.sno, branchdata.BranchName");
-                cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 DataTable dtbranchtotincen = vdm.SelectQuery(cmd).Tables[0];
                 DataRow br6 = Report.NewRow();
                 br6["Agent Name"] = "";
@@ -372,7 +372,7 @@ public partial class TotalIncentive : System.Web.UI.Page
                     else
                     {
                         cmd = new MySqlCommand("SELECT sno,BranchName, phonenumber FROM branchdata where sno=@BranchName");
-                        cmd.Parameters.Add("@BranchName", dr["sno"].ToString());
+                        cmd.Parameters.AddWithValue("@BranchName", dr["sno"].ToString());
                         DataTable dtBranchdata = vdm.SelectQuery(cmd).Tables[0];
                         if (dtBranchdata.Rows.Count > 0)
                         {

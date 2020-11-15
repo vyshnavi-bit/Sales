@@ -39,10 +39,10 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 if (Session["salestype"].ToString() == "Plant")
                 {
                     cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE ((Branch_Id = @BranchD) AND  (DispType=@disptype) AND  (flag=@flag)) OR ((Branch_Id = @BranchD) AND  (DispType=@disptype1) AND  (flag=@flag))");
-                    cmd.Parameters.Add("@BranchD", Session["branch"].ToString());
-                    cmd.Parameters.Add("@disptype", "SO");
-                    cmd.Parameters.Add("@disptype1", "SM");
-                    cmd.Parameters.Add("@flag", "1");
+                    cmd.Parameters.AddWithValue("@BranchD", Session["branch"].ToString());
+                    cmd.Parameters.AddWithValue("@disptype", "SO");
+                    cmd.Parameters.AddWithValue("@disptype1", "SM");
+                    cmd.Parameters.AddWithValue("@flag", "1");
                     DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                     ddlRouteName.DataSource = dtRoutedata;
                     ddlRouteName.DataTextField = "DispName";
@@ -52,8 +52,8 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 else
                 {
                     cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)  AND  (flag=@flag)");
-                    cmd.Parameters.Add("@BranchD", Session["branch"].ToString());
-                    cmd.Parameters.Add("@flag", "1");
+                    cmd.Parameters.AddWithValue("@BranchD", Session["branch"].ToString());
+                    cmd.Parameters.AddWithValue("@flag", "1");
                     DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                     ddlRouteName.DataSource = dtRoutedata;
                     ddlRouteName.DataTextField = "DispName";
@@ -66,10 +66,10 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 if (Session["salestype"].ToString() == "Plant")
                 {
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) and (branchdata.flag=@flag) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) and (branchdata.flag=@flag) ");
-                    cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                    cmd.Parameters.Add("@SalesType", "21");
-                    cmd.Parameters.Add("@SalesType1", "26");
-                    cmd.Parameters.Add("@flag", "1");
+                    cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@SalesType", "21");
+                    cmd.Parameters.AddWithValue("@SalesType1", "26");
+                    cmd.Parameters.AddWithValue("@flag", "1");
                     DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                     ddlRouteName.DataSource = dtRoutedata;
                     ddlRouteName.DataTextField = "BranchName";
@@ -79,9 +79,9 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 else
                 {
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND branchdata_1.flag=@flag  OR (branchdata.sno = @BranchID) AND branchdata.flag=@flag");
-                    cmd.Parameters.Add("@SOID", Session["branch"]);
-                    cmd.Parameters.Add("@BranchID", Session["branch"]);
-                    cmd.Parameters.Add("@flag", "1");
+                    cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+                    cmd.Parameters.AddWithValue("@flag", "1");
                     DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                     ddlRouteName.DataSource = dtRoutedata;
                     ddlRouteName.DataTextField = "BranchName";
@@ -173,18 +173,18 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 {
                     //cmd = new MySqlCommand("SELECT tripdata.Sno, DATE_FORMAT(leakages.EntryDate, '%d %b %y') AS Date, leakages.TotalLeaks, dispatch.DispName, leakages.ProductID, leakages.LeakQty,leakages.TripID, leakages.VarifyStatus, branchproducts.unitprice, productsdata.ProductName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN branchproducts ON leakages.ProductID = branchproducts.product_sno AND dispatch.Branch_Id = branchproducts.branch_sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (dispatch.sno = @dispatchsno) AND (leakages.EntryDate BETWEEN @d1 AND @d2) AND (leakages.VarifyStatus <> 'NULL')");
                     cmd = new MySqlCommand("SELECT tripdat.Sno, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS Date, leakages.TotalLeaks, dispatch.DispName, leakages.ProductID, leakages.LeakQty, leakages.TripID,leakages.VarifyStatus, branchproducts.unitprice, productsdata.ProductName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN leakages ON tripdat.Sno = leakages.TripID INNER JOIN branchproducts ON leakages.ProductID = branchproducts.product_sno AND dispatch.Branch_Id = branchproducts.branch_sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (dispatch.sno = @dispatchsno) AND (leakages.VarifyStatus <> 'NULL')");
-                    cmd.Parameters.Add("@dispatchsno", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@dispatchsno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
                 }
                 else
                 {
                     ////cmd = new MySqlCommand("SELECT tripdat.Sno, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS DATE, leakages.TotalLeaks, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID,leakages.LeakQty, leakages.TripID, leakages.VarifyStatus FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN leakages ON tripdat.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.VarifyStatus <> 'NULL') AND (dispatch.BranchID = @sobranchid)"); 
                     //Ravindra 30/01/2017
                     cmd = new MySqlCommand("SELECT Leaks.TotalLeaks,leaks.productsno, Leaks.UnitPrice, Leaks.ProductName,DATE_FORMAT(ff.I_Date, '%d %b %y') AS DATE,  ff.DispName, Leaks.Sno AS Sno FROM (SELECT leakages.TotalLeaks,productsdata.UnitPrice, productsdata.ProductName,productsdata.sno AS productsno, tripdata_1.Sno FROM            tripdata tripdata_1 INNER JOIN leakages ON tripdata_1.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE        (leakages.VarifyStatus <> 'NULL') AND (tripdata_1.I_Date BETWEEN @d1 AND @d2)) Leaks INNER JOIN (SELECT  DispName, Sno, DespSno, I_Date FROM  (SELECT  dispatch.DispName, tripdata.Sno, dispatch.sno AS DespSno, tripdata.I_Date FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN  triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @BranchID)) TripInfo) ff ON ff.Sno = Leaks.Sno");
-                    cmd.Parameters.Add("@BranchID", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@BranchID", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
                 }
                 // cmd = new MySqlCommand("SELECT tripdata.Sno,DATE_FORMAT(leakages.EntryDate, '%d %b %y') as Date, leakages.TotalLeaks,productsdata.UnitPrice, productsdata.ProductName, dispatch.DispName, leakages.ProductID  FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE  (dispatch.sno = @dispatchsno) AND (leakages.EntryDate between @d1 and @d2) Group by leakages.EntryDate, productsdata.ProductName");
 
@@ -211,9 +211,9 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                
                 double totalqty = 0;
                 cmd = new MySqlCommand("SELECT  t2.ProductId,ROUND(SUM(t2.Qty),2) AS QTY,t2.ProductName,  t1.Tripdata_sno, t1.Tripdata_sno AS Expr1, t1.AssignDate, t1.BranchID FROM (SELECT triproutes.Tripdata_sno, tripdata.AssignDate, dispatch.BranchID, tripdata.Sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @branchid)) t1 INNER JOIN (SELECT tripsubdata.ProductId, tripsubdata.Qty, productsdata.ProductName, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE (tripdata_1.AssignDate BETWEEN @d1 AND @d2) AND (tripdata_1.Status <> 'C') GROUP BY tripsubdata.ProductId, tripdata_1.Sno) t2 ON t1.Tripdata_sno = t2.Sno GROUP BY t2.ProductId");
-                cmd.Parameters.Add("@BranchID", ddlRouteName.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@BranchID", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
                 dtproductdispatch = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow branch in distincttable.Rows)
                 {
@@ -223,10 +223,10 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                     DateTime dtIndentDate = Convert.ToDateTime(IndentDate);
                     cmd = new MySqlCommand("SELECT t2.ProductId, ROUND(SUM(t2.Qty), 2) AS disqty, t1.BranchID FROM (SELECT triproutes.Tripdata_sno, tripdata.AssignDate, dispatch.BranchID, tripdata.Sno FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE        (tripdata.AssignDate BETWEEN @d1 AND @d2) AND (dispatch.BranchID = @branchid)) t1 INNER JOIN (SELECT        tripsubdata.ProductId, tripsubdata.Qty, productsdata.ProductName, tripdata_1.Sno FROM tripdata tripdata_1 INNER JOIN tripsubdata ON tripdata_1.Sno = tripsubdata.Tripdata_sno INNER JOIN productsdata ON tripsubdata.ProductId = productsdata.sno WHERE      (tripdata_1.AssignDate BETWEEN @d1 AND @d2) AND (tripdata_1.Status <> 'C') GROUP BY tripsubdata.ProductId, tripdata_1.Sno) t2 ON t1.Tripdata_sno = t2.Sno");
                     //cmd = new MySqlCommand("SELm\ECT  SUM(tripsubdata.Qty) AS disqty FROM  dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripsubdata ON triproutes.Tripdata_sno = tripsubdata.Tripdata_sno INNER JOIN tripdata ON tripsubdata.Tripdata_sno = tripdata.Sno INNER JOIN (SELECT  product_sno FROM branchproducts  WHERE (branch_sno = @Branchid)) brnchprdts ON tripsubdata.ProductId = brnchprdts.product_sno WHERE (dispatch.BranchID = @Branchid) AND (tripdata.AssignDate BETWEEN @d1 AND @d2)");
-                    cmd.Parameters.Add("@Branchid", ddlRouteName.SelectedValue);
-                   // cmd.Parameters.Add("@TripID", branch["Sno"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(dtIndentDate));
-                    cmd.Parameters.Add("@d2", GetHighDate(dtIndentDate));
+                    cmd.Parameters.AddWithValue("@Branchid", ddlRouteName.SelectedValue);
+                   // cmd.Parameters.AddWithValue("@TripID", branch["Sno"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(dtIndentDate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(dtIndentDate));
                     DataTable dtdispatch = vdm.SelectQuery(cmd).Tables[0];
                    
                     string ChangedTime = dtIndentDate.AddDays(1).ToString("dd/MMM/yyyy");
@@ -382,16 +382,16 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 if (ddlreporttype.SelectedValue == "Dispatch Wise")
                 {
                     cmd = new MySqlCommand("SELECT tripdata.Sno,DATE_FORMAT(leakages.EntryDate, '%d %b %y') as Date, leakages.ReturnQty,productsdata.UnitPrice, productsdata.ProductName, dispatch.DispName, leakages.ProductID  FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE  (dispatch.sno = @dispatchsno) AND (leakages.EntryDate between @d1 and @d2) AND (leakages.VarifyStatus <> 'NULL')");
-                    cmd.Parameters.Add("@dispatchsno", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    cmd.Parameters.AddWithValue("@dispatchsno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 }
                 else
                 {
                     cmd = new MySqlCommand("SELECT tripdata.Sno, DATE_FORMAT(leakages.EntryDate,'%d %b %y') as Date, leakages.ReturnQty, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.EntryDate BETWEEN @d1 AND @d2) AND (leakages.VarifyStatus <> 'NULL') AND (dispatch.BranchID = @sobranchid) AND (leakages.ReturnQty <> 0)");
-                    cmd.Parameters.Add("@sobranchid", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    cmd.Parameters.AddWithValue("@sobranchid", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
 
                 }
 
@@ -413,7 +413,7 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 {
                     DataRow newrow = Report.NewRow();
                     cmd = new MySqlCommand("SELECT Tripdata_sno, ProductId, SUM(Qty) AS disqty, DeliverQty, Status, Price FROM tripsubdata WHERE (Tripdata_sno = @tripdatasno)");
-                    cmd.Parameters.Add("@tripdatasno", branch["Sno"].ToString());
+                    cmd.Parameters.AddWithValue("@tripdatasno", branch["Sno"].ToString());
                     DataTable dtdispatch = vdm.SelectQuery(cmd).Tables[0];
                     string IndentDate = branch["Date"].ToString();
                     DateTime dtIndentDate = Convert.ToDateTime(IndentDate);
@@ -501,9 +501,9 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 {
                     //cmd = new MySqlCommand("SELECT tripdata.Sno, DATE_FORMAT(leakages.EntryDate, '%d %b %y') AS DATE, leakages.TotalLeaks, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID, leakages.LeakQty, leakages.TripID,leakages.VarifyStatus FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.EntryDate BETWEEN @d1 AND @d2) AND (leakages.VarifyStatus <> 'NULL') AND (dispatch.BranchID = @sobranchid)");
                     cmd = new MySqlCommand("SELECT tripdat.Sno, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS DATE, productsdata.UnitPrice, productsdata.ProductName, SUM(branchleaktrans.LeakQty) AS TotalLeaks FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN branchleaktrans ON tripdat.Sno = branchleaktrans.TripId INNER JOIN productsdata ON branchleaktrans.ProdId = productsdata.sno WHERE (dispatch.BranchID = @sobranchid) GROUP BY tripdat.I_Date, branchleaktrans.ProdId");
-                    cmd.Parameters.Add("@sobranchid", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@sobranchid", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
                 }
                 // cmd = new MySqlCommand("SELECT tripdata.Sno,DATE_FORMAT(leakages.EntryDate, '%d %b %y') as Date, leakages.TotalLeaks,productsdata.UnitPrice, productsdata.ProductName, dispatch.DispName, leakages.ProductID  FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE  (dispatch.sno = @dispatchsno) AND (leakages.EntryDate between @d1 and @d2) Group by leakages.EntryDate, productsdata.ProductName");
 
@@ -527,9 +527,9 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                     DateTime dtIndentDate = Convert.ToDateTime(IndentDate);
                     DataRow newrow = Report.NewRow();
                     cmd = new MySqlCommand("SELECT tripdat.Sno, DATE_FORMAT(tripdat.I_Date, '%d %b %y') AS DATE, tripsubdata.ProductId, SUM(tripsubdata.Qty) AS disqty FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, AssignDate, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN tripsubdata ON tripdat.Sno = tripsubdata.Tripdata_sno WHERE (dispatch.BranchID = @sobranchid)");
-                    cmd.Parameters.Add("@sobranchid", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(dtIndentDate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(dtIndentDate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@sobranchid", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(dtIndentDate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(dtIndentDate.AddDays(-1)));
                     DataTable dtdispatch = vdm.SelectQuery(cmd).Tables[0];
                     string ChangedTime = dtIndentDate.AddDays(1).ToString("dd/MMM/yyyy");
                     newrow["Date"] = ChangedTime;
@@ -607,17 +607,17 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 if (ddlreporttype.SelectedValue == "Dispatch Wise")
                 {
                     ////cmd = new MySqlCommand("SELECT tripdata.Sno,DATE_FORMAT(leakages.EntryDate, '%d %b %y') as Date, leakages.ReturnQty,productsdata.UnitPrice, productsdata.ProductName, dispatch.DispName, leakages.ProductID  FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE  (dispatch.sno = @dispatchsno) AND (leakages.EntryDate between @d1 and @d2) AND (leakages.VarifyStatus <> 'NULL')");
-                    ////cmd.Parameters.Add("@dispatchsno", ddlRouteName.SelectedValue);
-                    ////cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    ////cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    ////cmd.Parameters.AddWithValue("@dispatchsno", ddlRouteName.SelectedValue);
+                    ////cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    ////cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 }
                 else
                 {
                     cmd = new MySqlCommand("SELECT  Leaks.productsno, Leaks.UnitPrice, Leaks.ProductName,DATE_FORMAT(ff.I_Date,'%d %b %y') as Date , ff.DispName, Leaks.TripID, Leaks.FreeMilk FROM  (SELECT  leakages.TotalLeaks, productsdata.UnitPrice, productsdata.ProductName, productsdata.sno AS productsno, leakages.TripID, leakages.FreeMilk FROM   tripdata tripdata_1 INNER JOIN  leakages ON tripdata_1.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.FreeMilk <> 0) AND (tripdata_1.I_Date BETWEEN @d1 AND @d2)) Leaks INNER JOIN (SELECT DispName, Sno, DespSno, I_Date FROM (SELECT dispatch.DispName, tripdata.Sno, dispatch.sno AS DespSno, tripdata.I_Date FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.Branch_Id = @sobranchid)) TripInfo) ff ON ff.Sno = Leaks.TripID");
                     //cmd = new MySqlCommand("SELECT tripdata.Sno, DATE_FORMAT(tripdata.I_date,'%d %b %y') as Date, ROUND(SUM(leakages.FreeMilk),2) as FreeMilk, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (tripdata.I_date BETWEEN @d1 AND @d2) AND  (dispatch.Branch_ID = @sobranchid) AND (leakages.FreeMilk <> 0) group by productsdata.ProductName,Date");
-                    cmd.Parameters.Add("@sobranchid", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    cmd.Parameters.AddWithValue("@sobranchid", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 }
                 DataTable dtLeaks = vdm.SelectQuery(cmd).Tables[0];
                 Report = new DataTable();
@@ -697,24 +697,24 @@ public partial class LeaksAndReturns : System.Web.UI.Page
                 if (ddlreporttype.SelectedValue == "Dispatch Wise")
                 {
                     ////cmd = new MySqlCommand("SELECT tripdata.Sno,DATE_FORMAT(leakages.EntryDate, '%d %b %y') as Date, leakages.ReturnQty,productsdata.UnitPrice, productsdata.ProductName, dispatch.DispName, leakages.ProductID  FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE  (dispatch.sno = @dispatchsno) AND (leakages.EntryDate between @d1 and @d2) AND (leakages.VarifyStatus <> 'NULL')");
-                    ////cmd.Parameters.Add("@dispatchsno", ddlRouteName.SelectedValue);
-                    ////cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    ////cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    ////cmd.Parameters.AddWithValue("@dispatchsno", ddlRouteName.SelectedValue);
+                    ////cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    ////cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 }
                 else
                 {
                     cmd = new MySqlCommand("SELECT  Leaks.productsno, Leaks.UnitPrice, Leaks.ProductName,DATE_FORMAT(ff.I_Date,'%d %b %y') as Date , ff.DispName, Leaks.TripID , Leaks.ShortQty FROM  (SELECT   productsdata.UnitPrice, productsdata.ProductName, productsdata.sno AS productsno, leakages.TripID, leakages.ShortQty FROM   tripdata tripdata_1 INNER JOIN  leakages ON tripdata_1.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.ShortQty <> 0) AND (tripdata_1.I_Date BETWEEN @d1 AND @d2)) Leaks INNER JOIN (SELECT DispName, Sno, DespSno, I_Date FROM (SELECT dispatch.DispName, tripdata.Sno, dispatch.sno AS DespSno, tripdata.I_Date FROM branchdata INNER JOIN dispatch ON branchdata.sno = dispatch.Branch_Id INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.Branch_Id = @sobranchid)) TripInfo) ff ON ff.Sno = Leaks.TripID");
                     //cmd = new MySqlCommand("SELECT tripdata.Sno, DATE_FORMAT(tripdata.I_date,'%d %b %y') as Date, ROUND(SUM(leakages.shortqty),2) as shortqty, productsdata.UnitPrice, productsdata.ProductName, leakages.ProductID FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN leakages ON tripdata.Sno = leakages.TripID INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (tripdata.I_date BETWEEN @d1 AND @d2) AND  (dispatch.Branch_ID = @sobranchid) AND (leakages.shortqty <> 0) group by Date,productsdata.ProductName");
-                    cmd.Parameters.Add("@sobranchid", ddlRouteName.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(todate));
+                    cmd.Parameters.AddWithValue("@sobranchid", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 }
                 DataTable dtAll = new DataTable();
                 DataTable dtLeaks = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT branchleaktrans.EmpId,DATE_FORMAT(tripdata.I_date,'%d %b %y') as Date, branchleaktrans.TripId AS TripID, branchleaktrans.ProdId,  branchleaktrans.DOE, branchleaktrans.BranchID,branchleaktrans.Status,  branchleaktrans.ShortQty, tripdata.I_Date, branchproducts.Rank, productsdata.ProductName,productsdata.UnitPrice FROM branchleaktrans INNER JOIN tripdata ON branchleaktrans.TripId = tripdata.Sno INNER JOIN branchproducts ON branchleaktrans.BranchID = branchproducts.branch_sno AND branchleaktrans.ProdId = branchproducts.product_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (branchleaktrans.BranchID = @BranchID) AND branchleaktrans.ShortQty<>0 GROUP BY tripdata.I_Date, branchleaktrans.ProdId ORDER BY TripID ");
-                cmd.Parameters.Add("@BranchID", ddlRouteName.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 DataTable dtsalesofficeLeaks = vdm.SelectQuery(cmd).Tables[0];
 
                 dtAll.Merge(dtLeaks);

@@ -41,7 +41,7 @@ public partial class AgentDelivery : System.Web.UI.Page
 
             vdm = new VehicleDBMgr();
             cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-            cmd.Parameters.Add("@BranchD", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@BranchD", Session["branch"].ToString());
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlRouteName.DataSource = dtRoutedata;
             ddlRouteName.DataTextField = "DispName";
@@ -59,7 +59,7 @@ public partial class AgentDelivery : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
         cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno)");
-        cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
+        cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlagentname.DataSource = dtRoutedata;
         ddlagentname.DataTextField = "BranchName";
@@ -121,7 +121,7 @@ public partial class AgentDelivery : System.Web.UI.Page
             }
             Session["RouteName"] = ddlagentname.SelectedItem.Text;
             cmd = new MySqlCommand("SELECT  branchdata.stateid, branchdata.SalesType, branchdata.BranchName, branchdata.TinNumber, branchdata.Address, branchdata.tbranchname, branchdata.sno, statemastar.statename, statemastar.gststatecode, branchdata.gstno, branchdata.email, branchdata.phonenumber, branchdata.doorno, branchdata.area, branchdata.street, branchdata.city, branchdata.mandal, branchdata.district, branchdata.pincode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno where branchdata.sno=@sno");
-            cmd.Parameters.Add("@sno", ddlagentname.SelectedValue);
+            cmd.Parameters.AddWithValue("@sno", ddlagentname.SelectedValue);
             DataTable dtAddress = vdm.SelectQuery(cmd).Tables[0];
             string AgentAddress = "";
             string AgentName = "";
@@ -140,7 +140,7 @@ public partial class AgentDelivery : System.Web.UI.Page
                 buyerTinNumber = dtAddress.Rows[0]["TinNumber"].ToString();
             }
             cmd = new MySqlCommand("SELECT branchdata.companycode, branchdata.phonenumber,branchdata.email, branchdata.sno,branchdata.stateid, branchdata.Address, branchdata.TinNumber, branchdata.panno, branchdata.BranchCode,statemastar.statecode, statemastar.statename, statemastar.gststatecode, branchdata.phonenumber, branchdata.emailid,  branchdata.street, branchdata.city, branchdata.mandal, branchdata.district, branchdata.pincode, branchdata.gstno, branchdata.doorno, branchdata.area FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @branchsno)");
-            cmd.Parameters.Add("@branchsno", Session["branch"].ToString());
+            cmd.Parameters.AddWithValue("@branchsno", Session["branch"].ToString());
             DataTable dtbrnchaddress = vdm.SelectQuery(cmd).Tables[0];
             //string BranchAddress = dtbrnchaddress.Rows[0]["Address"].ToString();
             //companycode = dtbrnchaddress.Rows[0]["companycode"].ToString();
@@ -165,18 +165,18 @@ public partial class AgentDelivery : System.Web.UI.Page
             lbl_AgentName.Text = AgentName;
             lbl_dcdate.Text = fromdate.ToString("dd/MM/yyyy");
             cmd = new MySqlCommand("SELECT   indents.IndentNo, indents.Branch_id, indents.I_date, indents.IndentType,  indents_subtable.DTripId FROM   indents INNER JOIN  indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE  (indents.Branch_id = @brnchid) AND (indents.I_date BETWEEN @d1 AND @d2) GROUP BY indents_subtable.DTripId");
-            cmd.Parameters.Add("@brnchid", ddlagentname.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@brnchid", ddlagentname.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
             DataTable dtallindents = vdm.SelectQuery(cmd).Tables[0];
             lbl_dcno.Text = dtallindents.Rows[0]["IndentNo"].ToString();
             cmd = new MySqlCommand("SELECT invmaster.InvName, invtransactions12.Qty, invtransactions12.DOE, invtransactions12.FromTran, invtransactions12.ToTran FROM invmaster INNER JOIN invtransactions12 ON invmaster.sno = invtransactions12.B_inv_sno WHERE (invtransactions12.ToTran = @agentid) AND (invtransactions12.DOE BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@agentid", ddlagentname.SelectedValue);
-             cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@agentid", ddlagentname.SelectedValue);
+             cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate).AddDays(-1));
             DataTable dtInventory = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT productsdata.sno, productsdata.ProductName, productsdata.Units, branchproducts.unitprice, invmaster.Qty, products_category.Categoryname, branchproducts.unitprice AS BUnitPrice FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN invmaster ON productsdata.Inventorysno = invmaster.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (branchdata.sno = @agentid) GROUP BY productsdata.ProductName ORDER BY branchproducts.Rank");
-            cmd.Parameters.Add("@agentid", ddlagentname.SelectedValue);
+            cmd.Parameters.AddWithValue("@agentid", ddlagentname.SelectedValue);
             DataTable dtbrnchprdts = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("SNo");
@@ -191,7 +191,7 @@ public partial class AgentDelivery : System.Web.UI.Page
                 //drnew["SNo"] = i;
                 //Report.Rows.Add(drnew);
                 cmd = new MySqlCommand("SELECT indents_subtable.DeliveryQty, indents_subtable.unitQty, productsdata.ProductName,productsdata.sno AS ProductId FROM indents_subtable INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents_subtable.IndentNo = @indno)");
-                cmd.Parameters.Add("@indno", dr["IndentNo"].ToString());
+                cmd.Parameters.AddWithValue("@indno", dr["IndentNo"].ToString());
                 dtalldelivery = vdm.SelectQuery(cmd).Tables[0];
                 double TotalMilk = 0;
                 float torderqty = 0; float tqty = 0;

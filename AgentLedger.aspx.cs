@@ -42,8 +42,8 @@ public partial class AgentLedger : System.Web.UI.Page
             vdm = new VehicleDBMgr();
             cmd = new MySqlCommand(" SELECT branchroutes.RouteName, branchroutes.Sno, branchroutes.BranchID FROM branchroutes INNER JOIN branchdata ON branchroutes.BranchID = branchdata.sno WHERE (branchroutes.BranchID = @brnchid) OR (branchdata.SalesOfficeID = @SOID)");
             //cmd = new MySqlCommand("SELECT RouteName, Sno, BranchID FROM branchroutes WHERE (BranchID = @brnchid)");
-            cmd.Parameters.Add("@SOID", BranchID);
-            cmd.Parameters.Add("@brnchid", BranchID);
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@brnchid", BranchID);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlRouteName.DataSource = dtRoutedata;
             ddlRouteName.DataTextField = "RouteName";
@@ -93,8 +93,8 @@ public partial class AgentLedger : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand(" SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchroutesubtable ON branchmappingtable.SubBranch = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @SuperBranch) AND (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
-        cmd.Parameters.Add("@SuperBranch", BranchID);
-        cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
+        cmd.Parameters.AddWithValue("@SuperBranch", BranchID);
+        cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
         DataTable dtbranchdata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtbranchdata;
         ddlAgentName.DataTextField = "BranchName";
@@ -140,14 +140,14 @@ public partial class AgentLedger : System.Web.UI.Page
             lbl_selttodate.Text = todate.ToString();
             fromdate = fromdate.AddDays(-2);
             cmd = new MySqlCommand("SELECT ROUND(SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost), 2) AS Amount, indents.IndentNo, indents.I_date, indents_subtable.D_date FROM indents INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (indents.I_date BETWEEN @d1 AND @d2) AND (indents.Branch_id = @BranchID) GROUP BY indents.IndentNo");
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(1)));
-            cmd.Parameters.Add("@d2", GetHighDate(todate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate.AddDays(-1)));
             DataTable dtIndent = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT Branchid, UserData_sno, AmountPaid, Denominations, Remarks, Sno, PaidDate, PaymentType, tripId, CheckStatus, ReturnDenomin, PayTime FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2) and (AmountPaid<>'0')");
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             DataTable dtCollections = vdm.SelectQuery(cmd).Tables[0];
             Report.Columns.Add("Indent");
             Report.Columns.Add("IndentDate");
@@ -207,7 +207,7 @@ public partial class AgentLedger : System.Web.UI.Page
                 }
             }
             cmd = new MySqlCommand("SELECT Amount, BranchId FROM  branchaccounts WHERE (BranchId = @BranchID)");
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
             DataTable dtAmount = vdm.SelectQuery(cmd).Tables[0];
             string BrAmount = dtAmount.Rows[0]["Amount"].ToString();
             double BranchAmount = 0;

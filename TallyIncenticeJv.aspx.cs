@@ -49,9 +49,9 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtRoutedata.Rows)
             {
@@ -61,7 +61,7 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtPlant.Rows)
             {
@@ -79,8 +79,8 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -157,11 +157,11 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
             cmd = new MySqlCommand("SELECT sno, BranchName, incentivename,Branchcode FROM branchdata WHERE (sno = @BranchID)");
             if (Session["salestype"].ToString() == "Plant")
             {
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
             }
             else
             {
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             }
             DataTable dtincetivename = vdm.SelectQuery(cmd).Tables[0];
             string Jvname = "";
@@ -176,10 +176,10 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
                 Session["xporttype"] = "TallyIncentive";
                 Session["filename"] = ddlSalesOffice.SelectedItem.Text + " Tally Incentive" + fromdate.ToString("dd/MM/yyyy");
                 cmd = new MySqlCommand("SELECT branchdata.tbranchname, branchmappingtable.SuperBranch, incentivetransactions.TotalDiscount, incentivetransactions.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN incentivetransactions ON branchdata.sno = incentivetransactions.BranchId INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE (branchmappingtable.SuperBranch = @BranchID) AND (incentivetransactions.EntryDate BETWEEN @d1 AND @d2) OR (branchdata_1.SalesOfficeID = @SOID) AND (incentivetransactions.EntryDate BETWEEN @d1 AND @d2)");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 dtble = vdm.SelectQuery(cmd).Tables[0];
                 double totamount = 0;
                 fromdate = fromdate.AddDays(-1);
@@ -213,11 +213,11 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
                  //cmd = new MySqlCommand("SELECT branchdata.tbranchname,collections.sno, collections.remarks, collections.AmountPaid as TotalDiscount FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @BranchID) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate");
 
                cmd = new MySqlCommand("SELECT branchdata.tbranchname, collections.Sno, collections.Remarks, collections.AmountPaid AS TotalDiscount, accountheads.HeadName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN accountheads ON collections.HeadSno = accountheads.Sno WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @BranchID) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate, accountheads.HeadName");
-                cmd.Parameters.Add("@pt", "Journal Voucher");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@pt", "Journal Voucher");
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 dtble = vdm.SelectQuery(cmd).Tables[0];
 
                 fromdate = fromdate.AddDays(-1);
@@ -249,11 +249,11 @@ public partial class TallyIncenticeJv : System.Web.UI.Page
                 Session["xporttype"] = "TallyIncentivevoucher";
                 Session["filename"] = ddlSalesOffice.SelectedItem.Text + " Tally Incentive Voucher" + fromdate.ToString("dd/MM/yyyy");
                 cmd = new MySqlCommand("SELECT branchdata.tbranchname, collections.Sno, collections.Remarks, collections.AmountPaid AS TotalDiscount, accountheads.HeadName FROM dispatch INNER JOIN branchroutes ON dispatch.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN accountheads ON collections.HeadSno = accountheads.Sno WHERE (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (dispatch.Branch_Id = @BranchID) AND (collections.TransactionType IS NULL) AND (collections.PaymentType = @pt) GROUP BY collections.PaidDate, accountheads.HeadName");
-                cmd.Parameters.Add("@pt", "Incentive");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@pt", "Incentive");
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 dtble = vdm.SelectQuery(cmd).Tables[0];
                 fromdate = fromdate.AddDays(-1);
                 string frmdate = fromdate.ToString("dd-MM-yyyy");

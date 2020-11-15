@@ -42,9 +42,9 @@ public partial class LedgerWiseTransactionReport : System.Web.UI.Page
                 dtBranch.Columns.Add("sno");
 
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
 
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
@@ -64,8 +64,8 @@ public partial class LedgerWiseTransactionReport : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -90,7 +90,7 @@ public partial class LedgerWiseTransactionReport : System.Web.UI.Page
             vdm = new VehicleDBMgr();
             
                 cmd = new MySqlCommand("SELECT Sno, BranchId, HeadName, LimitAmount, AccountType, AgentID, EmpID FROM accountheads WHERE (BranchId = @SuperBranch) OR (BranchId IS NULL) ORDER BY BranchId");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
 
 
@@ -178,10 +178,10 @@ public partial class LedgerWiseTransactionReport : System.Web.UI.Page
             Report.Columns.Add("ON NAME OF");
 
             cmd = new MySqlCommand("SELECT subpayable.RefNo, subpayable.HeadDesc, subpayable.Amount, subpayable.HeadSno, cashpayables.CashTo, DATE_FORMAT(cashpayables.DOE, '%d %b %y') AS Entrydate, cashpayables.VocherID, cashpayables.onNameof, cashpayables.ApprovalRemarks, cashpayables.VoucherType FROM subpayable INNER JOIN cashpayables ON subpayable.RefNo = cashpayables.Sno WHERE (subpayable.HeadSno = @HeadSno) AND (cashpayables.BranchID = @BranchID) AND (cashpayables.DOE BETWEEN @d1 AND @d2) ORDER BY cashpayables.DOE");
-            cmd.Parameters.Add("@HeadSno",ddlAccountHead.SelectedValue);
-            cmd.Parameters.Add("@BranchID",ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(todate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@HeadSno",ddlAccountHead.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID",ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
             DataTable dtaccountdetails = vdm.SelectQuery(cmd).Tables[0];
             double totamount_debited = 0;
             double totamount_credited = 0;

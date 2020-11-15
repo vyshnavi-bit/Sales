@@ -62,15 +62,15 @@ public partial class LogOut : System.Web.UI.Page
         {
             string sno = Session["EmpSno"].ToString();
             cmd = new MySqlCommand("Select max(sno) as transno from logininfo where UserId=@userid");
-            cmd.Parameters.Add("@userid", sno);
+            cmd.Parameters.AddWithValue("@userid", sno);
             DataTable dttime = vdm.SelectQuery(cmd).Tables[0];
             if (dttime.Rows.Count > 0)
             {
                 string transno = dttime.Rows[0]["transno"].ToString();
                 cmd = new MySqlCommand("UPDATE logininfo set logouttime=@logouttime,status=@status where sno=@sno");
-                cmd.Parameters.Add("@logouttime", Currentdate);
-                cmd.Parameters.Add("@status", "0");
-                cmd.Parameters.Add("@sno", transno);
+                cmd.Parameters.AddWithValue("@logouttime", Currentdate);
+                cmd.Parameters.AddWithValue("@status", "0");
+                cmd.Parameters.AddWithValue("@sno", transno);
                 vdm.Update(cmd);
             }
         }

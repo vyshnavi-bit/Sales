@@ -47,7 +47,7 @@ public partial class PriceListForm : System.Web.UI.Page
             {
                 PPlant.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlPlant.DataSource = dtRoutedata;
                 ddlPlant.DataTextField = "BranchName";
@@ -63,9 +63,9 @@ public partial class PriceListForm : System.Web.UI.Page
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtRoutedata.Rows)
                 {
@@ -75,7 +75,7 @@ public partial class PriceListForm : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtPlant.Rows)
                 {
@@ -85,8 +85,8 @@ public partial class PriceListForm : System.Web.UI.Page
                     dtBranch.Rows.Add(newrow);
                 }
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "23");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "23");
                 DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
                 foreach (DataRow dr in dtNewPlant.Rows)
                 {
@@ -105,8 +105,8 @@ public partial class PriceListForm : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -123,9 +123,9 @@ public partial class PriceListForm : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         PBranch.Visible = true;
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-        cmd.Parameters.Add("@SuperBranch", ddlPlant.SelectedValue);
-        cmd.Parameters.Add("@SalesType", "21");
-        cmd.Parameters.Add("@SalesType1", "26");
+        cmd.Parameters.AddWithValue("@SuperBranch", ddlPlant.SelectedValue);
+        cmd.Parameters.AddWithValue("@SalesType", "21");
+        cmd.Parameters.AddWithValue("@SalesType1", "26");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlSalesOffice.DataSource = dtRoutedata;
         ddlSalesOffice.DataTextField = "BranchName";
@@ -181,15 +181,15 @@ public partial class PriceListForm : System.Web.UI.Page
     //        {
     //            //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchproducts.product_sno, branchproducts.unitprice, productsdata.ProductName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchroutes.Sno = 73) ORDER BY branchproducts.Rank");
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, branchproducts.product_sno, productsdata.ProductName, branchproducts.unitprice, branchdata.sno FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE ((branchmappingtable.SuperBranch = @BranchID) and (branchdata.flag='1') and branchproducts.unitprice<>'0') OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1') and branchproducts.unitprice<>'0') ORDER BY branchdata.sno");
-    //            cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@BranchID", BranchID);
-    //            cmd.Parameters.Add("@SOID", BranchID);
+    //            cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
+    //            cmd.Parameters.AddWithValue("@SOID", BranchID);
     //            DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
     //            // cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.product_sno, branchproducts.unitprice, branchdata.BranchName, branchdata.sno FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (branchdata.flag='1')) OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1')) ORDER BY branchproducts.Rank");
     //            cmd = new MySqlCommand("SELECT    productsdata.ProductName, branchproducts.unitprice, branchproducts.branch_sno AS sno, branchdata.BranchName, branchproducts.product_sno FROM  productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.sno = @BranchID) AND (branchdata.flag = '1') OR (branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag = '1') ORDER BY branchproducts.Rank");
-    //            cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@SOID", BranchID);
-    //            cmd.Parameters.Add("@BranchID", BranchID);
+    //            cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@SOID", BranchID);
+    //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
     //            dtBranch = vdm.SelectQuery(cmd).Tables[0];
     //            if (dtAgents.Rows.Count > 0)
     //            {
@@ -207,8 +207,8 @@ public partial class PriceListForm : System.Web.UI.Page
     //            cmd = new MySqlCommand("SELECT    branchproducts.branch_sno,products_subcategory.tempsub_catsno AS SubCatSno, products_category.description AS Categoryname, branchproducts.product_sno, productsdata.ProductName, branchproducts.Rank,products_subcategory.description AS SubCategoryName FROM  products_category INNER JOIN products_subcategory ON products_category.tempcatsno = products_subcategory.tempcatsno INNER JOIN productsdata ON products_subcategory.tempsub_catsno = productsdata.tempsubcatsno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchId) ORDER BY products_subcategory.tempsub_catsno, branchproducts.Rank");
 
     //            //cmd = new MySqlCommand("SELECT products_category.Categoryname, productsdata.sno, productsdata.ProductName, branchproducts.product_sno FROM productsdata INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchID)  ORDER BY branchproducts.Rank");
-    //            //cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@BranchID", BranchID);
+    //            //cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", BranchID);
     //            produtstbl = vdm.SelectQuery(cmd).Tables[0];
     //            if (produtstbl.Rows.Count > 0)
     //            {
@@ -269,15 +269,15 @@ public partial class PriceListForm : System.Web.UI.Page
     //        {
     //            //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchproducts.product_sno, branchproducts.unitprice, productsdata.ProductName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchroutes.Sno = 73) ORDER BY branchproducts.Rank");
     //            cmd = new MySqlCommand("SELECT branchdata.BranchName, branchproducts.product_sno, productsdata.ProductName, branchproducts.unitprice, branchdata.sno FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE ((branchmappingtable.SuperBranch = @BranchID) and (branchdata.flag='1') and branchproducts.unitprice<>'0') OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1') and branchproducts.unitprice<>'0') ORDER BY branchdata.sno");
-    //            cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-    //            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
     //            DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
     //            // cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.product_sno, branchproducts.unitprice, branchdata.BranchName, branchdata.sno FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (branchdata.flag='1')) OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1')) ORDER BY branchproducts.Rank");
     //            cmd = new MySqlCommand("SELECT    productsdata.ProductName, branchproducts.unitprice, branchproducts.branch_sno AS sno, branchdata.BranchName, branchproducts.product_sno FROM  productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.sno = @BranchID) AND (branchdata.flag = '1') OR (branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag = '1') ORDER BY branchproducts.Rank");
-    //            cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-    //            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+    //            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
     //            dtBranch = vdm.SelectQuery(cmd).Tables[0];
     //            if (dtBranch.Rows.Count > 0)
     //            {
@@ -294,8 +294,8 @@ public partial class PriceListForm : System.Web.UI.Page
     //            }
     //            cmd = new MySqlCommand("SELECT    branchproducts.branch_sno,products_subcategory.tempsub_catsno AS SubCatSno, products_category.description AS Categoryname, branchproducts.product_sno, productsdata.ProductName, branchproducts.Rank,products_subcategory.description AS SubCategoryName FROM  products_category INNER JOIN products_subcategory ON products_category.tempcatsno = products_subcategory.tempcatsno INNER JOIN productsdata ON products_subcategory.tempsub_catsno = productsdata.tempsubcatsno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchId) ORDER BY products_subcategory.tempsub_catsno, branchproducts.Rank");
     //            //cmd = new MySqlCommand("SELECT products_category.Categoryname, productsdata.sno, productsdata.ProductName, branchproducts.product_sno FROM productsdata INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchID)  ORDER BY branchproducts.Rank");
-    //            //cmd.Parameters.Add("@Flag", "1");
-    //            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+    //            //cmd.Parameters.AddWithValue("@Flag", "1");
+    //            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
     //            produtstbl = vdm.SelectQuery(cmd).Tables[0];
     //            if (produtstbl.Rows.Count > 0)
     //            {
@@ -379,15 +379,15 @@ public partial class PriceListForm : System.Web.UI.Page
             {
                 //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchproducts.product_sno, branchproducts.unitprice, productsdata.ProductName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno WHERE (branchroutes.Sno = 73) ORDER BY branchproducts.Rank");
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchproducts.product_sno,branchproducts.Rank, productsdata.ProductName,productsdata.tempsubcatsno, branchproducts.unitprice, branchdata.sno FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE ((branchmappingtable.SuperBranch = @BranchID) and (branchdata.flag='1') and branchproducts.unitprice<>'0') OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1') and branchproducts.unitprice<>'0')  group by branchproducts.product_sno,branchdata.sno ORDER BY productsdata.tempsubcatsno");
-                cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
                 DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
                 // cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.product_sno, branchproducts.unitprice, branchdata.BranchName, branchdata.sno FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (branchdata.flag='1')) OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1')) ORDER BY branchproducts.Rank");
                 cmd = new MySqlCommand("SELECT    productsdata.ProductName,productsdata.tempsubcatsno,branchproducts.Rank, branchproducts.unitprice,  branchdata.BranchName, branchproducts.branch_sno AS sno,branchproducts.product_sno FROM  productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.sno = @BranchID) AND (branchdata.flag = '1') OR (branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag = '1') GROUP BY  sno,branchproducts.product_sno ORDER BY productsdata.tempsubcatsno,branchproducts.Rank");
-                cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 dtBranch = vdm.SelectQuery(cmd).Tables[0];
                 //if (dtAgents.Rows.Count > 0)
                 //{
@@ -404,15 +404,15 @@ public partial class PriceListForm : System.Web.UI.Page
                 //    }
                 //}
                 //cmd = new MySqlCommand("SELECT  modifiedroutes.Sno, modifiedroutes.RouteName, branchdata.sno AS Branchid, branchdata.BranchName FROM modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno WHERE (branchdata.flag = @flag) AND (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (branchdata.flag = @flag) AND (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime) GROUP BY branchdata.sno, branchdata.BranchName");
-                //cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                //cmd.Parameters.Add("@starttime", GetLowDate(ServerDateCurrentdate.AddDays(-1)));
-                //cmd.Parameters.Add("@flag", "1");
+                //cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                //cmd.Parameters.AddWithValue("@starttime", GetLowDate(ServerDateCurrentdate.AddDays(-1)));
+                //cmd.Parameters.AddWithValue("@flag", "1");
                 //produtstbl = vdm.SelectQuery(cmd).Tables[0];
 
                 cmd = new MySqlCommand("SELECT    branchproducts.branch_sno,products_subcategory.tempsub_catsno AS SubCatSno, products_category.description AS Categoryname, branchproducts.product_sno, productsdata.ProductName, branchproducts.Rank,products_subcategory.description AS SubCategoryName FROM  products_category INNER JOIN products_subcategory ON products_category.tempcatsno = products_subcategory.tempcatsno INNER JOIN productsdata ON products_subcategory.tempsub_catsno = productsdata.tempsubcatsno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchId) ORDER BY products_subcategory.tempsub_catsno, branchproducts.Rank");
                 //cmd = new MySqlCommand("SELECT products_category.Categoryname, productsdata.sno, productsdata.ProductName, branchproducts.product_sno FROM productsdata INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchID)  ORDER BY branchproducts.Rank");
-                //cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+                //cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 produtstbl1 = vdm.SelectQuery(cmd).Tables[0];
                 if (produtstbl1.Rows.Count > 0)
                 {
@@ -497,15 +497,15 @@ public partial class PriceListForm : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchproducts.product_sno, productsdata.ProductName, branchproducts.unitprice, branchdata.sno FROM branchdata INNER JOIN branchproducts ON branchdata.sno = branchproducts.branch_sno INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno WHERE ((branchmappingtable.SuperBranch = @BranchID) and (branchdata.flag='1') and branchproducts.unitprice<>'0') OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1') and branchproducts.unitprice<>'0') ORDER BY branchdata.sno");
-                cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@BranchID", BranchID);
-                cmd.Parameters.Add("@SOID", BranchID);
+                cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", BranchID);
+                cmd.Parameters.AddWithValue("@SOID", BranchID);
                 DataTable dtAgents = vdm.SelectQuery(cmd).Tables[0];
                 // cmd = new MySqlCommand("SELECT productsdata.ProductName, branchproducts.product_sno, branchproducts.unitprice, branchdata.BranchName, branchdata.sno FROM branchproducts INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (branchdata.flag='1')) OR ((branchdata_1.SalesOfficeID = @SOID) and (branchdata_1.flag='1')) ORDER BY branchproducts.Rank");
                 cmd = new MySqlCommand("SELECT    productsdata.ProductName, branchproducts.unitprice, branchproducts.branch_sno AS sno, branchdata.BranchName, branchproducts.product_sno FROM  productsdata INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN branchdata ON branchproducts.branch_sno = branchdata.sno INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.sno = @BranchID) AND (branchdata.flag = '1') OR (branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag = '1') ORDER BY branchproducts.Rank");
-                cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@SOID", BranchID);
-                cmd.Parameters.Add("@BranchID", BranchID);
+                cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@SOID", BranchID);
+                cmd.Parameters.AddWithValue("@BranchID", BranchID);
                 dtBranch = vdm.SelectQuery(cmd).Tables[0];
                 if (dtAgents.Rows.Count > 0)
                 {
@@ -523,8 +523,8 @@ public partial class PriceListForm : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT    branchproducts.branch_sno,products_subcategory.tempsub_catsno AS SubCatSno, products_category.description AS Categoryname, branchproducts.product_sno, productsdata.ProductName, branchproducts.Rank,products_subcategory.description AS SubCategoryName FROM  products_category INNER JOIN products_subcategory ON products_category.tempcatsno = products_subcategory.tempcatsno INNER JOIN productsdata ON products_subcategory.tempsub_catsno = productsdata.tempsubcatsno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchId) ORDER BY products_subcategory.tempsub_catsno, branchproducts.Rank");
 
                 //cmd = new MySqlCommand("SELECT products_category.Categoryname, productsdata.sno, productsdata.ProductName, branchproducts.product_sno FROM productsdata INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno WHERE (branchproducts.branch_sno = @BranchID)  ORDER BY branchproducts.Rank");
-                //cmd.Parameters.Add("@Flag", "1");
-                cmd.Parameters.Add("@BranchID", BranchID);
+                //cmd.Parameters.AddWithValue("@Flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", BranchID);
                 produtstbl = vdm.SelectQuery(cmd).Tables[0];
                 if (produtstbl.Rows.Count > 0)
                 {

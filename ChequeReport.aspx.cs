@@ -45,8 +45,8 @@ public partial class ChequeReport : System.Web.UI.Page
             vdm = new VehicleDBMgr();
             cmd = new MySqlCommand(" SELECT branchroutes.RouteName, branchroutes.Sno, branchroutes.BranchID FROM branchroutes INNER JOIN branchdata ON branchroutes.BranchID = branchdata.sno WHERE (branchroutes.BranchID = @brnchid) OR (branchdata.SalesOfficeID = @SOID)");
             //cmd = new MySqlCommand("SELECT RouteName, Sno, BranchID FROM branchroutes WHERE (BranchID = @brnchid)");
-            cmd.Parameters.Add("@SOID", BranchID);
-            cmd.Parameters.Add("@brnchid", BranchID);
+            cmd.Parameters.AddWithValue("@SOID", BranchID);
+            cmd.Parameters.AddWithValue("@brnchid", BranchID);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlRouteName.DataSource = dtRoutedata;
             ddlRouteName.DataTextField = "RouteName";
@@ -68,9 +68,9 @@ public partial class ChequeReport : System.Web.UI.Page
             if (Session["salestype"].ToString() == "Plant")
             {
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -80,8 +80,8 @@ public partial class ChequeReport : System.Web.UI.Page
             else
             {
                 cmd = new MySqlCommand("SELECT BranchName, sno FROM branchdata WHERE (sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -163,75 +163,75 @@ public partial class ChequeReport : System.Web.UI.Page
             {
                // cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate,DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate,branchdata.BranchName,collections.CheckStatus,collections.BankName,collections.Remarks,collections.ChequeNo,collections.AmountPaid,DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (collections.PaymentType = 'Cheque') AND (branchmappingtable.SuperBranch = @SuperBranch)  and (collections.PaidDate between @d1 and @d2) and (collections.tripid is null) GROUP BY branchdata.BranchName, collections.Denominations, collections.PaidDate order by collections.PaidDate");
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate, DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate, branchdata_2.BranchName,collections.CheckStatus, collections.BankName, collections.Remarks, collections.ChequeNo, collections.AmountPaid, DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM  branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno INNER JOIN branchdata branchdata_2 ON branchmappingtable.SubBranch = branchdata_2.sno INNER JOIN collections ON branchdata_2.sno = collections.Branchid WHERE (branchdata.sno = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) OR (branchdata_1.SalesOfficeID = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) GROUP BY branchdata_2.BranchName, collections.Denominations, collections.PaidDate ORDER BY PaidDate");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtCheque = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT Sno,Branchid, Name, Amount, Remarks,DATE_FORMAT(DOE, '%d %b %y') AS PaidDate, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, DATE_FORMAT(ChequeDate, '%d %b %y') AS chequeDate,BankName FROM cashcollections WHERE (CollectionType = 'Cheque') AND (Branchid = @SuperBranch) AND (DOE between @d1 and @d2)");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtothercheques = vdm.SelectQuery(cmd).Tables[0];
             }
             if (Status == "Pending")
             {
                // cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate,DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate,branchdata.BranchName,collections.CheckStatus,collections.BankName,collections.Remarks, collections.ChequeNo,collections.AmountPaid,DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (collections.PaymentType = 'Cheque') AND (branchmappingtable.SuperBranch = @SuperBranch) and(collections.CheckStatus=@CheckStatus) and (collections.tripid is null) and (collections.PaidDate between @d1 and @d2) GROUP BY branchdata.BranchName, collections.Denominations, collections.PaidDate order by collections.PaidDate");
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate, DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate, branchdata_2.BranchName,collections.CheckStatus, collections.BankName, collections.Remarks, collections.ChequeNo, collections.AmountPaid, DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno INNER JOIN branchdata branchdata_2 ON branchmappingtable.SubBranch = branchdata_2.sno INNER JOIN collections ON branchdata_2.sno = collections.Branchid WHERE (branchdata.sno = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) OR (branchdata_1.SalesOfficeID = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) GROUP BY branchdata_2.BranchName, collections.Denominations, collections.PaidDate ORDER BY PaidDate");
-                cmd.Parameters.Add("@CheckStatus", 'P');
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@CheckStatus", 'P');
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtCheque = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT Sno,Branchid, Name, Amount, Remarks,DATE_FORMAT(DOE, '%d %b %y') AS PaidDate, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, DATE_FORMAT(ChequeDate, '%d %b %y') AS chequeDate,BankName FROM cashcollections WHERE (CollectionType = 'Cheque') AND (Branchid = @SuperBranch) AND (CheckStatus = 'P') AND (DOE between @d1 and @d2)");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtothercheques = vdm.SelectQuery(cmd).Tables[0];
             }
             if (Status == "Verified")
             {
                 //cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate,DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate,branchdata.BranchName,collections.CheckStatus,collections.BankName,collections.Remarks, collections.ChequeNo,collections.AmountPaid,DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (collections.PaymentType = 'Cheque') AND (branchmappingtable.SuperBranch = @SuperBranch) and(collections.CheckStatus=@CheckStatus)  and (collections.tripid is null) and (collections.VarifyDate between @d1 and @d2) GROUP BY branchdata.BranchName, collections.Denominations, collections.PaidDate order by collections.PaidDate");
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate, DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate, branchdata_2.BranchName,collections.CheckStatus, collections.BankName, collections.Remarks, collections.ChequeNo, collections.AmountPaid, DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno INNER JOIN branchdata branchdata_2 ON branchmappingtable.SubBranch = branchdata_2.sno INNER JOIN collections ON branchdata_2.sno = collections.Branchid WHERE (branchdata.sno = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) OR (branchdata_1.SalesOfficeID = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) GROUP BY branchdata_2.BranchName, collections.Denominations, collections.PaidDate ORDER BY PaidDate");
-                cmd.Parameters.Add("@CheckStatus", 'V');
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@CheckStatus", 'V');
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtCheque = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT Sno,Branchid, Name, Amount, Remarks,DATE_FORMAT(DOE, '%d %b %y') AS PaidDate, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, DATE_FORMAT(ChequeDate, '%d %b %y') AS chequeDate,BankName FROM cashcollections WHERE (CollectionType = 'Cheque') AND (Branchid = @SuperBranch) AND (CheckStatus = 'V') AND (VarifyDate between @d1 and @d2)");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtothercheques = vdm.SelectQuery(cmd).Tables[0];
             }
             if (Status == "Bounce")
             {
                 //cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate,DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate,branchdata.BranchName,collections.CheckStatus,collections.BankName,collections.Remarks, collections.ChequeNo,collections.AmountPaid,DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN collections ON branchdata.sno = collections.Branchid INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (collections.PaymentType = 'Cheque') AND (branchmappingtable.SuperBranch = @SuperBranch) and(collections.CheckStatus=@CheckStatus) and (collections.tripid is null) and (collections.PaidDate between @d1 and @d2) GROUP BY branchdata.BranchName, collections.Denominations, collections.PaidDate order by collections.PaidDate");
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate, DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate, branchdata_2.BranchName,collections.CheckStatus, collections.BankName, collections.Remarks, collections.ChequeNo, collections.AmountPaid, DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SuperBranch INNER JOIN branchdata branchdata_1 ON branchmappingtable.SuperBranch = branchdata_1.sno INNER JOIN branchdata branchdata_2 ON branchmappingtable.SubBranch = branchdata_2.sno INNER JOIN collections ON branchdata_2.sno = collections.Branchid WHERE (branchdata.sno = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) OR (branchdata_1.SalesOfficeID = @SuperBranch) AND (collections.PaymentType = 'Cheque') AND (collections.CheckStatus = @CheckStatus) AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) GROUP BY branchdata_2.BranchName, collections.Denominations, collections.PaidDate ORDER BY PaidDate");
-                cmd.Parameters.Add("@CheckStatus", 'B');
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@CheckStatus", 'B');
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                  dtCheque = vdm.SelectQuery(cmd).Tables[0];
                  cmd = new MySqlCommand("SELECT Sno,Branchid, Name, Amount, Remarks,DATE_FORMAT(DOE, '%d %b %y') AS PaidDate, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, DATE_FORMAT(ChequeDate, '%d %b %y') AS chequeDate,BankName FROM cashcollections WHERE (CollectionType = 'Cheque') AND (Branchid = @SuperBranch) AND (CheckStatus = 'B') AND (DOE between @d1 and @d2) ");
-                 cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                 cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                 cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                 cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                 cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                 cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                  dtothercheques = vdm.SelectQuery(cmd).Tables[0];
             }
             if (Status == "Agent Wise")
             {
                 cmd = new MySqlCommand("SELECT DATE_FORMAT(collections.PaidDate, '%d %b %y') AS PaidDate,collections.PaidDate AS pd, DATE_FORMAT(collections.VarifyDate, '%d %b %y') AS VarifyDate, branchdata.BranchName,collections.CheckStatus, collections.BankName,collections.Remarks, collections.ChequeNo, collections.AmountPaid, DATE_FORMAT(collections.ChequeDate, '%d %b %y') AS chequeDate FROM branchdata INNER JOIN collections ON branchdata.sno = collections.Branchid WHERE (collections.PaymentType = 'Cheque') AND (collections.PaidDate BETWEEN @d1 AND @d2) AND (collections.tripId IS NULL) AND (collections.Branchid = @agentid) GROUP BY branchdata.BranchName, collections.Denominations, collections.PaidDate ORDER BY pd");
-                cmd.Parameters.Add("@agentid", ddlAgentName.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@agentid", ddlAgentName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtCheque = vdm.SelectQuery(cmd).Tables[0];
             }
             if (Status == "Others")
             {
                 cmd = new MySqlCommand("SELECT Sno,Branchid, Name, Amount, Remarks,DATE_FORMAT(DOE, '%d %b %y') AS PaidDate, Receiptno, Agentid, PaymentType, CollectionType, CollectionFrom, CheckStatus, ChequeNo, VarifyDate, DATE_FORMAT(ChequeDate, '%d %b %y') AS chequeDate,BankName FROM cashcollections WHERE (CollectionType = 'Cheque') AND (Branchid = @SuperBranch) AND (DOE between @d1 and @d2)");
-                cmd.Parameters.Add("@SuperBranch", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(Todate));
+                cmd.Parameters.AddWithValue("@SuperBranch", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(Todate));
                 dtothercheques = vdm.SelectQuery(cmd).Tables[0];
             }
             Report = new DataTable();
@@ -462,8 +462,8 @@ public partial class ChequeReport : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand(" SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchroutes INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName, branchroutes.RouteName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch INNER JOIN branchroutesubtable ON branchmappingtable.SubBranch = branchroutesubtable.BranchID INNER JOIN branchroutes ON branchroutesubtable.RefNo = branchroutes.Sno WHERE (branchmappingtable.SuperBranch = @SuperBranch) AND (branchroutes.Sno = @routesno) ORDER BY branchdata.BranchName");
-        cmd.Parameters.Add("@SuperBranch", BranchID);
-        cmd.Parameters.Add("@routesno", ddlRouteName.SelectedValue);
+        cmd.Parameters.AddWithValue("@SuperBranch", BranchID);
+        cmd.Parameters.AddWithValue("@routesno", ddlRouteName.SelectedValue);
         DataTable dtbranchdata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtbranchdata;
         ddlAgentName.DataTextField = "BranchName";

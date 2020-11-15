@@ -41,9 +41,9 @@ public partial class RoutewiseRecipt : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -55,8 +55,8 @@ public partial class RoutewiseRecipt : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -69,8 +69,8 @@ public partial class RoutewiseRecipt : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID)  and (DispType is NULL)) OR ((branchdata_1.SalesOfficeID = @SOID)  and (DispType is NULL))");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlRouteName.DataSource = dtRoutedata;
         ddlRouteName.DataTextField = "DispName";
@@ -139,9 +139,9 @@ public partial class RoutewiseRecipt : System.Web.UI.Page
             double totrecipt = 0;
             //cmd = new MySqlCommand("SELECT branchdata.BranchName, indents_subtable.D_date, collections.AmountPaid, indent.Branch_id, cashreceipts.Sno, cashreceipts.Receipt, collections.PaymentType,cashreceipts.PaymentStatus FROM cashreceipts INNER JOIN collections ON cashreceipts.AgentID = collections.Branchid RIGHT OUTER JOIN dispatch INNER JOIN modifiedroutes ON dispatch.Route_id = modifiedroutes.Sno INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo ON collections.tripId = indents_subtable.DTripId AND collections.Branchid = branchdata.sno WHERE (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) OR (dispatch.sno = @dispsno) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime) AND (cashreceipts.DOE BETWEEN @d1 AND @d2) GROUP BY cashreceipts.Receipt");
             cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.Route_id, dispatch.Branch_Id, triproutes.Tripdata_sno, collections.PaymentType, collections.AmountPaid, cashreceipts.Sno,cashreceipts.Receipt, cashreceipts.PaymentStatus, branchdata.BranchName, collections.Branchid FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN collections ON tripdata.Sno = collections.tripId INNER JOIN cashreceipts ON collections.Branchid = cashreceipts.AgentID AND tripdata.Sno = cashreceipts.Tripid INNER JOIN branchdata ON collections.Branchid = branchdata.sno WHERE (dispatch.sno = @dispsno) AND (tripdata.I_Date BETWEEN @d1 AND @d2)");
-            cmd.Parameters.Add("@dispsno", ddlRouteName.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetLowDate(fromdate.AddDays(-1)));
             DataTable dtroutereciepts = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow branch in dtroutereciepts.Rows)
             {

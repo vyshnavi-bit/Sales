@@ -40,9 +40,9 @@ public partial class PuffWiseInventory : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
-                cmd.Parameters.Add("@SalesType1", "26");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SalesType1", "26");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -54,8 +54,8 @@ public partial class PuffWiseInventory : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
-                cmd.Parameters.Add("@SOID", Session["branch"]);
-                cmd.Parameters.Add("@BranchID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -127,14 +127,14 @@ public partial class PuffWiseInventory : System.Web.UI.Page
             Session["filename"] = ddlSalesOffice.SelectedItem.Text + " REPORT " + fromdate.AddDays(1).ToString("dd/MM/yyyy");
             pnlHide.Visible = true;
             cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno, dispatch.BranchID, tripdata.I_Date FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (dispatch.BranchID = @BranchID) AND (tripdata.I_Date BETWEEN @d1 AND @d2) GROUP BY dispatch.DispName");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
             DataTable dtDispnames = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT clotrans.BranchId, invmaster.InvName, invmaster.sno, closubtraninventory.StockQty FROM clotrans INNER JOIN closubtraninventory ON clotrans.Sno = closubtraninventory.RefNo INNER JOIN invmaster ON closubtraninventory.InvSno = invmaster.sno WHERE (clotrans.BranchId = @BranchID) AND (clotrans.IndDate BETWEEN @d1 AND @d2) GROUP BY invmaster.sno");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
             DataTable dtClo = vdm.SelectQuery(cmd).Tables[0];
             Report = new DataTable();
             Report.Columns.Add("Sno");
@@ -158,9 +158,9 @@ public partial class PuffWiseInventory : System.Web.UI.Page
             foreach (DataRow drSub in dtDispnames.Rows)
             {
                 cmd = new MySqlCommand("SELECT triproutes.Tripdata_sno, tripinvdata.Qty, tripinvdata.Remaining, invmaster.InvName, invmaster.sno FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripinvdata ON tripdata.Sno = tripinvdata.Tripdata_sno INNER JOIN invmaster ON tripinvdata.invid = invmaster.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispatchSno)"); 
-                cmd.Parameters.Add("@dispatchSno", drSub["sno"].ToString());
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", drSub["sno"].ToString());
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
                 DataTable DtTripSubData = vdm.SelectQuery(cmd).Tables[0];
                 string Disp = drSub["DispName"].ToString();
                 string[] strName = Disp.Split('_');
@@ -236,16 +236,16 @@ public partial class PuffWiseInventory : System.Web.UI.Page
             if (ddlSalesOffice.SelectedValue == "285")
             {
                 cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, SUM(invtras.Qty) AS delivered, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2) OR (DOE BETWEEN @d1 AND @d2)) invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno INNER JOIN branchmappingtable ON invtras.ToTran = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @branchid) GROUP BY invsno ORDER BY invtras.DOE");
-                cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
                 DateTime dt1 = GetLowDate(fromdate.AddDays(-1));
                 DateTime dt2 = GetLowDate(fromdate);
-                cmd.Parameters.Add("@d1", dt1.AddHours(15));
-                cmd.Parameters.Add("@d2", dt2.AddHours(15));
+                cmd.Parameters.AddWithValue("@d1", dt1.AddHours(15));
+                cmd.Parameters.AddWithValue("@d2", dt2.AddHours(15));
                 DataTable dtinventoryD = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT invtras.TransType, invtras.FromTran, invtras.ToTran, SUM(invtras.Qty) AS Collected, invtras.DOE, invmaster.sno AS invsno, invmaster.InvName FROM (SELECT TransType, FromTran, ToTran, Qty, EmpID, VarifyStatus, VTripId, VEmpId, Sno, B_inv_sno, DOE, VQty FROM invtransactions12 WHERE (DOE BETWEEN @d1 AND @d2) OR (DOE BETWEEN @d1 AND @d2)) invtras INNER JOIN invmaster ON invtras.B_inv_sno = invmaster.sno INNER JOIN branchmappingtable ON invtras.FromTran = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @branchid) GROUP BY invsno ORDER BY invtras.DOE");
-                cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                cmd.Parameters.Add("@d1", dt1.AddHours(15));
-                cmd.Parameters.Add("@d2", dt2.AddHours(15));
+                cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", dt1.AddHours(15));
+                cmd.Parameters.AddWithValue("@d2", dt2.AddHours(15));
                 DataTable dtinventoryC = vdm.SelectQuery(cmd).Tables[0];
                 DataRow drinventry1 = Report.NewRow();
                 drinventry1["Sno"] = i;

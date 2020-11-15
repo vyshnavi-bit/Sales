@@ -298,7 +298,7 @@ public partial class otp : System.Web.UI.Page
     //            using (con = db.GetConnection1())
     //            {
     //                cmd = new SqlCommand("update AdminApproval set Astatus='2' where Plant_code=@pcode ", con);
-    //                cmd.Parameters.Add("@pcode", uniqid);
+    //                cmd.Parameters.AddWithValue("@pcode", uniqid);
     //                cmd.ExecuteNonQuery();
     //            }
     //        }
@@ -321,13 +321,13 @@ public partial class otp : System.Web.UI.Page
     //                //if (staus == "No")
     //                //{
     //                //    cmd = new SqlCommand("update employedetails set status='Yes' where empid=@empid ", con);
-    //                //    cmd.Parameters.Add("@empid", uniqid);
+    //                //    cmd.Parameters.AddWithValue("@empid", uniqid);
     //                //    cmd.ExecuteNonQuery();
     //                //}
     //                //else
     //                //{
     //                //    cmd = new SqlCommand("update employedetails set status='No' where empid=@empid ", con);
-    //                //    cmd.Parameters.Add("@empid", uniqid);
+    //                //    cmd.Parameters.AddWithValue("@empid", uniqid);
     //                //    cmd.ExecuteNonQuery();
     //                //}
     //            }
@@ -357,13 +357,13 @@ public partial class otp : System.Web.UI.Page
     //            if (staus == "P")
     //            {
     //                cmd = new SqlCommand("update po_entrydetailes set status='A' where sno=@sno ", con1);
-    //                cmd.Parameters.Add("@sno", uniqid);
+    //                cmd.Parameters.AddWithValue("@sno", uniqid);
     //                cmd.ExecuteNonQuery();
     //            }
     //            else
     //            {
     //                cmd = new SqlCommand("update po_entrydetailes set status='P' where sn=@sno ", con1);
-    //                cmd.Parameters.Add("@sno", uniqid);
+    //                cmd.Parameters.AddWithValue("@sno", uniqid);
     //                cmd.ExecuteNonQuery();
     //            }
 
@@ -381,7 +381,7 @@ public partial class otp : System.Web.UI.Page
             using (con = db.GetConnection())
             {
                 SqlCommand cmd = new SqlCommand("update VysAuthentication set val9='2' where ID=@id ", con);
-                cmd.Parameters.Add("@id", id);
+                cmd.Parameters.AddWithValue("@id", id);
                 cmd.ExecuteNonQuery();
             }
         }

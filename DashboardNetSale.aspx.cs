@@ -118,16 +118,16 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //{
             //    cmd = new SqlCommand("SELECT productmaster.productcode, productmaster.productname, productmaster.productid, categorymaster.category FROM productmaster INNER JOIN categorymaster ON productmaster.categoryid = categorymaster.categoryid WHERE (productmaster.categoryid = @productcode) AND categorymaster.branchid=@branchid GROUP BY productmaster.productcode, categorymaster.category, productmaster.productname, productmaster.productid");
             //    //cmd = new SqlCommand("SELECT productmaster.productcode,productmaster.productname,productmaster.productid, categorymaster.category FROM productmaster INNER JOIN productmoniter ON productmaster.productid = productmoniter.productid INNER JOIN   categorymaster ON productmaster.productcode = categorymaster.cat_code where productmaster.productcode=@productcode AND productmoniter.branchid=@branchid  GROUP BY productmaster.productcode, categorymaster.category,productmaster.productname,productmaster.productid");
-            //    cmd.Parameters.Add("@branchid", branchid);
+            //    cmd.Parameters.AddWithValue("@branchid", branchid);
             //    //cmd = new SqlCommand("SELECT productid, productname,price FROM productmaster where productcode=@productcode");
-            //    cmd.Parameters.Add("@productcode", ReceiptNo);
+            //    cmd.Parameters.AddWithValue("@productcode", ReceiptNo);
             //    DataTable dtproducts = SalesDB.SelectQuery(cmd).Tables[0];
             //    cmd = new SqlCommand("SELECT stockclosingdetails.qty,stockclosingdetails.productid FROM stockclosingdetails INNER JOIN productmaster ON stockclosingdetails.productid = productmaster.productid  WHERE  (productmaster.categoryid = @ReceiptNo) AND (stockclosingdetails.doe BETWEEN @d1 AND @d2) AND (stockclosingdetails.branchid=@branchid)");
             //    // cmd = new SqlCommand("SELECT  ff.productid, ff.qty, ff.price FROM (SELECT productmaster.productid FROM  productmaster INNER JOIN categorymaster ON productmaster.categoryid = categorymaster.categoryid INNER JOIN  subcategorymaster ON categorymaster.categoryid = subcategorymaster.categoryid AND  productmaster.subcategoryid = subcategorymaster.subcategoryid WHERE (productmaster.productcode = @ReceiptNo) AND (productmaster.branchid = @branchid) GROUP BY productmaster.productid) AS ProductInfo INNER JOIN (SELECT sno, productid, qty, doe, entryby, price, branchid FROM (SELECT sno, productid, qty, doe, entryby, price, branchid FROM  stockclosingdetails WHERE (doe BETWEEN @d1 AND @d2) AND (branchid=@sbranchid)) AS Transinfo) AS ff ON ff.productid = ProductInfo.productid");
-            //    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            //    cmd.Parameters.Add("@d2", GetHighDate(todate));
-            //    cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //    cmd.Parameters.Add("@branchid", branchid);
+            //    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            //    cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+            //    cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //    cmd.Parameters.AddWithValue("@branchid", branchid);
 
             //    DataTable dtInward = SalesDB.SelectQuery(cmd).Tables[0];
 
@@ -140,22 +140,22 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //        double Totalclosingqty = 0;
             //        var i = 1;
             //        cmd = new SqlCommand("SELECT  productmaster.productid, SUM(subinwarddetails.quantity) AS inwardqty  FROM  productmaster  INNER JOIN subinwarddetails ON subinwarddetails.productid = productmaster.productid INNER JOIN  inwarddetails  ON  inwarddetails.sno=subinwarddetails.in_refno  where (inwarddetails.inwarddate BETWEEN @fromdate AND @todate) AND (inwarddetails.branchid=@branchid) AND (productmaster.categoryid=@ReceiptNo) GROUP BY productmaster.productid ");
-            //        cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //        cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //        cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //        cmd.Parameters.Add("@branchid", branchid);
+            //        cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //        cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //        cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //        cmd.Parameters.AddWithValue("@branchid", branchid);
             //        DataTable dtreceipt = SalesDB.SelectQuery(cmd).Tables[0];
             //        cmd = new SqlCommand("SELECT  productmaster.productid, SUM(suboutwarddetails.quantity) AS issuestopunabaka  FROM  productmaster  INNER JOIN suboutwarddetails ON suboutwarddetails.productid = productmaster.productid INNER JOIN outwarddetails ON  outwarddetails.sno= suboutwarddetails.in_refno where (outwarddetails.inwarddate BETWEEN @fromdate AND @todate) AND (outwarddetails.branchid=@branchid) AND (productmaster.categoryid=@ReceiptNo) GROUP BY productmaster.productid");
-            //        cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //        cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //        cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //        cmd.Parameters.Add("@branchid", branchid);
+            //        cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //        cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //        cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //        cmd.Parameters.AddWithValue("@branchid", branchid);
             //        DataTable dtIsspcode = SalesDB.SelectQuery(cmd).Tables[0];
             //        cmd = new SqlCommand("SELECT productmaster.productid, SUM(stocktransfersubdetails.quantity) AS branchtransfer  FROM  productmaster  INNER JOIN stocktransfersubdetails ON stocktransfersubdetails.productid = productmaster.productid INNER JOIN stocktransferdetails ON stocktransferdetails.sno=stocktransfersubdetails.stock_refno  where  (stocktransferdetails.invoicedate BETWEEN @fromdate AND @todate) AND (stocktransferdetails.branch_id=@branchid) AND (productmaster.categoryid=@ReceiptNo) GROUP BY productmaster.productid");
-            //        cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //        cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //        cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //        cmd.Parameters.Add("@branchid", branchid);
+            //        cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //        cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //        cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //        cmd.Parameters.AddWithValue("@branchid", branchid);
             //        DataTable dttransferpcode = SalesDB.SelectQuery(cmd).Tables[0];
             //        foreach (DataRow dr in dtproducts.Rows)
             //        {
@@ -188,9 +188,9 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //            {
             //                DataTable dt_diesel = new DataTable();
             //                cmd = new SqlCommand("SELECT SUM(diesel_consumptiondetails.qty) AS qty, diesel_consumptiondetails.productid, productmaster.price FROM diesel_consumptiondetails INNER JOIN productmaster ON diesel_consumptiondetails.productid = productmaster.productid WHERE (diesel_consumptiondetails.branchid = @branchid) AND (diesel_consumptiondetails.doe BETWEEN @fromdate AND @todate) GROUP BY diesel_consumptiondetails.productid, productmaster.price");
-            //                cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //                cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //                cmd.Parameters.Add("@branchid", branchid);
+            //                cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //                cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //                cmd.Parameters.AddWithValue("@branchid", branchid);
             //                dt_diesel = SalesDB.SelectQuery(cmd).Tables[0];
             //                if (dt_diesel.Rows.Count > 0)
             //                {
@@ -264,15 +264,15 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //    {
             //        cmd = new SqlCommand("SELECT productmaster.productcode,productmaster.productname,productmaster.productid, categorymaster.category FROM productmaster INNER JOIN productmoniter ON productmaster.productid = productmoniter.productid INNER JOIN   categorymaster ON productmaster.productcode = categorymaster.cat_code where productmaster.productcode=@productcode AND productmoniter.branchid=@branchid  GROUP BY productmaster.productcode, categorymaster.category,productmaster.productname,productmaster.productid");
             //        // cmd = new SqlCommand("SELECT productmaster.productcode,productmaster.productname,productmaster.productid, categorymaster.category FROM productmaster INNER JOIN subcategorymaster ON productmaster.subcategoryid = subcategorymaster.subcategoryid INNER JOIN categorymaster ON productmaster.productcode = categorymaster.cat_code AND subcategorymaster.categoryid = categorymaster.categoryid GROUP BY productmaster.productcode, categorymaster.category,productmaster.productid,productmaster.productname");
-            //        cmd.Parameters.Add("@productcode", ReceiptNo);
-            //        cmd.Parameters.Add("@branchid", branchid);
+            //        cmd.Parameters.AddWithValue("@productcode", ReceiptNo);
+            //        cmd.Parameters.AddWithValue("@branchid", branchid);
             //        DataTable dtproducts = SalesDB.SelectQuery(cmd).Tables[0];
             //        cmd = new SqlCommand("SELECT ff.productid, ff.qty, ff.price FROM (SELECT productmaster.productid FROM productmaster INNER JOIN categorymaster ON productmaster.productcode = categorymaster.cat_code INNER JOIN  subcategorymaster ON categorymaster.categoryid = subcategorymaster.categoryid AND  productmaster.sub_cat_code = subcategorymaster.sub_cat_code WHERE (productmaster.productcode = @ReceiptNo) AND (productmaster.branchid = @branchid) GROUP BY productmaster.productid) AS ProductInfo INNER JOIN (SELECT  sno, productid, qty, doe, entryby, price, branchid FROM (SELECT  sno, productid, qty, doe, entryby, price, branchid FROM stockclosingdetails WHERE (doe BETWEEN @d1 AND @d2)) AS Transinfo) AS ff ON ff.productid = ProductInfo.productid");
             //        //cmd = new SqlCommand("SELECT productmaster.productcode, categorymaster.category FROM productmaster INNER JOIN   categorymaster ON productmaster.productcode = categorymaster.cat_code GROUP BY productmaster.productcode, categorymaster.category");
-            //        cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            //        cmd.Parameters.Add("@d2", GetHighDate(fromdate));
-            //        cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //        cmd.Parameters.Add("@branchid", branchid);
+            //        cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            //        cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            //        cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //        cmd.Parameters.AddWithValue("@branchid", branchid);
             //        //cmd = new SqlCommand("SELECT  productcode, SUM(aqty) AS openingbalance FROM  productmaster GROUP BY  productcode ORDER BY productcode");
             //        DataTable dtInward = SalesDB.SelectQuery(cmd).Tables[0];
             //        if (dtproducts.Rows.Count > 0)
@@ -284,22 +284,22 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //            double Totalclosingqty = 0;
             //            var i = 1;
             //            cmd = new SqlCommand("SELECT productmaster.productid, SUM(subinwarddetails.quantity * subinwarddetails.perunit) AS inwardqty  FROM  productmaster  INNER JOIN subinwarddetails ON subinwarddetails.productid = productmaster.productid INNER JOIN  inwarddetails  ON  inwarddetails.sno=subinwarddetails.in_refno  where (inwarddetails.inwarddate BETWEEN @fromdate AND @todate) AND (productmaster.productcode=@ReceiptNo) AND (inwarddetails.branchid=@branchid) GROUP BY productmaster.productid ");
-            //            cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //            cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //            cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //            cmd.Parameters.Add("@branchid", branchid);
+            //            cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //            cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //            cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //            cmd.Parameters.AddWithValue("@branchid", branchid);
             //            DataTable dtreceipt = SalesDB.SelectQuery(cmd).Tables[0];
             //            cmd = new SqlCommand("SELECT  productmaster.productid, SUM(suboutwarddetails.quantity * suboutwarddetails.perunit) AS issuestopunabaka  FROM  productmaster  INNER JOIN suboutwarddetails ON suboutwarddetails.productid = productmaster.productid INNER JOIN outwarddetails ON  outwarddetails.sno= suboutwarddetails.in_refno where (outwarddetails.inwarddate BETWEEN @fromdate AND @todate) AND (productmaster.productcode=@ReceiptNo) AND (outwarddetails.branchid=@branchid) GROUP BY productmaster.productid");
-            //            cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //            cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //            cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //            cmd.Parameters.Add("@branchid", branchid);
+            //            cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //            cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //            cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //            cmd.Parameters.AddWithValue("@branchid", branchid);
             //            DataTable dtIsspcode = SalesDB.SelectQuery(cmd).Tables[0];
             //            cmd = new SqlCommand("SELECT productmaster.productid, SUM(stocktransfersubdetails.quantity * stocktransfersubdetails.price) AS branchtransfer  FROM  productmaster  INNER JOIN stocktransfersubdetails ON stocktransfersubdetails.productid = productmaster.productid INNER JOIN stocktransferdetails ON stocktransferdetails.sno=stocktransfersubdetails.stock_refno  where  (stocktransferdetails.invoicedate BETWEEN @fromdate AND @todate) AND (productmaster.productcode=@ReceiptNo) AND (stocktransferdetails.branch_id=@branchid) GROUP BY productmaster.productid");
-            //            cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //            cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //            cmd.Parameters.Add("@ReceiptNo", ReceiptNo);
-            //            cmd.Parameters.Add("@branchid", branchid);
+            //            cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //            cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //            cmd.Parameters.AddWithValue("@ReceiptNo", ReceiptNo);
+            //            cmd.Parameters.AddWithValue("@branchid", branchid);
             //            DataTable dttransferpcode = SalesDB.SelectQuery(cmd).Tables[0];
             //            foreach (DataRow dr in dtproducts.Rows)
             //            {
@@ -334,10 +334,10 @@ public partial class DashboardNetSale : System.Web.UI.Page
             //                {
             //                    DataTable dt_diesel = new DataTable();
             //                    cmd = new SqlCommand("SELECT SUM(diesel_consumptiondetails.qty * productmoniter.price) AS value FROM diesel_consumptiondetails INNER JOIN productmoniter ON diesel_consumptiondetails.productid = productmoniter.productid WHERE (diesel_consumptiondetails.doe BETWEEN @fromdate AND @todate) AND (diesel_consumptiondetails.branchid = @branch_id) AND (productmoniter.branchid = @branchid) GROUP BY diesel_consumptiondetails.productid, productmoniter.price");
-            //                    cmd.Parameters.Add("@fromdate", GetLowDate(fromdate));
-            //                    cmd.Parameters.Add("@todate", GetHighDate(todate));
-            //                    cmd.Parameters.Add("@branchid", branchid);
-            //                    cmd.Parameters.Add("@branch_id", branchid);
+            //                    cmd.Parameters.AddWithValue("@fromdate", GetLowDate(fromdate));
+            //                    cmd.Parameters.AddWithValue("@todate", GetHighDate(todate));
+            //                    cmd.Parameters.AddWithValue("@branchid", branchid);
+            //                    cmd.Parameters.AddWithValue("@branch_id", branchid);
             //                    dt_diesel = SalesDB.SelectQuery(cmd).Tables[0];
             //                    if (dt_diesel.Rows.Count > 0)
             //                    {

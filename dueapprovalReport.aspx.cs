@@ -43,8 +43,8 @@ public partial class dueapprovalReport : System.Web.UI.Page
 
         //cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) OR (branchdata.sno = @BranchID)");
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, branchdata.SalesType, branchdata.flag FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType = 21 OR branchdata.SalesType = 26) OR (branchdata.sno = @BranchID)");
-        cmd.Parameters.Add("@SOID", Session["branch"]);
-        cmd.Parameters.Add("@BranchID", Session["branch"]);
+        cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlSalesOffice.DataSource = dtRoutedata;
         ddlSalesOffice.DataTextField = "BranchName";
@@ -101,11 +101,11 @@ public partial class dueapprovalReport : System.Web.UI.Page
             }
             //cmd = new MySqlCommand("SELECT  branchroutes.RouteName,branchsales.BranchID as AgentCode, branchdata.BranchName, branchsales.DOE, branchsales.SaleValue, branchsales.Collection, branchsales.dueamt AS DUEAMOUNT,branchsales.remarks FROM branchsales INNER JOIN branchroutes ON branchsales.Routeid = branchroutes.Sno INNER JOIN branchdata ON branchsales.BranchID = branchdata.sno WHERE (branchsales.salesofficeid = @branch) AND (branchsales.indentdate BETWEEN @d1 AND @d2)");
             cmd = new MySqlCommand("SELECT branchroutes.RouteName, branchsales.BranchID AS AgentCode, branchdata.BranchName, branchdata.CollectionType, branchsales.DOE, branchsales.SaleValue, branchsales.Collection,branchsales.dueamt AS DUEAMOUNT, branchsales.remarks, collect.AmountPaid FROM branchsales INNER JOIN branchroutes ON branchsales.Routeid = branchroutes.Sno INNER JOIN branchdata ON branchsales.BranchID = branchdata.sno LEFT OUTER JOIN (SELECT Branchid, UserData_sno, SUM(AmountPaid) AS AmountPaid, Denominations, Remarks, Sno, PaidDate, PaymentType, tripId, CheckStatus,ReturnDenomin, PayTime, VEmpID, ChequeNo, EmpID, ReceiptNo, VarifyDate, ChequeDate, BankName FROM collections WHERE (PaidDate BETWEEN @d3 AND @d4) AND (CheckStatus IS NULL) AND (tripId IS NULL) GROUP BY Branchid) collect ON branchdata.sno = collect.Branchid WHERE (branchsales.salesofficeid = @branch) AND (branchsales.indentdate BETWEEN @d1 AND @d2)"); 
-            cmd.Parameters.Add("branch", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
-            cmd.Parameters.Add("@d3", GetLowDate(fromdate.AddDays(1)));
-            cmd.Parameters.Add("@d4", GetHighDate(fromdate.AddDays(1)));
+            cmd.Parameters.AddWithValue("branch", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@d3", GetLowDate(fromdate.AddDays(1)));
+            cmd.Parameters.AddWithValue("@d4", GetHighDate(fromdate.AddDays(1)));
             DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
             lblDate.Text = GetLowDate(fromdate).AddDays(1).ToString();
             grdReports.DataSource = dtble;

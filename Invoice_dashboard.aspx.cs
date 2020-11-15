@@ -43,9 +43,9 @@ public partial class Invoice_dashboard : System.Web.UI.Page
         dtBranch.Columns.Add("BranchName");
         dtBranch.Columns.Add("sno");
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-        cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-        cmd.Parameters.Add("@SalesType", "21");
-        cmd.Parameters.Add("@SalesType1", "26");
+        cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+        cmd.Parameters.AddWithValue("@SalesType", "21");
+        cmd.Parameters.AddWithValue("@SalesType1", "26");
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         foreach (DataRow dr in dtRoutedata.Rows)
         {
@@ -55,7 +55,7 @@ public partial class Invoice_dashboard : System.Web.UI.Page
             dtBranch.Rows.Add(newrow);
         }
         cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-        cmd.Parameters.Add("@BranchID", Session["branch"]);
+        cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
         foreach (DataRow dr in dtPlant.Rows)
         {
@@ -65,8 +65,8 @@ public partial class Invoice_dashboard : System.Web.UI.Page
             dtBranch.Rows.Add(newrow);
         }
         cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)  ");
-        cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-        cmd.Parameters.Add("@SalesType", "23");
+        cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+        cmd.Parameters.AddWithValue("@SalesType", "23");
         DataTable dtNewPlant = vdm.SelectQuery(cmd).Tables[0];
         foreach (DataRow dr in dtNewPlant.Rows)
         {
@@ -164,13 +164,13 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                     if (ddlinvoicetype.SelectedValue == "NonTax")
                     {
                         cmd = new MySqlCommand("SELECT  DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid, doe FROM  agentdc where  (agentdcno=@agentdcno)");
-                        cmd.Parameters.Add("@agentdcno", agentdcNo);
+                        cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
                         dtAgent = vdm.SelectQuery(cmd).Tables[0];
                     }
                     else
                     {
                         cmd = new MySqlCommand("SELECT  DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid, doe FROM  agenttaxdc where  (agentdcno=@agentdcno)");
-                        cmd.Parameters.Add("@agentdcno", agentdcNo);
+                        cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
                         dtAgent = vdm.SelectQuery(cmd).Tables[0];
                     }
                 }
@@ -179,15 +179,15 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                     if (ddlinvoicetype.SelectedValue == "NonTax")
                     {
                         cmd = new MySqlCommand("SELECT  DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid, doe FROM  agentdc where (companycode=@companycode) AND (agentdcno=@agentdcno)");
-                        cmd.Parameters.Add("@agentdcno", agentdcNo);
-                        cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
+                        cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
+                        cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
                         dtAgent = vdm.SelectQuery(cmd).Tables[0];
                     }
                     else
                     {
                         cmd = new MySqlCommand("SELECT  DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid, doe FROM  agenttaxdc where (companycode=@companycode) AND (agentdcno=@agentdcno)");
-                        cmd.Parameters.Add("@agentdcno", agentdcNo);
-                        cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
+                        cmd.Parameters.AddWithValue("@agentdcno", agentdcNo);
+                        cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
                         dtAgent = vdm.SelectQuery(cmd).Tables[0];
                     }
                 }
@@ -227,13 +227,13 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                             if (ddlinvoicetype.SelectedValue == "NonTax")
                             {
                                 cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agentdc WHERE   (agentdcno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentdcno");
-                                cmd.Parameters.Add("@i1", txt_fromno.Text);
-                                cmd.Parameters.Add("@i2", txt_tono.Text);
+                                cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                                cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                             }
                             {
                                 cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agenttaxdc WHERE   (agentdcno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentdcno");
-                                cmd.Parameters.Add("@i1", txt_fromno.Text);
-                                cmd.Parameters.Add("@i2", txt_tono.Text);
+                                cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                                cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                             }
                         }
                     }
@@ -245,12 +245,12 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                         if (ddlinvoicetype.SelectedValue == "NonTax")
                         {
                             cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agentdc WHERE (companycode=@companycode) AND  (IndDate BETWEEN @d1 AND @d2) AND (soid = @soid) ORDER BY agentdcno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
                         }
                         else
                         {
                             cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agenttaxdc WHERE (companycode=@companycode) AND  (IndDate BETWEEN @d1 AND @d2) AND (soid = @soid) ORDER BY agentdcno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
                         }
                     }
                     else if (ddltype.SelectedValue == "Stock Transfer")
@@ -258,16 +258,16 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                         if (ddlinvoicetype.SelectedValue == "NonTax")
                         {
                             cmd = new MySqlCommand("SELECT  BranchID, IndDate, agentstno AS agentdcno, soid, stateid, companycode, moduleid FROM agentst WHERE (companycode=@companycode) AND  (agentstno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentstno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
-                            cmd.Parameters.Add("@i1", txt_fromno.Text);
-                            cmd.Parameters.Add("@i2", txt_tono.Text);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                            cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                         }
                         else
                         {
                             cmd = new MySqlCommand("SELECT  BranchID, IndDate, agentstno AS agentdcno, soid, stateid, companycode, moduleid FROM agenttaxst WHERE (companycode=@companycode) AND  (agentstno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentstno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
-                            cmd.Parameters.Add("@i1", txt_fromno.Text);
-                            cmd.Parameters.Add("@i2", txt_tono.Text);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                            cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                         }
                     }
                     else
@@ -275,22 +275,22 @@ public partial class Invoice_dashboard : System.Web.UI.Page
                         if (ddlinvoicetype.SelectedValue == "NonTax")
                         {
                             cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agentdc WHERE (companycode=@companycode) AND  (agentdcno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentdcno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
-                            cmd.Parameters.Add("@i1", txt_fromno.Text);
-                            cmd.Parameters.Add("@i2", txt_tono.Text);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                            cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                         }
                         else
                         {
                             cmd = new MySqlCommand("SELECT DcNo, BranchID, IndDate, agentdcno, soid, stateid, companycode, moduleid FROM agenttaxdc WHERE (companycode=@companycode) AND  (agentdcno BETWEEN @i1 AND @i2) AND (soid = @soid) ORDER BY agentdcno");
-                            cmd.Parameters.Add("@companycode", ddlcompny.SelectedValue);
-                            cmd.Parameters.Add("@i1", txt_fromno.Text);
-                            cmd.Parameters.Add("@i2", txt_tono.Text);
+                            cmd.Parameters.AddWithValue("@companycode", ddlcompny.SelectedValue);
+                            cmd.Parameters.AddWithValue("@i1", txt_fromno.Text);
+                            cmd.Parameters.AddWithValue("@i2", txt_tono.Text);
                         }
                     }
                 }
-                cmd.Parameters.Add("@soid", ddlstateName.SelectedValue);
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                cmd.Parameters.Add("@d2", GetHighDate(todate));
+                cmd.Parameters.AddWithValue("@soid", ddlstateName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
                 dtAgent = vdm.SelectQuery(cmd).Tables[0];
             }
             int i = 1;

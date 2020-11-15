@@ -48,9 +48,9 @@ public partial class SapPayments : System.Web.UI.Page
             dtBranch.Columns.Add("BranchName");
             dtBranch.Columns.Add("sno");
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
-            cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            cmd.Parameters.Add("@SalesType", "21");
-            cmd.Parameters.Add("@SalesType1", "26");
+            cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SalesType", "21");
+            cmd.Parameters.AddWithValue("@SalesType1", "26");
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtRoutedata.Rows)
             {
@@ -60,7 +60,7 @@ public partial class SapPayments : System.Web.UI.Page
                 dtBranch.Rows.Add(newrow);
             }
             cmd = new MySqlCommand("SELECT BranchName, sno FROM  branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtPlant = vdm.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dtPlant.Rows)
             {
@@ -78,8 +78,8 @@ public partial class SapPayments : System.Web.UI.Page
         {
             PBranch.Visible = true;
             cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.sno = @BranchID) AND (branchdata.SalesType IS NOT NULL)");
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             ddlSalesOffice.DataSource = dtRoutedata;
             ddlSalesOffice.DataTextField = "BranchName";
@@ -166,7 +166,7 @@ public partial class SapPayments : System.Web.UI.Page
             string ledger = ""; string whcode = "";
             string ladger_dr_code = "";
             cmd = new MySqlCommand("SELECT tbranchname, ladger_dr,whcode,ladger_dr_code FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
             DataTable dtledger = vdm.SelectQuery(cmd).Tables[0];
             if (dtledger.Rows.Count > 0)
             {
@@ -178,9 +178,9 @@ public partial class SapPayments : System.Web.UI.Page
             //cmd = new MySqlCommand("SELECT cashpayables.VocherID, cashpayables.Remarks,subpayable.sno, subpayable.Amount, accountheads.HeadName FROM cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.DOE BETWEEN @d1 AND @d2) AND (cashpayables.VoucherType = 'Debit') AND (cashpayables.Status = 'P')");
             cmd = new MySqlCommand("SELECT  cashpayables.VocherID, cashpayables.Remarks, subpayable.sno, subpayable.Amount,accountheads.accountcode,subpayable.HeadSno, accountheads.HeadName, cashpayables.Approvedby, cashpayables.Status,empmanage.EmpName, cashpayables.VoucherType, cashpayables.DOE, empmanage_1.EmpName AS createdby, empmanage_1.Sno AS createemp,empmanage.Sno AS approvedemp FROM  cashpayables INNER JOIN subpayable ON cashpayables.Sno = subpayable.RefNo INNER JOIN accountheads ON subpayable.HeadSno = accountheads.Sno INNER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno INNER JOIN empmanage empmanage_1 ON cashpayables.Created_by = empmanage_1.Sno WHERE (cashpayables.BranchID = @BranchID) AND (cashpayables.DOE BETWEEN @d1 AND @d2) AND (cashpayables.VoucherType = 'Debit') AND (cashpayables.Status = 'P')");
 
-            cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(fromdate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
             DataTable dtAgent = vdm.SelectQuery(cmd).Tables[0];
             if (dtAgent.Rows.Count > 0)
             {
@@ -208,9 +208,9 @@ public partial class SapPayments : System.Web.UI.Page
                 {
                     string VoucherNo = "";
                     cmd = new MySqlCommand("SELECT  vouchercode,RefNo, HeadDesc, Amount, HeadSno, sno, branchid, paiddate FROM subpayable  WHERE (branchid = @BranchID) AND (paiddate BETWEEN @d1 AND @d2)");
-                    cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetLowDate(fromdate));
                     DataTable dtVoucher = vdm.SelectQuery(cmd).Tables[0];
                     if (dtVoucher.Rows.Count > 0)
                     {
@@ -225,53 +225,53 @@ public partial class SapPayments : System.Web.UI.Page
                         else
                         {
                             cmd = new MySqlCommand("SELECT IFNULL(MAX(vouchercode), 0) + 1 AS Sno FROM subpayable WHERE (branchid = @branchid)  AND (paiddate BETWEEN @d1 AND @d2)");
-                            cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                            cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
-                            cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-                            cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
+                            cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+                            cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
                             DataTable dtvoucherno = vdm.SelectQuery(cmd).Tables[0];
                             VoucherNo = dtvoucherno.Rows[0]["Sno"].ToString();
                             cmd = new MySqlCommand("update  subpayable set vouchercode=@vouchercode, paiddate=@paiddate,branchid=@branchid  where (sno=@sno) AND (HeadSno = @HeadSno)"); ;
-                            cmd.Parameters.Add("@vouchercode", VoucherNo);
-                            cmd.Parameters.Add("@paiddate", fromdate);
-                            cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                            cmd.Parameters.Add("@sno", branch["sno"].ToString());
-                            cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
+                            cmd.Parameters.AddWithValue("@vouchercode", VoucherNo);
+                            cmd.Parameters.AddWithValue("@paiddate", fromdate);
+                            cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                            cmd.Parameters.AddWithValue("@sno", branch["sno"].ToString());
+                            cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
                             vdm.Update(cmd);
                         }
                     }
                     else
                     {
                         cmd = new MySqlCommand("SELECT IFNULL(MAX(vouchercode), 0) + 1 AS Sno FROM subpayable WHERE (branchid = @branchid)  AND (paiddate BETWEEN @d1 AND @d2)");
-                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                        cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
-                        cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-                        cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
                         DataTable dtvoucherno = vdm.SelectQuery(cmd).Tables[0];
                         VoucherNo = dtvoucherno.Rows[0]["Sno"].ToString();
                         cmd = new MySqlCommand("update  subpayable set vouchercode=@vouchercode, paiddate=@paiddate,branchid=@branchid  where  (sno=@sno) AND (HeadSno = @HeadSno)"); ;
-                        cmd.Parameters.Add("@vouchercode", VoucherNo);
-                        cmd.Parameters.Add("@paiddate", fromdate);
-                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                        cmd.Parameters.Add("@sno", branch["sno"].ToString());
-                        cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
+                        cmd.Parameters.AddWithValue("@vouchercode", VoucherNo);
+                        cmd.Parameters.AddWithValue("@paiddate", fromdate);
+                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@sno", branch["sno"].ToString());
+                        cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
                         vdm.Update(cmd);
                     }
                     if (VoucherNo == "0")
                     {
                         cmd = new MySqlCommand("SELECT IFNULL(MAX(vouchercode), 0) + 1 AS Sno FROM subpayable WHERE (branchid = @branchid)  AND (paiddate BETWEEN @d1 AND @d2)");
-                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                        cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
-                        cmd.Parameters.Add("@d1", GetLowDate(dtapril.AddDays(-1)));
-                        cmd.Parameters.Add("@d2", GetHighDate(dtmarch.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(dtapril.AddDays(-1)));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(dtmarch.AddDays(-1)));
                         DataTable dtvoucherno = vdm.SelectQuery(cmd).Tables[0];
                         VoucherNo = dtvoucherno.Rows[0]["Sno"].ToString();
                         cmd = new MySqlCommand("update  subpayable set vouchercode=@vouchercode, paiddate=@paiddate,branchid=@branchid  where  (RefNo=@RefNo) AND (HeadSno = @HeadSno)"); ;
-                        cmd.Parameters.Add("@vouchercode", VoucherNo);
-                        cmd.Parameters.Add("@paiddate", fromdate);
-                        cmd.Parameters.Add("@branchid", ddlSalesOffice.SelectedValue);
-                        cmd.Parameters.Add("@RefNo", branch["sno"].ToString());
-                        cmd.Parameters.Add("@HeadSno", branch["HeadSno"].ToString());
+                        cmd.Parameters.AddWithValue("@vouchercode", VoucherNo);
+                        cmd.Parameters.AddWithValue("@paiddate", fromdate);
+                        cmd.Parameters.AddWithValue("@branchid", ddlSalesOffice.SelectedValue);
+                        cmd.Parameters.AddWithValue("@RefNo", branch["sno"].ToString());
+                        cmd.Parameters.AddWithValue("@HeadSno", branch["HeadSno"].ToString());
                         vdm.Update(cmd);
                     }
                     string NewVoucherNo = "0";

@@ -85,7 +85,7 @@ public partial class OnlineInvoice : System.Web.UI.Page
              //    }
              //}
              cmd = new MySqlCommand("SELECT productsdata.ProductName,bookingtransaction.MobNo,bookingtransaction.address, bookingtransaction.PersonName, bookingsubtable.Qty, bookingsubtable.Cost, bookingtransaction.DateOfDel, bookingtransaction.Transno FROM bookingsubtable INNER JOIN bookingtransaction ON bookingsubtable.TransNo = bookingtransaction.Transno INNER JOIN productsdata ON bookingsubtable.ProductID = productsdata.sno WHERE (bookingtransaction.Transno = @DcNo)");
-             cmd.Parameters.Add("@DcNo", txtDcNo.Text);
+             cmd.Parameters.AddWithValue("@DcNo", txtDcNo.Text);
              DataTable dtble = vdm.SelectQuery(cmd).Tables[0];
              Report.Columns.Add("Sno");
              Report.Columns.Add("Product Name");

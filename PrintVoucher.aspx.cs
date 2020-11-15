@@ -76,11 +76,11 @@ public partial class PrintVoucher : System.Web.UI.Page
            // cmd = new MySqlCommand("SELECT cashpayables.onNameof, cashpayables.DOE, cashpayables.Sno, cashpayables.Amount, cashpayables.Remarks,cashpayables.ApprovalRemarks, cashpayables.VoucherType, empmanage.EmpName FROM cashpayables INNER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno WHERE (cashpayables.VocherID = @VocherID) AND (cashpayables.BranchID = @BranchID)");
             cmd = new MySqlCommand("SELECT cashpayables.onNameof, cashpayables.DOE,cashpayables.VocherID, cashpayables.Sno, cashpayables.Amount, cashpayables.ApprovedAmount, cashpayables.Remarks, cashpayables.ApprovalRemarks,cashpayables.VoucherType, empmanage.EmpName FROM cashpayables LEFT OUTER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno WHERE (cashpayables.Sno = @VocherID) AND (cashpayables.BranchID = @BranchID)");
            // cmd = new MySqlCommand("SELECT cashpayables.onNameof, cashpayables.DOE,cashpayables.VocherID, cashpayables.Sno, cashpayables.Amount, cashpayables.ApprovedAmount, cashpayables.Remarks, cashpayables.ApprovalRemarks,cashpayables.VoucherType, empmanage.EmpName FROM cashpayables LEFT OUTER JOIN empmanage ON cashpayables.Approvedby = empmanage.Sno WHERE (cashpayables.Sno = @VocherID) "); 
-            cmd.Parameters.Add("@VocherID", txtVoucherNo.Text);
-            cmd.Parameters.Add("@BranchID", BrachSOID);
+            cmd.Parameters.AddWithValue("@VocherID", txtVoucherNo.Text);
+            cmd.Parameters.AddWithValue("@BranchID", BrachSOID);
             DataTable dtCash = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT sno, BranchName, BranchCode FROM branchdata WHERE (sno = @BranchID)");
-            cmd.Parameters.Add("@BranchID", BrachSOID);
+            cmd.Parameters.AddWithValue("@BranchID", BrachSOID);
             DataTable dtCode = vdm.SelectQuery(cmd).Tables[0];
             string voucherid = "";
             DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdm.conn);

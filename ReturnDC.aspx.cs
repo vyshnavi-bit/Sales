@@ -84,10 +84,10 @@ public partial class ReturnDC : System.Web.UI.Page
                 }
             }
             cmd = new MySqlCommand("SELECT dispatch.DispName,tripdata.AssignDate, tripdata.Sno AS ReturnDCno, empmanage.UserName, tripdata.VehicleNo FROM triproutes INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN branchdata ON dispatch.BranchID = branchdata.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND ((dispatch.BranchID = @BranchID) OR (branchdata.SalesOfficeID = @SOID))");
-            cmd.Parameters.Add("@BranchID", Session["branch"]);
-            cmd.Parameters.Add("@SOID", Session["branch"]);
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate).AddDays(-1));
-            cmd.Parameters.Add("@d2", GetHighDate(todate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
              dttripdata = vdm.SelectQuery(cmd).Tables[0];
             if (dttripdata.Rows.Count == 0)
             {
@@ -128,7 +128,7 @@ public partial class ReturnDC : System.Web.UI.Page
             string TripId = txt_tripid.Text;
             string BranchID = "";
             cmd = new MySqlCommand("SELECT tripdata.AssignDate,tripdata.ReturnDCTime,tripdata.Sno, tripdata.VehicleNo,dispatch.BranchID, dispatch.DispName AS DispatchName,dispatch.sno as dispsno, empmanage.EmpName AS Employee FROM tripdata INNER JOIN empmanage ON tripdata.EmpId = empmanage.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno WHERE (tripdata.Sno = @tripsno)");
-            cmd.Parameters.Add("@tripsno", TripId);
+            cmd.Parameters.AddWithValue("@tripsno", TripId);
             DataTable dtdetails = vdm.SelectQuery(cmd).Tables[0];
             if (dtdetails.Rows.Count > 0)
             {
@@ -154,11 +154,11 @@ public partial class ReturnDC : System.Web.UI.Page
                 lblpartyname.Text = Employee;
             }
             cmd = new MySqlCommand("SELECT leakages.TotalLeaks, leakages.ReturnQty, productsdata.ProductName, leakages.TripID FROM leakages INNER JOIN productsdata ON leakages.ProductID = productsdata.sno WHERE (leakages.TripID = @TripID) order by productsdata.Rank");
-            cmd.Parameters.Add("@TripID", TripId);
+            cmd.Parameters.AddWithValue("@TripID", TripId);
             DataTable dtIndent = vdm.SelectQuery(cmd).Tables[0];
             cmd = new MySqlCommand("SELECT invmaster.InvName, invtransactions12.Qty FROM invtransactions12 INNER JOIN invmaster ON invtransactions12.B_inv_sno = invmaster.sno WHERE (invtransactions12.ToTran  = @TripID) and(invtransactions12.FromTran =@BranchID) ");
-            cmd.Parameters.Add("@TripID", TripId);
-            cmd.Parameters.Add("@BranchID", BranchID);
+            cmd.Parameters.AddWithValue("@TripID", TripId);
+            cmd.Parameters.AddWithValue("@BranchID", BranchID);
             DataTable dtInventory = vdm.SelectQuery(cmd).Tables[0];
             dtTotQty.Columns.Add("Sl No");
             dtTotQty.Columns.Add("Product Name");

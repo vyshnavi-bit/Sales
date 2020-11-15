@@ -45,8 +45,8 @@ public partial class TimingReport : System.Web.UI.Page
             if (Session["salestype"].ToString() == "Plant")
             {
                 cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD) and (flag=@flag)");
-                cmd.Parameters.Add("@BranchD", Session["branch"].ToString());
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@BranchD", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlRouteName.DataSource = dtRoutedata;
                 ddlRouteName.DataTextField = "DispName";
@@ -57,9 +57,9 @@ public partial class TimingReport : System.Web.UI.Page
             {
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE ((branchdata.sno = @BranchID) and (dispatch.flag=@flag)) OR ((branchdata_1.SalesOfficeID = @SOID) and (dispatch.flag=@flag))");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
-                cmd.Parameters.Add("@flag", "1");
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@flag", "1");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlRouteName.DataSource = dtRoutedata;
                 ddlRouteName.DataTextField = "DispName";
@@ -71,8 +71,8 @@ public partial class TimingReport : System.Web.UI.Page
             //if (Session["salestype"].ToString() == "Plant")
             //{
             //    cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-            //    cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-            //    cmd.Parameters.Add("@SalesType", "21");
+            //    cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+            //    cmd.Parameters.AddWithValue("@SalesType", "21");
             //    DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             //    //if (ddlSalesOffice.SelectedIndex == -1)
             //    //{
@@ -88,8 +88,8 @@ public partial class TimingReport : System.Web.UI.Page
             //{
             //    cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
             //    //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-            //    cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-            //    cmd.Parameters.Add("@SOID", Session["branch"].ToString());
+            //    cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+            //    cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
             //    DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
             //    ddlRouteName.DataSource = dtRoutedata;
             //    ddlRouteName.DataTextField = "DispName";
@@ -167,14 +167,14 @@ public partial class TimingReport : System.Web.UI.Page
                     //Report.Columns.Add("Inventory Collection Time");
 
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, indents_subtable.DelTime as DateTime FROM dispatch_sub INNER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (dispatch.sno = @dispatchSno) AND (indents.I_date between @starttime AND  @endtime) GROUP BY branchdata.BranchName ORDER BY DateTime");
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                     DataTable dtTime = vdm.SelectQuery(cmd).Tables[0];
                     cmd = new MySqlCommand("SELECT collections.PayTime, tripdata.Sno, triproutes.Tripdata_sno, collections.Branchid, branchdata.BranchName FROM collections INNER JOIN tripdata ON collections.tripId = tripdata.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON collections.Branchid = branchdata.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispatchSno) GROUP BY branchdata.BranchName");
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                     DataTable dtPayTime = vdm.SelectQuery(cmd).Tables[0];
 
                     if (dtTime.Rows.Count > 0)
@@ -220,9 +220,9 @@ public partial class TimingReport : System.Web.UI.Page
                 {
                     lblRouteName.Text = ddlRouteName.SelectedItem.Text;
                     cmd = new MySqlCommand("SELECT  dispatch_1.DispName , tripdata_1.AssignDate FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno INNER JOIN tripdata tripdata_1 ON tripdata.Sno = tripdata_1.ATripid INNER JOIN triproutes triproutes_1 ON tripdata_1.Sno = triproutes_1.Tripdata_sno INNER JOIN dispatch dispatch_1 ON triproutes_1.RouteID = dispatch_1.sno WHERE (dispatch.sno = @dispatchSno) and(tripdata_1.I_Date between @starttime and @endtime) group by dispatch_1.DispName , tripdata_1.I_Date");
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                     DataTable dtTime = vdm.SelectQuery(cmd).Tables[0];
                     if (dtTime.Rows.Count > 0)
                     {
@@ -249,10 +249,10 @@ public partial class TimingReport : System.Web.UI.Page
                     TimeReport.Columns.Add("Closing Time");
                     TimeReport.Columns.Add("Despatcher Name");
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, tripdata.Plantime AS IndentTime, tripdata.DispTime, clotrans.IndDate AS ClosingTime, empmanage.EmpName FROM empmanage INNER JOIN clotrans ON empmanage.Sno = clotrans.EmpId RIGHT OUTER JOIN tripdata INNER JOIN branchmappingtable ON tripdata.BranchID = branchmappingtable.SuperBranch INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno ON clotrans.BranchId = branchdata.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (tripdata.BranchID = 172) AND (branchdata.SalesType = 21) AND (clotrans.IndDate BETWEEN @a1 AND @a2) GROUP BY branchdata.BranchName, empmanage.EmpName");
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@a1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@a2", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@a1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@a2", GetHighDate(fromdate.AddDays(-1)));
                     DataTable dtTime = vdm.SelectQuery(cmd).Tables[0];
                     if (dtTime.Rows.Count > 0)
                     {
@@ -296,29 +296,29 @@ public partial class TimingReport : System.Web.UI.Page
                 TimeReport.Columns.Add("Indent Time");
 
                 cmd = new MySqlCommand("SELECT branchdata.BranchName,indents.I_Date, indents_subtable.DelTime as DateTime FROM dispatch_sub INNER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno INNER JOIN indents ON branchdata.sno = indents.Branch_id INNER JOIN indents_subtable ON indents.IndentNo = indents_subtable.IndentNo WHERE (dispatch.sno = @dispatchSno) AND (indents.I_date between @starttime AND  @endtime) AND (indents_subtable.DelTime IS NOT NULL) GROUP BY branchdata.BranchName ORDER BY DateTime");
-                cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                 DataTable dtTime = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT collections.PayTime, tripdata.Sno, triproutes.Tripdata_sno, collections.Branchid, branchdata.BranchName FROM collections INNER JOIN tripdata ON collections.tripId = tripdata.Sno INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno INNER JOIN branchdata ON collections.Branchid = branchdata.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispatchSno) GROUP BY branchdata.BranchName");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                 DataTable dtPayTime = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT tripdata.Sno, triproutes.Tripdata_sno, tripdata.AssignDate FROM tripdata INNER JOIN triproutes ON tripdata.Sno = triproutes.Tripdata_sno INNER JOIN dispatch ON triproutes.RouteID = dispatch.sno WHERE (tripdata.I_Date BETWEEN @d1 AND @d2) AND (dispatch.sno = @dispatchSno)");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                 DataTable dt_dispTime = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT invtransactions12.DeliveryTime, invtransactions12.ToTran, branchdata.BranchName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN invtransactions12 ON tripdat.Sno = invtransactions12.FromTran INNER JOIN branchdata ON invtransactions12.ToTran = branchdata.sno WHERE (dispatch.sno = @dispatchSno) AND (invtransactions12.DeliveryTime IS NOT NULL)");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                 DataTable dtDeltime = vdm.SelectQuery(cmd).Tables[0];
                 cmd = new MySqlCommand("SELECT invtransactions12.CollectionTime, branchdata.BranchName FROM dispatch INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN (SELECT Sno, I_Date FROM tripdata WHERE (I_Date BETWEEN @d1 AND @d2)) tripdat ON triproutes.Tripdata_sno = tripdat.Sno INNER JOIN invtransactions12 ON tripdat.Sno = invtransactions12.ToTran INNER JOIN branchdata ON invtransactions12.FromTran = branchdata.sno WHERE (dispatch.sno = @dispatchSno)");
-                cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@d2", GetHighDate(fromdate.AddDays(-1)));
-                cmd.Parameters.Add("@dispatchSno", ddlRouteName.SelectedValue);
+                cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
+                cmd.Parameters.AddWithValue("@dispatchSno", ddlRouteName.SelectedValue);
                 DataTable dtColtime = vdm.SelectQuery(cmd).Tables[0];
                 if(dt_dispTime.Rows.Count>0)
                 {

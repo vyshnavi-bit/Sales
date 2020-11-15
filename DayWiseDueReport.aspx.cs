@@ -123,47 +123,47 @@ public partial class DayWiseDueReport : System.Web.UI.Page
                 else
                 {
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno,branchdata.CollectionType, branchroutes.Sno AS routesno, branchroutes.RouteName FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN branchroutes ON branchdata.sno = branchroutes.BranchID WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) AND (branchroutes.flag <> 0) OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) AND (branchroutes.flag <> 0) ORDER BY branchdata.sno");
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
                     DataTable dtroutes = vdm.SelectQuery(cmd).Tables[0];
 
                     cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno, triproutes.Tripdata_sno, tripdata.SubmittedAmount, tripdata.ReceivedAmount, dispatch.Route_id FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno INNER JOIN triproutes ON dispatch.sno = triproutes.RouteID INNER JOIN tripdata ON triproutes.Tripdata_sno = tripdata.Sno WHERE (branchdata.sno = @BranchID) AND (dispatch.DispType IS NULL) AND (tripdata.I_Date BETWEEN @d1 AND @d2) OR (dispatch.DispType IS NULL) AND (branchdata_1.SalesOfficeID = @SOID) AND (tripdata.I_Date BETWEEN @d1 AND @d2)");
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d2", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d2", GetLowDate(fromdate.AddDays(-1)));
                     DataTable dttripcollection = vdm.SelectQuery(cmd).Tables[0];
 
                     //cmd = new MySqlCommand("SELECT modifiedroutes.RouteName, SUM(indents_subtable.DeliveryQty) AS saleQty, SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS salevalue,modifiedroutes.Sno AS routesno, modifidroutssubtab.BranchID, branchdata_2.BranchName, branchdata_2.flag,SUM(branchdata_2.DueLimit) AS Duelimit FROM branchdata branchdata_2 RIGHT OUTER JOIN branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo ON branchdata_2.sno = modifidroutssubtab.BranchID LEFT OUTER JOIN indents_subtable INNER JOIN (SELECT IndentNo, I_date, Branch_id FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indt ON indents_subtable.IndentNo = indt.IndentNo ON modifidroutssubtab.BranchID = indt.Branch_id WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) GROUP BY modifiedroutes.Sno ORDER BY routesno");
                     cmd = new MySqlCommand("SELECT modifiedroutes.RouteName, SUM(indents_subtable.DeliveryQty) AS saleQty, SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS salevalue,modifiedroutes.Sno AS routesno, modifidroutssubtab.BranchID, branchdata_2.BranchName, branchdata_2.flag, SUM(branchdata_2.duelimit) AS Duelimit FROM branchdata branchdata_2 RIGHT OUTER JOIN branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo ON branchdata_2.sno = modifidroutssubtab.BranchID LEFT OUTER JOIN indents_subtable INNER JOIN (SELECT IndentNo, I_date, Branch_id FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indt ON indents_subtable.IndentNo = indt.IndentNo ON modifidroutssubtab.BranchID = indt.Branch_id WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) AND (branchdata_2.Due_Limit_Days = '0') OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) AND (branchdata_2.Due_Limit_Days = '0') GROUP BY modifiedroutes.Sno ORDER BY routesno");
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
                     DataTable dtroutecollection = vdm.SelectQuery(cmd).Tables[0];
 
                     cmd = new MySqlCommand("SELECT modifiedroutes.RouteName, SUM(indents_subtable.DeliveryQty) AS saleQty, SUM(indents_subtable.DeliveryQty * indents_subtable.UnitCost) AS salevalue,modifiedroutes.Sno AS routesno, modifidroutssubtab.BranchID, branchdata_2.BranchName, branchdata_2.flag, SUM(branchdata_2.duelimit) AS Duelimit FROM branchdata branchdata_2 RIGHT OUTER JOIN branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo ON branchdata_2.sno = modifidroutssubtab.BranchID LEFT OUTER JOIN indents_subtable INNER JOIN (SELECT IndentNo, I_date, Branch_id FROM indents WHERE (I_date BETWEEN @starttime AND @endtime)) indt ON indents_subtable.IndentNo = indt.IndentNo ON modifidroutssubtab.BranchID = indt.Branch_id WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) AND (branchdata_2.Due_Limit_Days <> '0') OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) AND (branchdata_2.Due_Limit_Days <> '0') GROUP BY branchdata_2.sno ORDER BY routesno");
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@endtime", GetHighDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@endtime", GetHighDate(fromdate.AddDays(-1)));
                     DataTable dtDue_routecollection = vdm.SelectQuery(cmd).Tables[0];
 
                     //cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, modifiedroutes.Sno AS routesno, SUM(colltion.AmountPaid) AS amtpaid, branchdata_1.SalesType, branchdata_2.CollectionType FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT  RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN (SELECT Branchid, AmountPaid, PaidDate FROM collections WHERE (PaymentType <> 'Cheque') AND (PaidDate BETWEEN @d1 AND @d2)) colltion ON modifidroutssubtab.BranchID = colltion.Branchid INNER JOIN branchdata branchdata_2 ON modifidroutssubtab.BranchID = branchdata_2.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) GROUP BY modifiedroutes.Sno  ORDER BY modifiedroutes.Sno ");
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, modifiedroutes.Sno AS routesno, SUM(colltion.AmountPaid) AS amtpaid, branchdata_1.SalesType, branchdata_2.CollectionType FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN (SELECT Branchid, AmountPaid, PaidDate FROM collections WHERE (PaymentType <> 'Cheque') AND (PaidDate BETWEEN @d1 AND @d2)) colltion ON modifidroutssubtab.BranchID = colltion.Branchid INNER JOIN branchdata branchdata_2 ON modifidroutssubtab.BranchID = branchdata_2.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) AND (branchdata_2.Due_Limit_Days = '0') OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) AND (branchdata_2.Due_Limit_Days = '0') GROUP BY modifiedroutes.Sno ORDER BY routesno");
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate));
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
                     DataTable dtrouteamount = vdm.SelectQuery(cmd).Tables[0];
 
                     cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno, modifiedroutes.RouteName, modifidroutssubtab.BranchID, modifiedroutes.Sno AS routesno, SUM(colltion.AmountPaid) AS amtpaid, branchdata_1.SalesType, branchdata_2.CollectionType, branchdata_2.BranchName AS agentname FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno INNER JOIN modifiedroutes ON branchdata.sno = modifiedroutes.BranchID INNER JOIN (SELECT RefNo, Rank, LevelType, BranchID, CDate, EDate FROM modifiedroutesubtable WHERE (EDate IS NULL) AND (CDate <= @starttime) OR (EDate > @starttime) AND (CDate <= @starttime)) modifidroutssubtab ON modifiedroutes.Sno = modifidroutssubtab.RefNo INNER JOIN (SELECT Branchid, AmountPaid, PaidDate FROM collections WHERE (PaymentType <> 'Cheque') AND (PaidDate BETWEEN @d1 AND @d2)) colltion ON modifidroutssubtab.BranchID = colltion.Branchid INNER JOIN branchdata branchdata_2 ON modifidroutssubtab.BranchID = branchdata_2.sno WHERE (branchdata_1.SalesOfficeID = @SOID) AND (branchdata.SalesType IS NOT NULL) AND (branchdata_2.Due_Limit_Days <> '0') OR (branchdata.SalesType IS NOT NULL) AND (branchdata.sno = @BranchID) AND (branchdata_2.Due_Limit_Days <> '0') GROUP BY branchdata_2.sno ORDER BY routesno");
-                    cmd.Parameters.Add("@starttime", GetLowDate(fromdate.AddDays(-1)));
-                    cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-                    cmd.Parameters.Add("@d2", GetHighDate(fromdate));
-                    cmd.Parameters.Add("@SOID", dr["sno"].ToString());
-                    cmd.Parameters.Add("@BranchID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(fromdate.AddDays(-1)));
+                    cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+                    cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+                    cmd.Parameters.AddWithValue("@SOID", dr["sno"].ToString());
+                    cmd.Parameters.AddWithValue("@BranchID", dr["sno"].ToString());
                     DataTable dtDue_routeamount = vdm.SelectQuery(cmd).Tables[0];
 
                     double totalsaleqty = 0;

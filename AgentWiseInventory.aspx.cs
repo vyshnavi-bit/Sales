@@ -51,8 +51,8 @@ public partial class AgentWiseInventory : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType)");
-                cmd.Parameters.Add("@SuperBranch", Session["branch"]);
-                cmd.Parameters.Add("@SalesType", "21");
+                cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
+                cmd.Parameters.AddWithValue("@SalesType", "21");
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlSalesOffice.DataSource = dtRoutedata;
                 ddlSalesOffice.DataTextField = "BranchName";
@@ -65,8 +65,8 @@ public partial class AgentWiseInventory : System.Web.UI.Page
                 PBranch.Visible = false;
                 cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
-                cmd.Parameters.Add("@BranchID", Session["branch"].ToString());
-                cmd.Parameters.Add("@SOID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
+                cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlDispName.DataSource = dtRoutedata;
                 ddlDispName.DataTextField = "DispName";
@@ -86,8 +86,8 @@ public partial class AgentWiseInventory : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
         cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
-        cmd.Parameters.Add("@BranchID", ddlSalesOffice.SelectedValue);
-        cmd.Parameters.Add("@SOID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
+        cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlDispName.DataSource = dtRoutedata;
         ddlDispName.DataTextField = "DispName";
@@ -172,11 +172,11 @@ public partial class AgentWiseInventory : System.Web.UI.Page
             Report.Columns.Add("Received Cans", typeof(Double));
             Report.Columns.Add("CB Cans");
             cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName,due_trans_inventory.doe, due_trans_inventory.oppening, due_trans_inventory.isuued, due_trans_inventory.received, due_trans_inventory.closing, due_trans_inventory.opp10, due_trans_inventory.issue10, due_trans_inventory.rec10, due_trans_inventory.clo10, due_trans_inventory.opp20, due_trans_inventory.issu20, due_trans_inventory.rec20, due_trans_inventory.clo20, due_trans_inventory.opp40, due_trans_inventory.issu40, due_trans_inventory.rec40, due_trans_inventory.clo40 FROM due_trans_inventory INNER JOIN branchdata ON due_trans_inventory.agentid = branchdata.sno WHERE (due_trans_inventory.agentid = @BranchID) AND (due_trans_inventory.doe BETWEEN @d1 AND @D2)");
-            cmd.Parameters.Add("@dTransType", "2");
-            //cmd.Parameters.Add("@cTransType", "3");
-            cmd.Parameters.Add("@d1", GetLowDate(fromdate));
-            cmd.Parameters.Add("@d2", GetHighDate(todate));
-            cmd.Parameters.Add("@BranchID", ddlAgentName.SelectedValue);
+            cmd.Parameters.AddWithValue("@dTransType", "2");
+            //cmd.Parameters.AddWithValue("@cTransType", "3");
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
+            cmd.Parameters.AddWithValue("@BranchID", ddlAgentName.SelectedValue);
             DataTable dtallInventoryDc = vdm.SelectQuery(cmd).Tables[0];
             int i = 1;
             foreach (DataRow dr in dtallInventoryDc.Rows)
@@ -307,7 +307,7 @@ public partial class AgentWiseInventory : System.Web.UI.Page
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
         cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno)");
-        cmd.Parameters.Add("@dispsno", ddlDispName.SelectedValue);
+        cmd.Parameters.AddWithValue("@dispsno", ddlDispName.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtRoutedata;
         ddlAgentName.DataTextField = "BranchName";

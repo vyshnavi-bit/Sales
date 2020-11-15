@@ -27,7 +27,7 @@ public partial class exporttoxml : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         cmd = new MySqlCommand("SELECT products_category.Categoryname, products_subcategory.SubCatName, productsdata.ProductName FROM branchproducts INNER JOIN dispatch ON branchproducts.branch_sno = dispatch.Branch_Id INNER JOIN productsdata ON branchproducts.product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (dispatch.Branch_Id = @BranchId) group by productsdata.ProductName  ORDER BY productsdata.Rank");
-        cmd.Parameters.Add("@BranchId", Session["branch"].ToString());
+        cmd.Parameters.AddWithValue("@BranchId", Session["branch"].ToString());
         DataTable produtstbl = vdm.SelectQuery(cmd).Tables[0];
         if (produtstbl.Rows.Count > 0)
         {
