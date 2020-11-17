@@ -94,7 +94,7 @@ public partial class SmsForm : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@branchid", ddlAgentName.SelectedValue);
                 DataTable dtbranchdetails = vdm.SelectQuery(cmd).Tables[0];
                 string MobNo = dtbranchdetails.Rows[0]["phonenumber"].ToString();
-                MobNo = "9677056895";
+                MobNo = "9959693439";
                 if (MobNo.Length == 10)
                 {
                     string msg = MySMSBox.Text;

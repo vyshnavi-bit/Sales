@@ -46519,7 +46519,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             newrow["Sales"] = branch["DeliveryQty"].ToString();
                             newrow["Sales Value"] = branch["Total"].ToString();
                             double qtyvalue = 0;
-                            double Leakqtyvalue = 0;
                             float delqtyvalue = 0;
                             double TotAmountvalue = 0;
                             double.TryParse(branch["unitQty"].ToString(), out qtyvalue);
@@ -47603,8 +47602,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DataTable dtinvopp = vdbmngr.SelectQuery(cmd).Tables[0];
 
 
-            double totaldaywisecollection = 0; double agentincentive = 0; double totalagentchequecoll = 0;
-            double totalcolletion = 0; double TotalSaleValue = 0;
             foreach (DataRow drdaycoll in dtinvopp.Rows)
             {
                 PlantInventaryDetails obj1 = new PlantInventaryDetails();
@@ -48725,10 +48722,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
             DateTime dtfromdate = ServerDateCurrentdate;
             DateTime dttodate = ServerDateCurrentdate;
-            string amonth = "";
-            string ayear = "";
-            int totalcount = 0;
-            double basictotal = 0;
             DateTime fromdate = ServerDateCurrentdate;
             string frmdate = fromdate.ToString("MM/dd/yyyy");
             string[] str = frmdate.Split('/');

@@ -1629,12 +1629,8 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                         if (drsaleleak["ProductID"].ToString() == drdelivery["sno"].ToString())
                         {
                             float leakqty = 0;
-                            float shortqty = 0;
-                            float freeqty = 0;
                             float.TryParse(drdelivery["leakQty"].ToString(), out leakqty);
                             float leakcpy = 0;
-                            float shortcpy = 0;
-                            float freecpy = 0;
                             float.TryParse(drsaleleak["totleak"].ToString(), out leakcpy);
                             float totalleakqty = leakqty + leakcpy;
                             drdelivery["leakQty"] = totalleakqty;
@@ -1983,7 +1979,6 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                             total += qtyvalue;
                         }
                     }
-                    double recieptno = 0;
                     //double.TryParse(branch["RecieptNo"].ToString(), out recieptno);
                     foreach (DataRow drdtclubtotal in dtreceiptamount.Select("RouteName='" + branch["RouteName"].ToString() + "'"))
                     {
@@ -3122,12 +3117,8 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                         if (drsaleleak["ProductID"].ToString() == drdelivery["sno"].ToString())
                         {
                             float leakqty = 0;
-                            float shortqty = 0;
-                            float freeqty = 0;
                             float.TryParse(drdelivery["leakQty"].ToString(), out leakqty);
                             float leakcpy = 0;
-                            float shortcpy = 0;
-                            float freecpy = 0;
                             float.TryParse(drsaleleak["totleak"].ToString(), out leakcpy);
                             float totalleakqty = leakqty + leakcpy;
                             drdelivery["leakQty"] = totalleakqty;
@@ -3407,7 +3398,6 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                             {
                                 double qtyvalue = 0;
                                 double delqty = 0;
-                                double prevqty = 0;
                                 string pname = dr["ProductName"].ToString();
                                 double.TryParse(dr["DeliveryQty"].ToString(), out delqty);
                                 if (delqty == 0.0)
@@ -4427,12 +4417,8 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                             if (drsaleleak["ProductID"].ToString() == drdelivery["sno"].ToString())
                             {
                                 float leakqty = 0;
-                                float shortqty = 0;
-                                float freeqty = 0;
                                 float.TryParse(drdelivery["leakQty"].ToString(), out leakqty);
                                 float leakcpy = 0;
-                                float shortcpy = 0;
-                                float freecpy = 0;
                                 float.TryParse(drsaleleak["totleak"].ToString(), out leakcpy);
                                 float totalleakqty = leakqty + leakcpy;
                                 drdelivery["leakQty"] = totalleakqty;
@@ -4704,7 +4690,6 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
             //{
             //if (ddlSalesOffice.SelectedValue == "ALL")
             //{
-            int i = 3;
             HeaderCell = new TableCell();
             HeaderCell.Text = "Net Sales Details";
             HeaderCell.VerticalAlign = VerticalAlign.Middle;

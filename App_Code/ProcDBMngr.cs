@@ -159,7 +159,7 @@ public class ProcDBMngr
                     {
                         UpdateString += fieldNames[i] + ", ";
                         param = new SqlParameter(fieldNames[i].Split('=')[1], fieldValues[i]);
-                        cmd.Parameters.AddWithValue(param);
+                        cmd.Parameters.Add(param);
                     }
                     UpdateString = UpdateString.Substring(0, UpdateString.LastIndexOf(","));
 
@@ -167,7 +167,7 @@ public class ProcDBMngr
                     {
                         ConditionStr += conFieldNames[j] + Operators[j];
                         param = new SqlParameter(conFieldNames[j].Split('=')[1], conFieldValues[j]);
-                        cmd.Parameters.AddWithValue(param);
+                        cmd.Parameters.Add(param);
                     }
 
                     cmd.CommandText = "update " + table + " set " + UpdateString + " where " + ConditionStr;
