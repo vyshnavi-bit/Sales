@@ -8,7 +8,6 @@ using System.Data.SqlClient;
 
 public class SalesDBManager
 {
-      string ConnectionString;
       public SqlConnection conn = new SqlConnection();
       List<string> data = new List<string>();
       public SqlCommand cmd;

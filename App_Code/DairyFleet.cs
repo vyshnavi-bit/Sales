@@ -1442,7 +1442,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             //lblReceived.Text = NumToWordBD(Num) + " Rupees Only";
         }
-        catch (Exception ex)
+        catch  
         {
         }
     }
@@ -1514,7 +1514,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 context.Response.Write(response);
             }
         }
-        catch (Exception ex)
+        catch 
         {
 
         }
@@ -1548,7 +1548,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(emloyeeedetalis);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch 
         {
 
         }
@@ -1641,7 +1641,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(emloyeeedetalis);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -1909,7 +1909,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(returnstocklist);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -2037,7 +2037,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             var js = new JavaScriptSerializer();
             var title1 = context.Request.Params[1];
             Orders obj = js.Deserialize<Orders>(title1);
-            string Username = "1";
             DateTime AssignDate = VehicleDBMgr.GetTime(vdbmngr.conn);
             string BranchID = obj.BranchID;
             string SalesOfficeID = obj.SalesOfficeID;
@@ -2144,7 +2143,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DataView view = new DataView(dtroutesale);
             DataTable dtreturnstock = view.ToTable(true, "agentid", "BranchName", "returndate", "status", "branchid", "remarks", "entry_by", "approved_by", "approved_date", "sno", "street", "city", "district", "mandal", "pincode", "statename");
             DataTable dtreturnstock_subdetails = view.ToTable(true, "sno", "ProductName", "productid", "qty", "return_stock_refno", "subsno", "supplyqty");
-            int i = 1;
             List<ReturnStocDetails> returnstocklist = new List<ReturnStocDetails>();
             foreach (DataRow dr in dtreturnstock.Rows)
             {
@@ -2335,12 +2333,12 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string empid = context.Request["empid"];
             //if(backmonth ==
             cm_d = new SqlCommand("SELECT   sno, employecode, empname, designation, daysmonth, attandancedays, clandholidayoff, payabledays, salary, basic, hra, conveyance, medical, washing,gross, pt, pf, esi, salaryadvance, loan, canteendeduction, mobilededuction, mediclim, otherdeduction, totaldeduction, netpay, bankaccountno, ifsccode, emptype, branchid, month, dateofclosing, closedby, year, deptid, tdsdeduction, betaperday, attendancebonus, type, empid, extrapay, extradays, entry_by, entry_date, modify_by, modify_date,salarypayble FROM monthlysalarystatement WHERE (empid = @empid) AND (month=@month) AND (year=@year) ORDER BY sno");
-            cm_d.Parameters.Add("@empid", empid);
-            cm_d.Parameters.Add("@month", backmonth);
-            cm_d.Parameters.Add("@year", currentyear);
+            cm_d.Parameters.AddWithValue("@empid", empid);
+            cm_d.Parameters.AddWithValue("@month", backmonth);
+            cm_d.Parameters.AddWithValue("@year", currentyear);
             DataTable routes = vdm.SelectQuery(cm_d).Tables[0];
             cm_d = new SqlCommand("SELECT   pay_structure.sno, pay_structure.departmentid, pay_structure.empid, pay_structure.gross, pay_structure.profitionaltax, pay_structure.esi, pay_structure.medicalerning, pay_structure.providentfund, pay_structure.salaryperyear, pay_structure.mediclaimdeduction, pay_structure.tdsdeduction, pay_structure.empcode, pay_structure.entry_by, pay_structure.entry_date, pay_structure.modify_by, pay_structure.modify_date, mediclaimdeduction.medicliamamount FROM  pay_structure LEFT OUTER JOIN  mediclaimdeduction ON pay_structure.empid = mediclaimdeduction.empid WHERE  (pay_structure.empid = @empid)");
-            cm_d.Parameters.Add("@empid", empid);
+            cm_d.Parameters.AddWithValue("@empid", empid);
             DataTable dtemployeesalary = vdm.SelectQuery(cm_d).Tables[0];
             List<HrmsEmployee> employeeslist = new List<HrmsEmployee>();
             if (routes.Rows.Count > 0)
@@ -2368,7 +2366,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 string esi = dtemployeesalary.Rows[0]["esi"].ToString();
                 string pf = dtemployeesalary.Rows[0]["providentfund"].ToString();
                 string tds = dtemployeesalary.Rows[0]["tdsdeduction"].ToString();
-                double grossamt, pfamount, esiamount, tdsamount, medicalamt, taxamount, salarypayble = 0;
+                double grossamt, pfamount, esiamount, tdsamount, medicalamt, taxamount;
                 double.TryParse(gross, out grossamt);
                 double.TryParse(medical, out medicalamt);
                 double.TryParse(tax, out taxamount);
@@ -2377,9 +2375,9 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 double.TryParse(tds, out tdsamount);
                 double actualamount = (grossamt) - (pfamount + esiamount + tdsamount + medicalamt + taxamount);
                 cm_d = new SqlCommand("SELECT  COUNT(*) AS Days FROM  dailyattandancedetails  WHERE  (empid = @empid) AND (attendance_date BETWEEN @d1 AND @d2)");
-                cm_d.Parameters.Add("@empid", empid);
-                cm_d.Parameters.Add("@d1", GetLowDate(dtapril));
-                cm_d.Parameters.Add("@d2", GetHighDate(dtmarch));
+                cm_d.Parameters.AddWithValue("@empid", empid);
+                cm_d.Parameters.AddWithValue("@d1", GetLowDate(dtapril));
+                cm_d.Parameters.AddWithValue("@d2", GetHighDate(dtmarch));
                 DataTable dempattendencedays = vdm.SelectQuery(cm_d).Tables[0];
                 string ndays = dempattendencedays.Rows[0]["Days"].ToString();
                 double NoOfDays = 0;
@@ -2437,9 +2435,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd = new MySqlCommand("SELECT  sno, salestype, flag, UserData_sno, status, rank, club_code FROM salestypemanagement where (status = 1) ORDER BY salestype DESC");
             cmd.Parameters.AddWithValue("@BranchID", branchid);
             DataTable dtsalestype = vdbmngr.SelectQuery(cmd).Tables[0];
-            int i = 1;
-            double grandavgsale = 0;
-            double Totdueamount = 0;
             double Totcompassamount = 0;
             double Totfhamount = 0;
             double Totcateringamount = 0;
@@ -2447,7 +2442,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             double Totdueagentamount = 0;
             double TotCRagentamount = 0;
             double Totcashamount = 0;
-            double Totduevalue = 0;
             double Totcompassvalue = 0;
             double Totfhvalue = 0;
             double Totcateringvalue = 0;
@@ -2495,7 +2489,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             DataRow newRow1 = Report.NewRow();
                             foreach (DataRow drvalue in dtroutesale.Select("SalesTypeId='" + drstype["SalesTypeId"].ToString() + "' AND RouteName='" + drroute["RouteName"].ToString() + "'"))
                             {
-                                string creates = "";
                                 float salevalue = 0;
                                 float.TryParse(drvalue["salevalue"].ToString(), out salevalue);
                                 float amount = 0;
@@ -2718,7 +2711,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 foreach (DataRow drvalue in dtpaidamount.Select("Branchid='" + dr["bid"].ToString() + "'"))
                 {
                     amount = 0;
-                    string creates = "";
                     float.TryParse(drvalue["AmountPaid"].ToString(), out amount);
                 }
                 float difference = salevalue - amount;
@@ -2767,7 +2759,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd.Parameters.AddWithValue("@BranchID", branchid);
             DataTable dtpaidamount = vdbmngr.SelectQuery(cmd).Tables[0];
 
-            int i = 1;
             Report = new DataTable();
             Report.Columns.Add("SRName");
             Report.Columns.Add("RouteName");
@@ -2779,7 +2770,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string routename = "";
             string agentname = "";
             string srname = "";
-            int j = 1; double totalsalevalues = 0; double totalamount = 0;
             foreach (DataRow drstype in dtroutesale.Rows)
             {
                 DataRow newRow = Report.NewRow();
@@ -2792,7 +2782,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 empname = drstype["EmpName"].ToString();
                 foreach (DataRow drvalue in dtpaidamount.Select("Branchid='" + drstype["bid"].ToString() + "'"))
                 {
-                    string creates = "";
                     float.TryParse(drvalue["AmountPaid"].ToString(), out AmountPaid);
                     //totalsalevalues += salevalue;
                 }
@@ -2801,9 +2790,9 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 newRow["AgentName"] = agentname;
                 newRow["Salesman"] = empname;
                 newRow["Sale"] = Math.Round(salevalue, 2);
-                totalsalevalues = 0;
+               // totalsalevalues = 0;
                 newRow["Totalamount"] = Math.Round(AmountPaid, 2);
-                totalamount = 0;
+               // totalamount = 0;
                 Report.Rows.Add(newRow);
             }
             if (leveltype == "SalesRepresentative")
@@ -3459,7 +3448,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 double temptdispqtyqty = 0;
                 double.TryParse(dr1["dispatchqty"].ToString(), out temptdispqtyqty);
                 GroupTotDispQty += temptdispqtyqty;
-                double totalsale = 0; double totalsalevalue = 0; double totalindent = 0; double totalcollection = 0; double totaldue = 0;
+                double totalsale = 0; double totalsalevalue = 0; double totalindent = 0; double totalcollection = 0; 
                 if (BranchID == "8009" || BranchID == "8012" || BranchID == "8013")
                 {
                     if (ddlDataType == "Quantity")
@@ -3620,9 +3609,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             foreach (DataRow dr in dtTotalDispatches.Rows)
             {
-                float tddue = 0;
-                float tdcashdue = 0;
-                float finaltddue = 0;
                 approvalplan Getapproval = new approvalplan();
                 Getapproval.Sno = dr["sno"].ToString();
                 Getapproval.BranchID = dr["BranchID"].ToString();
@@ -3995,7 +3981,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string errresponse = GetJson(maingroupwiselist);
             context.Response.Write(errresponse);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -4534,8 +4520,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 //}
                 DataView view = new DataView(dtsale_value);
                 DataTable distinctproducts = view.ToTable(true, "CatSno", "BranchName");
-                string ProductName = "";
-                string CategoeryName = "";
                 double totalqty = 0;
                 double totalsalevalue = 0;
                 foreach (DataRow dr in distinctproducts.Rows)
@@ -4985,7 +4969,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string Todate = edt.ToString("yyyy-MM-dd");
             DateTime Enddate = Convert.ToDateTime(Todate);
             string branchid = context.Request["BranchId"];
-            double collectedamount = 0;
             DataTable dtcollection = new DataTable();
             DataTable dtctegorywisedispatch = new DataTable();
             DataTable dtAll = new DataTable();
@@ -7628,11 +7611,8 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             cmd = new MySqlCommand("SELECT  sno, salestype, flag, UserData_sno, status, rank, club_code FROM salestypemanagement where (status = 1) ORDER BY salestype DESC");
             DataTable dtsalestype = vdbmngr.SelectQuery(cmd).Tables[0];
-            int i = 1;
             if (type1 == "BranchWise")
             {
-                double grandavgsale = 0;
-                double Totdueamount = 0;
                 double Totcompassamount = 0;
                 double Totfhamount = 0;
                 double Totcateringamount = 0;
@@ -7640,7 +7620,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 double Totdueagentamount = 0;
                 double TotCRagentamount = 0;
                 double Totcashamount = 0;
-                double Totduevalue = 0;
                 double Totcompassvalue = 0;
                 double Totfhvalue = 0;
                 double Totcateringvalue = 0;
@@ -7688,7 +7667,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 DataRow newRow1 = Report.NewRow();
                                 foreach (DataRow drvalue in dtbranchwisesale.Select("SalesTypeId='" + drstype["SalesTypeId"].ToString() + "' AND RouteName='" + drroute["RouteName"].ToString() + "'"))
                                 {
-                                    string creates = "";
                                     float salevalue = 0;
                                     float.TryParse(drvalue["salevalue"].ToString(), out salevalue);
                                     float amount = 0;
@@ -7947,8 +7925,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             else
             {
-                double grandavgsale = 0;
-                double Totdueamount = 0;
                 double Totcompassamount = 0;
                 double Totfhamount = 0;
                 double Totcateringamount = 0;
@@ -7956,7 +7932,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 double Totdueagentamount = 0;
                 double TotCRagentamount = 0;
                 double Totcashamount = 0;
-                double Totduevalue = 0;
                 double Totcompassvalue = 0;
                 double Totfhvalue = 0;
                 double Totcateringvalue = 0;
@@ -8004,7 +7979,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 DataRow newRow1 = Report.NewRow();
                                 foreach (DataRow drvalue in routewisesale.Select("SalesTypeId='" + drstype["SalesTypeId"].ToString() + "' AND RouteName='" + drroute["RouteName"].ToString() + "'"))
                                 {
-                                    string creates = "";
                                     float salevalue = 0;
                                     float.TryParse(drvalue["salevalue"].ToString(), out salevalue);
                                     float amount = 0;
@@ -8153,7 +8127,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 foreach (DataRow drvalue in dtpaidamount.Select("Branchid='" + dr["bid"].ToString() + "'"))
                 {
                     amount = 0;
-                    string creates = "";
                     float.TryParse(drvalue["AmountPaid"].ToString(), out amount);
                 }
                 float difference = salevalue - amount;
@@ -11509,10 +11482,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
             List<LineChartValuesclass> LineChartValuelist = new List<LineChartValuesclass>();
             #endregion
-            string Branch_id = "";
-            string Salestype_Id = "";
-            string RouteId = "";
-            string SalesType = "";
 
             foreach (DataRow drr in MainReport.Rows)
             {
@@ -12116,7 +12085,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         List<string> ActMillist = new List<string>();
 
                         string IndDate = "";
-                        string AvgMileage = "";
                         double avgSaleQty = 0;
                         int count = 0;
                         foreach (DataRow dr in dtyesterdayroutesale.Rows)
@@ -12208,7 +12176,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         List<string> Statuslist = new List<string>();
                         List<string> ActMillist = new List<string>();
                         string IndDate = "";
-                        string AvgMileage = "";
                         double avgSaleQty = 0;
                         int count = 0;
                         foreach (DataRow dr in dtLastweakroutesale.Rows)
@@ -12256,7 +12223,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         List<string> ActMillist = new List<string>();
 
                         string IndDate = "";
-                        string AvgMileage = "";
                         double avgSaleQty = 0;
                         int count = 0;
                         foreach (DataRow dr in dtLastMonthroutesale.Rows)
@@ -12332,7 +12298,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         List<string> ActMillist = new List<string>();
 
                         string IndDate = "";
-                        string AvgMileage = "";
                         double avgSaleQty = 0;
                         int count = 0;
                         foreach (DataRow dr in dtLastYearroutesale.Rows)
@@ -12544,8 +12509,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Columns.Add("I_date");
                     Report.Columns.Add("ProductName");
                     Report.Columns.Add("DeliveryQty");
-                    int N = 0;
-                    int i = 1;
                     if (months != 0)
                     {
                         for (int j = 0; j < months; j++)
@@ -12666,7 +12629,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             //}
             //string[] arr = BranchId.Split('_');
             //string t1 = arr.Length.ToString();
-            string Product_Id = "";
             string DayType = "DayWise";
             string ProductName = "";
             //if (t1 == "3")
@@ -12714,7 +12676,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     List<string> ActMillist = new List<string>();
 
                     string IndDate = "";
-                    string AvgMileage = "";
                     double avgSaleQty = 0;
                     int count = 0;
 
@@ -12736,7 +12697,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             newrow["I_date"] = drr["I_date"].ToString();
                             Dtreport.Rows.Add(newrow);
                         }
-                        string hbid = "174";
                        // foreach (DataRow dr in Dtreport.Select("branchid='" + hbid + "' Group by '" + hbid + "'"))
                         foreach (DataRow dr in dtyesterdayroutesale.Rows)
                         {
@@ -12851,7 +12811,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             //}
             //string[] arr = BranchId.Split('_');
             //string t1 = arr.Length.ToString();
-            string Product_Id = "";
             string DayType = "DayWise";
             string ProductName = "";
             //if (t1 == "3")
@@ -12893,7 +12852,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     List<string> ActMillist = new List<string>();
 
                     string IndDate = "";
-                    string AvgMileage = "";
                     double avgSaleQty = 0;
                     int count = 0;
                     foreach (DataRow dr in dtyesterdayroutesale.Rows)
@@ -12990,7 +12948,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             //}
             //string[] arr = BranchId.Split('_');
             //string t1 = arr.Length.ToString();
-            string Product_Id = "";
             string DayType = "DayWise";
             string ProductName = "";
             //if (t1 == "3")
@@ -13032,7 +12989,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     List<string> ActMillist = new List<string>();
 
                     string IndDate = "";
-                    string AvgMileage = "";
                     double avgSaleQty = 0;
                     int count = 0;
                     foreach (DataRow dr in dtyesterdayroutesale.Rows)
@@ -14305,9 +14261,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             float.TryParse(dr["Unitcost"].ToString(), out rate);
                             newrow["Qty"] = Math.Round(qty, 2);
                             newrow["Discount"] = 0;
-                            double sgst = 0;
                             double sgstamount = 0;
-                            double cgst = 0;
                             double cgstamount = 0;
                             double Igst = 0;
                             double Igstamount = 0;
@@ -14659,9 +14613,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             float.TryParse(dr["Unitcost"].ToString(), out rate);
                             newrow["Qty"] = Math.Round(qty, 2);
                             newrow["Discount"] = 0;
-                            double sgst = 0;
                             double sgstamount = 0;
-                            double cgst = 0;
                             double cgstamount = 0;
                             double Igst = 0;
                             double Igstamount = 0;
@@ -14934,7 +14886,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 string stateid = "";
                 string companycode = "";
                 string companytinno = "";
-                string panno = "";
                 string companypanno = "";
                 string buyercompanyname = "";
                 string regtype = "";
@@ -15069,9 +15020,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
                             newrow["Qty"] = Math.Round(qty, 2);
                             newrow["Discount"] = 0;
-                            double sgst = 0;
                             double sgstamount = 0;
-                            double cgst = 0;
                             double cgstamount = 0;
                             double Igst = 0;
                             double Igstamount = 0;
@@ -15245,7 +15194,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             Report.Rows.Add(newrow);
                         }
                     }
-                    int titflag = 0;
                     foreach (DataRow dr in Report.Rows)
                     {
                         Aagent_Invoice_item_det getProducts = new Aagent_Invoice_item_det();
@@ -15328,9 +15276,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             float.TryParse(dr["Unitcost"].ToString(), out rate);
                             newrow["Qty"] = Math.Round(qty, 2);
                             newrow["Discount"] = 0;
-                            double sgst = 0;
                             double sgstamount = 0;
-                            double cgst = 0;
                             double cgstamount = 0;
                             double Igst = 0;
                             double Igstamount = 0;
@@ -15516,7 +15462,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             Report.Rows.Add(newrow);
                         }
                     }
-                    int titflag = 0;
                     foreach (DataRow dr in Report.Rows)
                     {
                         Aagent_Invoice_item_det getProducts = new Aagent_Invoice_item_det();
@@ -16161,7 +16106,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd.Parameters.AddWithValue("@d2", GetHighDate(tdate.AddDays(-1)));
             cmd.Parameters.AddWithValue("@Branchid", Branchid);
             DataTable dtbranchqty = vdbmngr.SelectQuery(cmd).Tables[0];
-            int i = 1;
             foreach (DataRow dr in dtbranchqty.Rows)
             {
                 SaleRepresentive obj = new SaleRepresentive();
@@ -16223,7 +16167,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string Whccode = dtwhcode.Rows[0]["whcode"].ToString();
             // Production Branch Id Pass
             cm_d = new SqlCommand("select sno,whcode from branch_info where whcode=@whcode");
-            cm_d.Parameters.Add("@whcode", Whccode);
+            cm_d.Parameters.AddWithValue("@whcode", Whccode);
             DataTable dtpsno = SalesDB.SelectQuery(cm_d).Tables[0];
             string branchid = dtpsno.Rows[0]["sno"].ToString();
 
@@ -16237,39 +16181,38 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             // production module 
             //CURD
             cm_d = new SqlCommand("SELECT   ppd.sno, ppd.productid, ppd.creamtype, pm.productcode, ppd.ob, ppd.productionqty, ppd.sales, ppd.type, ppd.fat, ppd.snf, ppd.qty_kgs, ppd.total, ppd.remarks, ppd.createdby,  ppd.createdon, ppd.branchid, ppd.doe, ppd.deptid, pm.productname, pm.categorycode, branch_info.branchname FROM  plant_production_details AS ppd INNER JOIN productmaster AS pm ON ppd.productid = pm.sno INNER JOIN branch_info ON ppd.branchid = branch_info.sno WHERE   (ppd.deptid = 1) AND (ppd.createdon BETWEEN @d1 AND @d2) AND (ppd.branchid = @branchid) AND (ppd.productid <> 92) AND (ppd.productid <> 93) ORDER BY ppd.createdon");
-            cm_d.Parameters.Add("@d1", GetLowDate(fromdate));
-            cm_d.Parameters.Add("@d2", GetHighDate(fromdate));
-            cm_d.Parameters.Add("@branchid", branchid);
+            cm_d.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cm_d.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            cm_d.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtCURD = SalesDB.SelectQuery(cm_d).Tables[0];
             //packing
 
             cm_d = new SqlCommand("SELECT batchmaster.batch, packing_entry.qty_ltr, packing_entry.fat, packing_entry.snf, packing_entry.clr, packing_entry.received_film,  packing_entry.doe, productmaster.ml, productmaster.productname, productmaster.productcode FROM packing_entry INNER JOIN batchmaster ON packing_entry.batchid = batchmaster.batchid  INNER JOIN productmaster ON packing_entry.productid = productmaster.sno WHERE packing_entry.doe between @dt1 and @dt2 and packing_entry.branchid=@branchid ORDER BY packing_entry.doe DESC");
-            cm_d.Parameters.Add("@dt1", GetLowDate(fromdate));
-            cm_d.Parameters.Add("@dt2", GetHighDate(fromdate));
-            cm_d.Parameters.Add("@branchid", branchid);
+            cm_d.Parameters.AddWithValue("@dt1", GetLowDate(fromdate));
+            cm_d.Parameters.AddWithValue("@dt2", GetHighDate(fromdate));
+            cm_d.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtpacking = SalesDB.SelectQuery(cm_d).Tables[0];
 
             //ghee
             cm_d = new SqlCommand("SELECT  ppd.sno, ppd.productid, ppd.creamtype, pm.productcode, ppd.ob AS openingbalance, ppd.productionqty, ppd.sales, ppd.type, ppd.fat, ppd.snf, ppd.qty_kgs, ppd.total, ppd.remarks,  ppd.createdby, ppd.createdon, ppd.branchid, ppd.doe, ppd.deptid, pm.productname, pm.categorycode, branch_info.branchname, ppd.convertionquantity,  ppd.convertionfat FROM   plant_production_details AS ppd INNER JOIN productmaster AS pm ON ppd.productid = pm.sno INNER JOIN branch_info ON ppd.branchid = branch_info.sno WHERE  (ppd.deptid = 3) AND (ppd.createdon BETWEEN @d1 AND @d2) AND (ppd.branchid = @branchid)  ORDER BY ppd.createdon");
-            cm_d.Parameters.Add("@d1", GetLowDate(fromdate));
-            cm_d.Parameters.Add("@d2", GetHighDate(fromdate));
-            cm_d.Parameters.Add("@branchid", branchid);
+            cm_d.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cm_d.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            cm_d.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtghee = SalesDB.SelectQuery(cm_d).Tables[0];
             // butter
             cm_d = new SqlCommand("SELECT    ppd.sno, ppd.productid, ppd.creamtype, pm.productcode, ppd.ob AS openingbalance, ppd.productionqty, ppd.sales, ppd.type, ppd.fat, ppd.snf, ppd.qty_kgs, ppd.total, ppd.remarks, ppd.createdby, ppd.createdon, ppd.branchid, ppd.doe, ppd.deptid, pm.productname, pm.categorycode, branch_info.branchname, ppd.convertionquantity,  ppd.convertionfat FROM       plant_production_details AS ppd INNER JOIN productmaster AS pm ON ppd.productid = pm.sno INNER JOIN branch_info ON ppd.branchid = branch_info.sno WHERE  (ppd.deptid = 10) AND (ppd.createdon BETWEEN @d1 AND @d2) AND (ppd.branchid = @branchid)  ORDER BY ppd.createdon");
-            cm_d.Parameters.Add("@d1", GetLowDate(fromdate));
-            cm_d.Parameters.Add("@d2", GetHighDate(fromdate));
-            cm_d.Parameters.Add("@branchid", branchid);
+            cm_d.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cm_d.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            cm_d.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtbutter = SalesDB.SelectQuery(cm_d).Tables[0];
             // other products
 
             cm_d = new SqlCommand("SELECT  ppd.sno, ppd.productid, ppd.creamtype, pm.productcode, ppd.ob AS openingbalance, ppd.productionqty, ppd.sales, ppd.type, ppd.fat, ppd.snf, ppd.qty_kgs, ppd.total, ppd.remarks,  ppd.createdby, ppd.createdon, ppd.branchid, ppd.doe, ppd.deptid, pm.productname, pm.categorycode, branch_info.branchname, ppd.convertionquantity,  ppd.convertionfat, ppd.inward, ppd.issue FROM  plant_production_details AS ppd INNER JOIN productmaster AS pm ON ppd.productid = pm.sno INNER JOIN branch_info ON ppd.branchid = branch_info.sno WHERE   (ppd.deptid = 16) AND (ppd.createdon BETWEEN @d1 AND @d2) AND (ppd.branchid = @branchid) ORDER BY ppd.createdon");
-            cm_d.Parameters.Add("@d1", GetLowDate(fromdate));
-            cm_d.Parameters.Add("@d2", GetHighDate(fromdate));
-            cm_d.Parameters.Add("@branchid", branchid);
+            cm_d.Parameters.AddWithValue("@d1", GetLowDate(fromdate));
+            cm_d.Parameters.AddWithValue("@d2", GetHighDate(fromdate));
+            cm_d.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtother = SalesDB.SelectQuery(cm_d).Tables[0];
 
-            int i = 1;
             DataView view = new DataView(dispatchqty);
             DataTable distinctproducts = view.ToTable(true, "Itemcode", "ProductName");
 
@@ -16516,7 +16459,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd.Parameters.AddWithValue("@d2", GetHighDate(tdate));
             cmd.Parameters.AddWithValue("@Agentid", Agentid);
             DataTable dtDispatches = vdbmngr.SelectQuery(cmd).Tables[0];
-            int i = 1;
             foreach (DataRow dr in dtDispatches.Rows)
             {
                 AgentRemarks obj1 = new AgentRemarks();
@@ -17072,9 +17014,9 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Rows.Add(newrow);
                 }
             }
-            string Mon = ""; string mon1 = ""; string Res = "";
+             string mon1 = ""; string Res = "";
             string Bran = ""; string bran1 = ""; string Res1 = "";
-            string Val = ""; string val1 = ""; string Res2 = "";
+            string val1 = ""; string Res2 = "";
             List<AgentSale> AgentSalelst = new List<AgentSale>();
             List<AgentMonthlySale> AgentMonthlySalelst = new List<AgentMonthlySale>();
             List<AgentMonthlySaleDetails> AgentMonthlySaleDetailslst = new List<AgentMonthlySaleDetails>();
@@ -17086,7 +17028,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 Res2 += val1 + ",";
                 if (Bran == bran1)
                 {
-                    int count2 = 0;
                 }
                 else
                 {
@@ -17157,8 +17098,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DateTime fromdate = Convert.ToDateTime(frmdate);
             string todate = context.Request["todate"];
             DateTime tdate = Convert.ToDateTime(todate);
-            DateTime firstmonth = new DateTime();
-            DateTime lastmonth = new DateTime();
             DataTable Report = new DataTable();
             Report.Columns.Add("Branchid");
             Report.Columns.Add("BranchName");
@@ -17253,8 +17192,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DateTime fromdate = Convert.ToDateTime(frmdate);
             string todate = context.Request["todate"];
             DateTime tdate = Convert.ToDateTime(todate);
-            DateTime firstmonth = new DateTime();
-            DateTime lastmonth = new DateTime();
             DataTable Report = new DataTable();
             Report.Columns.Add("Branchid");
             Report.Columns.Add("BranchName");
@@ -17456,9 +17393,9 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     }
                 }
             }
-            string Mon = ""; string mon1 = ""; string Res = "";
+             string mon1 = ""; string Res = "";
             string Bran = ""; string bran1 = ""; string Res1 = "";
-            string Val = ""; string val1 = ""; string Res2 = "";
+            string val1 = ""; string Res2 = "";
             List<ProductSale> ProductSalelst = new List<ProductSale>();
             List<ProductMonthlySale> ProductMonthlySalelst = new List<ProductMonthlySale>();
             List<ProductMonthlySaleDetails> ProductMonthlySaleDetailslst = new List<ProductMonthlySaleDetails>();
@@ -17471,7 +17408,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 Res2 += val1 + ",";
                 if (Bran == bran1)
                 {
-                    int count2 = 0;
                 }
                 else
                 {
@@ -17760,10 +17696,8 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 Report.Columns.Add("Total  Ltrs");
                 DataTable distincttable = view.ToTable(true, "BranchName", "IndentDate");
                 DataTable distincttotal = view.ToTable(true, "ProductName", "DeliveryQty");
-                int i = 1;
                 double Total = 0;
                 double TotalQty = 0;
-                double prdtwisetotal = 0;
                 double prdtwiseamount = 0;
                 int categorysno = 0;
                 foreach (DataRow branch in distincttable.Rows)
@@ -18222,9 +18156,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     {
                                         if (DispMode == "Staff" || DispMode == "AGENT" || DispMode == "Others" || DispMode == "Free" || DispMode == "LOCAL")
                                         {
-                                            double sgst = 0;
                                             double sgstamount = 0;
-                                            double cgst = 0;
                                             double cgstamount = 0;
                                             double Igst = 0;
                                             double Igstamount = 0;
@@ -18255,9 +18187,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                         {
                                             if (Ratemanage == "1")
                                             {
-                                                double sgst = 0;
                                                 double sgstamount = 0;
-                                                double cgst = 0;
                                                 double cgstamount = 0;
                                                 double Igst = 0;
                                                 double Igstamount = 0;
@@ -18300,10 +18230,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     }
                                     else
                                     {
-                                        double sgst = 0;
-                                        double sgstamount = 0;
-                                        double cgst = 0;
-                                        double cgstamount = 0;
                                         double Igst = 0;
                                         double Igstamount = 0;
                                         double totRate = 0;
@@ -18453,9 +18379,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     {
                                         if (DispMode == "Staff" || DispMode == "AGENT" || DispMode == "Others" || DispMode == "Free" || DispMode == "LOCAL")
                                         {
-                                            double sgst = 0;
                                             double sgstamount = 0;
-                                            double cgst = 0;
                                             double cgstamount = 0;
                                             double Igst = 0;
                                             double Igstamount = 0;
@@ -18497,10 +18421,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     }
                                     else
                                     {
-                                        double sgst = 0;
-                                        double sgstamount = 0;
-                                        double cgst = 0;
-                                        double cgstamount = 0;
                                         double Igst = 0;
                                         double Igstamount = 0;
                                         double totRate = 0;
@@ -20238,7 +20158,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Columns.Add("SNo");
                     Report.Columns.Add("Date");
                     Report.Columns.Add("Qty");
-                    int N = 0;
                     int i = 1;
                     if (months != 0)
                     {
@@ -20567,7 +20486,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     List<string> Datelist = new List<string>();
                     List<string> Statuslist = new List<string>();
                     List<string> ActMillist = new List<string>();
-                    string MainQty = "";
                     string DelQty = "";
                     string IndDate = "";
                     string AvgMileage = "";
@@ -22367,7 +22285,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         double totshrt = 0;
                         double totretrn = 0;
                         double totfree = 0;
-                        double returnqty = 0;
                         newrow["EntryDate"] = collecteddate;
                         newrow["TotalLeaks"] = totleak;
                         newrow["ShortQty"] = totshrt;
@@ -22445,7 +22362,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 cmd.Parameters.AddWithValue("@d1", GetLowDate(dtinddate));
                 cmd.Parameters.AddWithValue("@d2", GetHighDate(dtinddate));
                 dt_Leaks_Returns = vdbmngr.SelectQuery(cmd).Tables[0];
-                string collecteddate = "";
                 DataTable dtall_leakages = new DataTable();
                 dtall_leakages.Columns.Add("Tripdata_sno");
                 DataRow newrow = dtall_leakages.NewRow();
@@ -22517,7 +22433,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(collectionList);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -22817,7 +22733,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 int prevqty = 0;
                 int editqty = 0;
                 string branchid = "";
-                string tripid = "";
                 int.TryParse(inv.Qty, out editqty);
                 int.TryParse(inv.PrevInvQty, out prevqty);
                 branchid = inv.Branchid;
@@ -23003,6 +22918,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             context.Response.Write(response);
         }
     }
+
     private void btnAmountUpdateClick(HttpContext context)
     {
         try
@@ -23013,53 +22929,74 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             var title1 = context.Request.Params[1];
             Orders obj = js.Deserialize<Orders>(title1);
             string SalesOfficeID = obj.SalesOfficeID;
-            foreach (orderdetail o in obj.data)
+            string type = obj.type;
+            if (type == "0")
             {
-                string branchid = o.Branchid;
-                string paidamount = o.PaidAmount;
-                float prevamt = 0;
-                float presentamt = 0;
-                float.TryParse(paidamount, out presentamt);
-                cmd = new MySqlCommand("Update branchaccounts set Amount=@Amount where BranchId=@BranchId");
-                cmd.Parameters.AddWithValue("@Amount", presentamt);
-                cmd.Parameters.AddWithValue("@BranchId", branchid);
-                vdbmngr.Update(cmd);
-                cmd = new MySqlCommand("Update tempbranchaccounts set Amount=@Amount,cdate=@cdate where Agentid=@BranchId");
-                cmd.Parameters.AddWithValue("@Amount", presentamt);
-                cmd.Parameters.AddWithValue("@cdate", ServerDateCurrentdate);
-                cmd.Parameters.AddWithValue("@BranchId", branchid);
-                if (vdbmngr.Update(cmd) == 0)
+                foreach (orderdetail o in obj.data)
                 {
-                    cmd = new MySqlCommand("INSERT INTO tempbranchaccounts (Amount, Agentid, cdate) VALUES (@Amount, @Agentid, @cdate)");
+                    string branchid = o.Branchid;
+                    string paidamount = o.PaidAmount;
+                    float presentamt = 0;
+                    float.TryParse(paidamount, out presentamt);
+                    cmd = new MySqlCommand("Update branchaccounts set Amount=@Amount where BranchId=@BranchId");
                     cmd.Parameters.AddWithValue("@Amount", presentamt);
-                    cmd.Parameters.AddWithValue("@Agentid", branchid);
+                    cmd.Parameters.AddWithValue("@BranchId", branchid);
+                    vdbmngr.Update(cmd);
+                    cmd = new MySqlCommand("Update tempbranchaccounts set Amount=@Amount,cdate=@cdate where Agentid=@BranchId");
+                    cmd.Parameters.AddWithValue("@Amount", presentamt);
                     cmd.Parameters.AddWithValue("@cdate", ServerDateCurrentdate);
+                    cmd.Parameters.AddWithValue("@BranchId", branchid);
+                    if (vdbmngr.Update(cmd) == 0)
+                    {
+                        cmd = new MySqlCommand("INSERT INTO tempbranchaccounts (Amount, Agentid, cdate) VALUES (@Amount, @Agentid, @cdate)");
+                        cmd.Parameters.AddWithValue("@Amount", presentamt);
+                        cmd.Parameters.AddWithValue("@Agentid", branchid);
+                        cmd.Parameters.AddWithValue("@cdate", ServerDateCurrentdate);
+                        vdbmngr.insert(cmd);
+                    }
+                    cmd = new MySqlCommand("SELECT    modifiedroutes.Sno, modifiedroutesubtable.BranchID FROM  modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo WHERE (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime)");
+                    cmd.Parameters.AddWithValue("@BranchID", SalesOfficeID);
+                    cmd.Parameters.AddWithValue("@starttime", GetLowDate(ServerDateCurrentdate));
+                    DataTable dtroute = vdbmngr.SelectQuery(cmd).Tables[0];
+                    string Routeid = "";
+                    foreach (DataRow drrouteid in dtroute.Select("BranchID='" + SalesOfficeID + "'"))
+                    {
+                        Routeid = drrouteid["Sno"].ToString();
+                    }
+                    cmd = new MySqlCommand("insert into tempduetrasactions (OppBalance,SaleValue,paidamount,ClosingBalance,IndentDate,EntryDate,agentid,salesofficeid,SaleQty,ReceivedAmount,DiffAmount,RouteId) values (@opningamount,@salevalue,@paidamount,@ClosingBalance,@indentdate,@doe,@agentid,@salesofficeid,@saleqty,@ReceivedAmount,@DiffAmount,@RouteId)");
+                    cmd.Parameters.AddWithValue("@opningamount", "0");
+                    cmd.Parameters.AddWithValue("@salevalue", "0");
+                    cmd.Parameters.AddWithValue("@paidamount", "0");
+                    cmd.Parameters.AddWithValue("@ClosingBalance", presentamt);
+                    cmd.Parameters.AddWithValue("@indentdate", GetLowDate(ServerDateCurrentdate).AddDays(-1));
+                    cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                    cmd.Parameters.AddWithValue("@agentid", branchid);
+                    cmd.Parameters.AddWithValue("@salesofficeid", SalesOfficeID);
+                    cmd.Parameters.AddWithValue("@saleqty", "0");
+                    cmd.Parameters.AddWithValue("@ReceivedAmount", "0");
+                    cmd.Parameters.AddWithValue("@DiffAmount", "0");
+                    cmd.Parameters.AddWithValue("@RouteId", Routeid);
                     vdbmngr.insert(cmd);
                 }
-                cmd = new MySqlCommand("SELECT    modifiedroutes.Sno, modifiedroutesubtable.BranchID FROM  modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo WHERE (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @starttime) OR (modifiedroutes.BranchID = @BranchID) AND (modifiedroutesubtable.EDate > @starttime) AND (modifiedroutesubtable.CDate <= @starttime)");
-                cmd.Parameters.AddWithValue("@BranchID", SalesOfficeID);
-                cmd.Parameters.AddWithValue("@starttime", GetLowDate(ServerDateCurrentdate));
-                DataTable dtroute = vdbmngr.SelectQuery(cmd).Tables[0];
-                string Routeid = "";
-                foreach (DataRow drrouteid in dtroute.Select("BranchID='" + SalesOfficeID + "'"))
-                {
-                    Routeid = drrouteid["Sno"].ToString();
-                }
-                cmd = new MySqlCommand("insert into tempduetrasactions (OppBalance,SaleValue,paidamount,ClosingBalance,IndentDate,EntryDate,agentid,salesofficeid,SaleQty,ReceivedAmount,DiffAmount,RouteId) values (@opningamount,@salevalue,@paidamount,@ClosingBalance,@indentdate,@doe,@agentid,@salesofficeid,@saleqty,@ReceivedAmount,@DiffAmount,@RouteId)");
-                cmd.Parameters.AddWithValue("@opningamount", "0");
-                cmd.Parameters.AddWithValue("@salevalue", "0");
-                cmd.Parameters.AddWithValue("@paidamount", "0");
-                cmd.Parameters.AddWithValue("@ClosingBalance", presentamt);
-                cmd.Parameters.AddWithValue("@indentdate", GetLowDate(ServerDateCurrentdate).AddDays(-1));
-                cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
-                cmd.Parameters.AddWithValue("@agentid", branchid);
-                cmd.Parameters.AddWithValue("@salesofficeid", SalesOfficeID);
-                cmd.Parameters.AddWithValue("@saleqty", "0");
-                cmd.Parameters.AddWithValue("@ReceivedAmount", "0");
-                cmd.Parameters.AddWithValue("@DiffAmount", "0");
-                cmd.Parameters.AddWithValue("@RouteId", Routeid);
-                vdbmngr.insert(cmd);
+            }
+            else
+            {
 
+                foreach (orderdetail o in obj.data)
+                {
+                    string branchid = o.Branchid;
+                    string paidamount = o.PaidAmount;
+                    float qty = 0;
+                    float.TryParse(paidamount, out qty);
+                    if (type != null)
+                    {
+                        cmd = new MySqlCommand("UPDATE inventory_monitor SET Qty = @qty WHERE (Inv_Sno = @invsno) and branchid=@branchid");
+                        cmd.Parameters.AddWithValue("@branchid", branchid);
+                        cmd.Parameters.AddWithValue("@invsno", type);
+                        cmd.Parameters.AddWithValue("@qty", qty);
+                        vdbmngr.Update(cmd);
+                    }
+                }
             }
             string msg = "Balances Updated Successfully";
             string response = GetJson(msg);
@@ -23072,6 +23009,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             context.Response.Write(response);
         }
     }
+
     private void btnEditCollectionSaveClick(HttpContext context)
     {
         try
@@ -23098,8 +23036,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 dtmarch = DateTime.Parse(march);
             }
             var title1 = context.Request.Params[1];
-            DateTime dtdeltime = new DateTime();
-            DateTime dtindenttime = new DateTime();
             Orders obj = js.Deserialize<Orders>(title1);
             string indentdate = obj.indentdate;
             string Denominations = obj.Denominations;
@@ -25153,25 +25089,25 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         //        P_whcode = dt_branch.Rows[0]["P_whcode"].ToString();
                         //    }
                         //    a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                        //    a_cmd.Parameters.Add("@whcode", S_whcode);//Branch is Salesoffice Wh code
+                        //    a_cmd.Parameters.AddWithValue("@whcode", S_whcode);//Branch is Salesoffice Wh code
                         //    DataTable DT_S_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                         //    a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                        //    a_cmd.Parameters.Add("@whcode", P_whcode);//Branch is Plant WHcode
+                        //    a_cmd.Parameters.AddWithValue("@whcode", P_whcode);//Branch is Plant WHcode
                         //    DataTable DT_P_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                         //    if (dt_branch.Rows.Count > 0)
                         //    {
                         //        a_cmd = new SqlCommand("INSERT INTO collections (accountno,name, amount, remarks, doe, createdby, status, receiptdate,branch,subbranch,sapimport) VALUES (@accountno,@name, @amount, @remarks, @doe, @createdby, @status, @receiptdate,@branch,@subbranch,@sapimport)");
-                        //        a_cmd.Parameters.Add("@accountno", faaccuntno);
-                        //        a_cmd.Parameters.Add("@name", tbranchname);
-                        //        a_cmd.Parameters.Add("@amount", PaidAmount);
-                        //        a_cmd.Parameters.Add("@remarks", Remarks);
-                        //        a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
-                        //        a_cmd.Parameters.Add("@createdby", context.Session["UserSno"].ToString());
-                        //        a_cmd.Parameters.Add("@status", "P");
-                        //        a_cmd.Parameters.Add("@receiptdate", ServerDateCurrentdate);
-                        //        a_cmd.Parameters.Add("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
-                        //        a_cmd.Parameters.Add("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
-                        //        a_cmd.Parameters.Add("@sapimport", "2");
+                        //        a_cmd.Parameters.AddWithValue("@accountno", faaccuntno);
+                        //        a_cmd.Parameters.AddWithValue("@name", tbranchname);
+                        //        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
+                        //        a_cmd.Parameters.AddWithValue("@remarks", Remarks);
+                        //        a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                        //        a_cmd.Parameters.AddWithValue("@createdby", context.Session["UserSno"].ToString());
+                        //        a_cmd.Parameters.AddWithValue("@status", "P");
+                        //        a_cmd.Parameters.AddWithValue("@receiptdate", ServerDateCurrentdate);
+                        //        a_cmd.Parameters.AddWithValue("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
+                        //        a_cmd.Parameters.AddWithValue("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
+                        //        a_cmd.Parameters.AddWithValue("@sapimport", "2");
                         //        Accescontrol_db.insert(a_cmd);
                         //        a_cmd = new SqlCommand("select MAX(sno) as sno from collections");
                         //        DataTable dtsno = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
@@ -25179,24 +25115,24 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
                         //        //Getting Sales Office and Insert into main and sub tables 
                         //        a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                        //        a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                        //        a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                         //        DataTable dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
 
                         //        a_cmd = new SqlCommand("INSERT INTO collectionsubdetails (collectionrefno, headofaccount, amount) VALUES (@collectionrefno, @headofaccount, @amount)");
-                        //        a_cmd.Parameters.Add("@collectionrefno", refno);
-                        //        a_cmd.Parameters.Add("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
-                        //        a_cmd.Parameters.Add("@amount", PaidAmount);
+                        //        a_cmd.Parameters.AddWithValue("@collectionrefno", refno);
+                        //        a_cmd.Parameters.AddWithValue("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
+                        //        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
                         //        Accescontrol_db.insert(a_cmd);
 
                         //        //Getting Agent Data and Insert into sub tables 
                         //        a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                        //        a_cmd.Parameters.Add("@accountname", tbranchname);
+                        //        a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                         //        DataTable dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
 
                         //        a_cmd = new SqlCommand("insert into subaccount_collection (collectionrefno, headofaccount, amount) values (@refno, @headofaccount, @amount)");
-                        //        a_cmd.Parameters.Add("@refno", refno);
-                        //        a_cmd.Parameters.Add("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
-                        //        a_cmd.Parameters.Add("@amount", PaidAmount);
+                        //        a_cmd.Parameters.AddWithValue("@refno", refno);
+                        //        a_cmd.Parameters.AddWithValue("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
+                        //        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
                         //        Accescontrol_db.insert(a_cmd);
                         //    }
                         //    else
@@ -25237,6 +25173,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string RouteID = context.Request["RouteID"];
             string CustomerSno = context.Request["CustomerSno"];
             string temp = context.Request["temp"];
+            string ddlType = context.Request["ddlType"];
             DateTime CurDate = VehicleDBMgr.GetTime(vdbmngr.conn);
             if (temp == "PlantManage")
             {
@@ -25245,11 +25182,17 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             else
             {
-                cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, branchroutesubtable.BranchID, branchaccounts.Amount, branchdata.BranchName, branchdata.sno AS agentid FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutesubtable ON dispatch_sub.Route_id = branchroutesubtable.RefNo INNER JOIN branchaccounts ON branchroutesubtable.BranchID = branchaccounts.BranchId INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @routeid)");
-                //cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, branchroutesubtable.BranchID, tempduetrasactions.ClosingBalance, branchdata.BranchName, branchdata.sno AS agentid FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutesubtable ON dispatch_sub.Route_id = branchroutesubtable.RefNo INNER JOIN tempduetrasactions ON branchroutesubtable.BranchID = tempduetrasactions.agentid INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @routeid) AND (tempduetrasactions.IndentDate between @d1 and @d2)");
-                cmd.Parameters.AddWithValue("@routeid", RouteID);
-                cmd.Parameters.AddWithValue("@d1", GetLowDate(CurDate).AddDays(-2));
-                cmd.Parameters.AddWithValue("@d2", GetHighDate(CurDate).AddDays(-2));
+                if (ddlType == "0")
+                {
+                    cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName, branchroutesubtable.BranchID, branchaccounts.Amount, branchdata.BranchName, branchdata.sno AS agentid FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutesubtable ON dispatch_sub.Route_id = branchroutesubtable.RefNo INNER JOIN branchaccounts ON branchroutesubtable.BranchID = branchaccounts.BranchId INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @routeid)");
+                    cmd.Parameters.AddWithValue("@routeid", RouteID);
+                }
+                else
+                {
+                    cmd = new MySqlCommand("SELECT dispatch.sno,  dispatch.DispName,  branchroutesubtable.BranchID,  branchdata.BranchName,  branchdata.sno AS agentid,  inventory_monitor.Qty as Amount FROM dispatch  INNER JOIN dispatch_sub    ON dispatch.sno = dispatch_sub.dispatch_sno  INNER JOIN branchroutesubtable    ON dispatch_sub.Route_id = branchroutesubtable.RefNo  INNER JOIN branchdata    ON branchroutesubtable.BranchID = branchdata.sno  INNER JOIN inventory_monitor    ON branchroutesubtable.BranchID = inventory_monitor.BranchId WHERE dispatch.sno = @routeid AND inventory_monitor.Inv_Sno = @Invsno");
+                    cmd.Parameters.AddWithValue("@routeid", RouteID);
+                    cmd.Parameters.AddWithValue("@Invsno", ddlType);
+                }
             }
             DataTable dt_agentbal = vdbmngr.SelectQuery(cmd).Tables[0];
             foreach (DataRow dr in dt_agentbal.Rows)
@@ -25265,7 +25208,8 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(collectionList);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch
+
         {
 
         }
@@ -25375,7 +25319,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 DataTable distincttable = view.ToTable(true, "IndentDate");
                 int i = 1;
                 double oppcarry = 0;
-                int oppcount = 0;
                 TimeSpan dateSpan = CurDate.Subtract(fromdate);
                 int NoOfdays = dateSpan.Days;
                 NoOfdays = NoOfdays + 1;
@@ -25548,13 +25491,12 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 Getcollection.PaidAmount = dr["Paid Amount"].ToString();
                 Getcollection.JvAmount = dr["Incentive/JV"].ToString();
                 Getcollection.ClosingAmount = dr["Bal Amount"].ToString();
-                double amount = 0;
                 collectionList.Add(Getcollection);
             }
             string response = GetJson(collectionList);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -26866,7 +26808,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 {
 
                     cm_d = new SqlCommand("SELECT employee_num, fullname,ledgername, branchid,empid FROM  employedetails  where  ledgername=@employee_num");
-                    cm_d.Parameters.Add("@employee_num", Description);
+                    cm_d.Parameters.AddWithValue("@employee_num", Description);
                     DataTable dtemployename = vdm.SelectQuery(cm_d).Tables[0];
                     string employeename = dtemployename.Rows[0]["fullname"].ToString();
                     if (LevelType == "AccountsOfficer" || LevelType == "Director")
@@ -26905,7 +26847,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         string currentYear = ServerDateCurrentdate.Year.ToString();
 
                         cm_d = new SqlCommand("SELECT employee_num, fullname,ledgername, branchid,empid FROM  employedetails  where  ledgername=@ledgername");
-                        cm_d.Parameters.Add("@ledgername", dtheadaccountname.Rows[0]["HeadName"].ToString());
+                        cm_d.Parameters.AddWithValue("@ledgername", dtheadaccountname.Rows[0]["HeadName"].ToString());
                         DataTable dtempnumber = vdm.SelectQuery(cm_d).Tables[0];
                         string employee_num = ""; string empid = "";
                         if (dtempnumber.Rows.Count > 0)
@@ -26914,13 +26856,13 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             empid = dtempnumber.Rows[0]["empid"].ToString();
                         }
                         cm_d = new SqlCommand("insert into salessalaryadvance (empid,amount,doe,employee_num,month,year,remarks)values(@empid,@amount,@doe,@employee_num,@month,@year,@remarks)");
-                        cm_d.Parameters.Add("@empid", empid);
-                        cm_d.Parameters.Add("@amount", Amount);
-                        cm_d.Parameters.Add("@doe", ServerDateCurrentdate);
-                        cm_d.Parameters.Add("@employee_num", employee_num);
-                        cm_d.Parameters.Add("@month", backmonth);
-                        cm_d.Parameters.Add("@year", currentYear);
-                        cm_d.Parameters.Add("@remarks", Remarks);
+                        cm_d.Parameters.AddWithValue("@empid", empid);
+                        cm_d.Parameters.AddWithValue("@amount", Amount);
+                        cm_d.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                        cm_d.Parameters.AddWithValue("@employee_num", employee_num);
+                        cm_d.Parameters.AddWithValue("@month", backmonth);
+                        cm_d.Parameters.AddWithValue("@year", currentYear);
+                        cm_d.Parameters.AddWithValue("@remarks", Remarks);
                         vdm.insert(cm_d);
                         // End
                         cmd = new MySqlCommand("Insert into Subpayable (RefNo,HeadSno,Amount) values (@RefNo,@HeadSno,@Amount)");
@@ -27023,7 +26965,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 string currentMonth = ServerDateCurrentdate.Month.ToString();
                                 string currentYear = ServerDateCurrentdate.Year.ToString();
                                 cm_d = new SqlCommand("SELECT employee_num, fullname,ledgername, branchid,empid FROM  employedetails  where  ledgername=@ledgername");
-                                cm_d.Parameters.Add("@ledgername", Description);
+                                cm_d.Parameters.AddWithValue("@ledgername", Description);
                                 DataTable dtempnumber = vdm.SelectQuery(cm_d).Tables[0];
                                 string employee_num = ""; string empid = "";
                                 if (dtempnumber.Rows.Count > 0)
@@ -27042,13 +26984,13 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                    
                                 }
                                 cm_d = new SqlCommand("insert into salaryadvance (empid,amount,doe,employee_num,month,year,remarks)values(@empid,@amount,@doe,@employee_num,@month,@year,@remarks)");
-                                cm_d.Parameters.Add("@empid", empid);
-                                cm_d.Parameters.Add("@amount", Amount);
-                                cm_d.Parameters.Add("@doe", ServerDateCurrentdate);
-                                cm_d.Parameters.Add("@employee_num", employee_num);
-                                cm_d.Parameters.Add("@month", mnth);
-                                cm_d.Parameters.Add("@year", currentYear);
-                                cm_d.Parameters.Add("@remarks", Remarks);
+                                cm_d.Parameters.AddWithValue("@empid", empid);
+                                cm_d.Parameters.AddWithValue("@amount", Amount);
+                                cm_d.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                                cm_d.Parameters.AddWithValue("@employee_num", employee_num);
+                                cm_d.Parameters.AddWithValue("@month", mnth);
+                                cm_d.Parameters.AddWithValue("@year", currentYear);
+                                cm_d.Parameters.AddWithValue("@remarks", Remarks);
                                 vdm.insert(cm_d);
                                 // End
                                 cmd = new MySqlCommand("Insert into Subpayable (RefNo,HeadSno,Amount) values (@RefNo,@HeadSno,@Amount)");
@@ -27070,7 +27012,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 string currentMonth = ServerDateCurrentdate.Month.ToString();
                                 string currentYear = ServerDateCurrentdate.Year.ToString();
                                 cm_d = new SqlCommand("SELECT employee_num, fullname,ledgername, branchid,empid FROM  employedetails  where  ledgername=@ledgername");
-                                cm_d.Parameters.Add("@ledgername", Description);
+                                cm_d.Parameters.AddWithValue("@ledgername", Description);
                                 DataTable dtempnumber = vdm.SelectQuery(cm_d).Tables[0];
                                 string employee_num = ""; string empid = "";
                                 if (dtempnumber.Rows.Count > 0)
@@ -27089,13 +27031,13 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
                                 }
                                 cm_d = new SqlCommand("insert into salaryadvance (empid,amount,doe,employee_num,month,year,remarks)values(@empid,@amount,@doe,@employee_num,@month,@year,@remarks)");
-                                cm_d.Parameters.Add("@empid", empid);
-                                cm_d.Parameters.Add("@amount", Amount);
-                                cm_d.Parameters.Add("@doe", ServerDateCurrentdate);
-                                cm_d.Parameters.Add("@employee_num", employee_num);
-                                cm_d.Parameters.Add("@month", mnth);
-                                cm_d.Parameters.Add("@year", currentYear);
-                                cm_d.Parameters.Add("@remarks", Remarks);
+                                cm_d.Parameters.AddWithValue("@empid", empid);
+                                cm_d.Parameters.AddWithValue("@amount", Amount);
+                                cm_d.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                                cm_d.Parameters.AddWithValue("@employee_num", employee_num);
+                                cm_d.Parameters.AddWithValue("@month", mnth);
+                                cm_d.Parameters.AddWithValue("@year", currentYear);
+                                cm_d.Parameters.AddWithValue("@remarks", Remarks);
                                 vdm.insert(cm_d);
                                 // End
                                 cmd = new MySqlCommand("Insert into Subpayable (RefNo,HeadSno,Amount) values (@RefNo,@HeadSno,@Amount)");
@@ -28438,7 +28380,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     //Getinventorymng.flag = dr["flag"].ToString();
                     Getinventorymng.sno = dr["sno"].ToString();
                     int invQty = 0;
-                    double stock = 0;
                     foreach (DataRow drstock in dtInvStockClosing.Select("InvSno='" + dr["sno"].ToString() + "'"))
                     {
                         int.TryParse(drstock["StockQty"].ToString(), out invQty);
@@ -28541,7 +28482,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dtAgent = vdbmngr.SelectQuery(cmd).Tables[0];
             List<ProductsName> AgentList = new List<ProductsName>();
-            int i = 1;
             foreach (DataRow dr in dtAgent.Rows)
             {
                 ProductsName obj = new ProductsName();
@@ -28973,9 +28913,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             var js = new JavaScriptSerializer();
             DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdbmngr.conn);
             var title1 = context.Request.Params[1];
-            DateTime dtdeltime = new DateTime();
-            DateTime dtindenttime = new DateTime();
-            string tripid = "0";
             string empid = "0";
             int delqty = 0;
             int returnqty = 0;
@@ -30850,7 +30787,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     //cmd.Parameters.AddWithValue("@Amount", BranchAmount);
                     //vdbmngr.Update(cmd);
                     //DateTime fromdate = Convert.ToDateTime(cleardate);
-                    double opdifference = 0;
                     cmd = new MySqlCommand("SELECT   sno, opningamount, salevalue, paidamount, ClosingBalance, indentdate, doe, agentid, salesofficeid, saleqty, ReceivedAmount, DiffAmount, RouteId FROM tempduetrasactions WHERE (agentid = @Agentid) AND (indentdate BETWEEN @d1 AND @d2)");
                     cmd.Parameters.AddWithValue("@Agentid", BranchID);
                     cmd.Parameters.AddWithValue("@d1", GetLowDate(dtchequedate).AddDays(-1));
@@ -30985,7 +30921,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     //cmd.Parameters.AddWithValue("@Amount", BranchAmount);
                     //vdbmngr.Update(cmd);
                     //DateTime fromdate = Convert.ToDateTime(cleardate);
-                    double opdifference = 0;
                     cmd = new MySqlCommand("SELECT   sno, OppBalance, SaleValue, paidamount, ClosingBalance, IndentDate, EntryDate, agentid, salesofficeid, SaleQty, ReceivedAmount, DiffAmount, RouteId, status FROM tempduetrasactions WHERE (agentid = @Agentid) AND (IndentDate BETWEEN @d1 AND @d2)");
                     cmd.Parameters.AddWithValue("@Agentid", BranchID);
                     cmd.Parameters.AddWithValue("@d1", GetLowDate(dtchequedate).AddDays(-1));
@@ -31107,7 +31042,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             Accescontrol_db = new AccessControldbmanger();
             a_cmd = new SqlCommand("SELECT sno, bankid, ifscid, branchname, accountno, accounttype, status, doe, createdby, ladger_dr, brach_ledger, ladger_dr_code, brach_ledger_code FROM  bankaccountno_master");
             DataTable dtIndent = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
-            int i = 1;
             List<faaccountnumberscls> indentlist = new List<faaccountnumberscls>();
             foreach (DataRow dr in dtIndent.Rows)
             {
@@ -31813,26 +31747,26 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         P_whcode = dt_branch.Rows[0]["P_whcode"].ToString();
                     }
                     a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                    a_cmd.Parameters.Add("@whcode", S_whcode);//Branch is Salesoffice Wh code
+                    a_cmd.Parameters.AddWithValue("@whcode", S_whcode);//Branch is Salesoffice Wh code
                     DataTable DT_S_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                     a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                    a_cmd.Parameters.Add("@whcode", P_whcode);//Branch is Plant WHcode
+                    a_cmd.Parameters.AddWithValue("@whcode", P_whcode);//Branch is Plant WHcode
                     DataTable DT_P_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
 
                     if (dt_branch.Rows.Count > 0)
                     {
                         a_cmd = new SqlCommand("INSERT INTO collections (accountno,name, amount, remarks, doe, createdby, status, receiptdate,branch,subbranch,sapimport) VALUES (@accountno,@name, @amount, @remarks, @doe, @createdby, @status, @receiptdate,@branch,@subbranch,@sapimport)");
-                        a_cmd.Parameters.Add("@accountno", faaccuntno);
-                        a_cmd.Parameters.Add("@name", tbranchname);
-                        a_cmd.Parameters.Add("@amount", PaidAmount);
-                        a_cmd.Parameters.Add("@remarks", Remarks);
-                        a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
-                        a_cmd.Parameters.Add("@createdby", context.Session["UserSno"].ToString());
-                        a_cmd.Parameters.Add("@status", "P");
-                        a_cmd.Parameters.Add("@receiptdate", ServerDateCurrentdate);
-                        a_cmd.Parameters.Add("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
-                        a_cmd.Parameters.Add("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
-                        a_cmd.Parameters.Add("@sapimport", "2");
+                        a_cmd.Parameters.AddWithValue("@accountno", faaccuntno);
+                        a_cmd.Parameters.AddWithValue("@name", tbranchname);
+                        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
+                        a_cmd.Parameters.AddWithValue("@remarks", Remarks);
+                        a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                        a_cmd.Parameters.AddWithValue("@createdby", context.Session["UserSno"].ToString());
+                        a_cmd.Parameters.AddWithValue("@status", "P");
+                        a_cmd.Parameters.AddWithValue("@receiptdate", ServerDateCurrentdate);
+                        a_cmd.Parameters.AddWithValue("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
+                        a_cmd.Parameters.AddWithValue("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
+                        a_cmd.Parameters.AddWithValue("@sapimport", "2");
                         Accescontrol_db.insert(a_cmd);
                         a_cmd = new SqlCommand("select MAX(sno) as sno from collections");
                         DataTable dtsno = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
@@ -31842,32 +31776,32 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         if (Branch == "285" && faaccuntno == "4")
                         {
                             a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                            a_cmd.Parameters.Add("@accountname", tbranchname);
+                            a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                         }
                         else
                         {
                             a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                            a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                            a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                         }
                         //Getting Sales Office and Insert into main and sub tables 
                         DataTable dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
 
                         a_cmd = new SqlCommand("INSERT INTO collectionsubdetails (collectionrefno, headofaccount, amount) VALUES (@collectionrefno, @headofaccount, @amount)");
-                        a_cmd.Parameters.Add("@collectionrefno", refno);
-                        a_cmd.Parameters.Add("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
-                        a_cmd.Parameters.Add("@amount", PaidAmount);
+                        a_cmd.Parameters.AddWithValue("@collectionrefno", refno);
+                        a_cmd.Parameters.AddWithValue("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
+                        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
                         Accescontrol_db.insert(a_cmd);
 
                         //Getting Agent Data and Insert into sub tables 
                        
                         a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                        a_cmd.Parameters.Add("@accountname", tbranchname);
+                        a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                         DataTable dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
 
                         a_cmd = new SqlCommand("insert into subaccount_collection (collectionrefno, headofaccount, amount) values (@refno, @headofaccount, @amount)");
-                        a_cmd.Parameters.Add("@refno", refno);
-                        a_cmd.Parameters.Add("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
-                        a_cmd.Parameters.Add("@amount", PaidAmount);
+                        a_cmd.Parameters.AddWithValue("@refno", refno);
+                        a_cmd.Parameters.AddWithValue("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
+                        a_cmd.Parameters.AddWithValue("@amount", PaidAmount);
                         Accescontrol_db.insert(a_cmd);
                     }
                     else
@@ -32462,7 +32396,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         float todaydue = 0;
                         float todayCashdue = 0;
                         float totaldue = 0;
-                        float collectedamt = 0;
                         float paidamt = 0;
                         float submittedamt = 0;
                         float cashpaidamt = 0;
@@ -33452,9 +33385,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 {
                     if (drtotal["sno"].ToString() == dr["sno"].ToString())
                     {
-                        float unitqty = 0;
                         float saleqty = 0;
-                        float salevalue = 0;
                         float.TryParse(dr["DeliveryQty"].ToString(), out saleqty);
                         drtotal["Total Sale"] = Math.Round(saleqty, 2);
                         totalsale.Add(saleqty.ToString());
@@ -34307,7 +34238,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Columns.Add("SNo");
                     Report.Columns.Add("Date");
                     Report.Columns.Add("Qty");
-                    int N = 0;
                     int i = 1;
                     if (months != 0)
                     {
@@ -34345,7 +34275,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Columns.Add("SNo");
                     Report.Columns.Add("Date");
                     Report.Columns.Add("Qty");
-                    int N = 0;
                     int i = 1;
                     if (months != 0)
                     {
@@ -34379,7 +34308,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     Report.Columns.Add("SNo");
                     Report.Columns.Add("Date");
                     Report.Columns.Add("Qty");
-                    int N = 0;
                     int i = 1;
                     if (months != 0)
                     {
@@ -34663,7 +34591,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 cmd.Parameters.AddWithValue("@EntryDate", ServerDateCurrentdate);
                 cmd.Parameters.AddWithValue("@ModifySno", sno);
                 long clubsno = vdbmngr.insertScalar(cmd);
-                int i = 1;
                 foreach (string o in obj.dataarr)
                 {
                     cmd = new MySqlCommand("insert into subproductsclubbing (Clubsno,Productid)values(@Clubsno,@Productid)");
@@ -34932,7 +34859,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 cmd.Parameters.AddWithValue("@EntryDate", ServerDateCurrentdate);
                 cmd.Parameters.AddWithValue("@modifysno", sno);
                 long is_sno = vdbmngr.insertScalar(cmd);
-                int i = 1;
                 foreach (string o in obj.dataarr)
                 {
                     cmd = new MySqlCommand("insert into incentive_struct_sub (is_sno,clubbingID)values(@is_sno,@clubbingID)");
@@ -35043,7 +34969,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string response = GetJson(divselectedclubbinglist);
             context.Response.Write(response);
         }
-        catch (Exception ex)
+        catch  
         {
 
         }
@@ -36203,7 +36129,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 //25/09/2018 begin
                                 //DateTime fromdate = new DateTime();
                                 DateTime fromdate = Convert.ToDateTime(cleardate);
-                                double opdifference = 0;
                                 cmd = new MySqlCommand("SELECT   sno, OppBalance, SaleValue, paidamount, ClosingBalance, IndentDate, EntryDate, agentid, salesofficeid, SaleQty, ReceivedAmount, DiffAmount, RouteId, status FROM tempduetrasactions WHERE (agentid = @Agentid) AND (IndentDate BETWEEN @d1 AND @d2)");
                                 cmd.Parameters.AddWithValue("@Agentid", BranchSno);
                                 cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
@@ -36291,26 +36216,26 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     P_whcode = dt_branch.Rows[0]["P_whcode"].ToString();
                                 }
                                 a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                                a_cmd.Parameters.Add("@whcode", S_whcode);//Branch is Salesoffice Wh code
+                                a_cmd.Parameters.AddWithValue("@whcode", S_whcode);//Branch is Salesoffice Wh code
                                 DataTable DT_S_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                                a_cmd.Parameters.Add("@whcode", P_whcode);//Branch is Plant WHcode
+                                a_cmd.Parameters.AddWithValue("@whcode", P_whcode);//Branch is Plant WHcode
                                 DataTable DT_P_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 if (dt_branch.Rows.Count > 0)
                                 {
                                     DateTime dtcleardate = Convert.ToDateTime(cleardate);
                                     a_cmd = new SqlCommand("INSERT INTO collections (accountno,name, amount, remarks, doe, createdby, status, receiptdate,branch,subbranch,sapimport) VALUES (@accountno,@name, @amount, @remarks, @doe, @createdby, @status, @receiptdate,@branch,@subbranch,@sapimport)");
-                                    a_cmd.Parameters.Add("@accountno", faaccuntno);
-                                    a_cmd.Parameters.Add("@name", tbranchname);
-                                    a_cmd.Parameters.Add("@amount", BranchAmount);
-                                    a_cmd.Parameters.Add("@remarks", Remarks);
-                                    a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
-                                    a_cmd.Parameters.Add("@createdby", context.Session["UserSno"].ToString());
-                                    a_cmd.Parameters.Add("@status", "P");
-                                    a_cmd.Parameters.Add("@receiptdate", dtcleardate);
-                                    a_cmd.Parameters.Add("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
-                                    a_cmd.Parameters.Add("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
-                                    a_cmd.Parameters.Add("@sapimport", "2");
+                                    a_cmd.Parameters.AddWithValue("@accountno", faaccuntno);
+                                    a_cmd.Parameters.AddWithValue("@name", tbranchname);
+                                    a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
+                                    a_cmd.Parameters.AddWithValue("@remarks", Remarks);
+                                    a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                                    a_cmd.Parameters.AddWithValue("@createdby", context.Session["UserSno"].ToString());
+                                    a_cmd.Parameters.AddWithValue("@status", "P");
+                                    a_cmd.Parameters.AddWithValue("@receiptdate", dtcleardate);
+                                    a_cmd.Parameters.AddWithValue("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
+                                    a_cmd.Parameters.AddWithValue("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
+                                    a_cmd.Parameters.AddWithValue("@sapimport", "2");
                                     Accescontrol_db.insert(a_cmd);
                                     a_cmd = new SqlCommand("select MAX(sno) as sno from collections");
                                     DataTable dtsno = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
@@ -36319,7 +36244,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     //Getting Sales Office and Insert into main and sub tables 
                                     DataTable dt_soaccountdetails = new DataTable();
                                     a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                    a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                                    a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                                     dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                     if (dt_soaccountdetails.Rows.Count > 0)
                                     {
@@ -36328,24 +36253,24 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     else
                                     {
                                         a_cmd = new SqlCommand("insert into headofaccounts_master (accountname, doe) values (@accountname, @doe)");
-                                        a_cmd.Parameters.Add("@accountname", t_sobranchname);
-                                        a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
+                                        a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
+                                        a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                                         Accescontrol_db.insert(a_cmd);
                                         a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                        a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                                        a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                                         dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                     }
                                     a_cmd = new SqlCommand("INSERT INTO collectionsubdetails (collectionrefno, headofaccount, amount) VALUES (@collectionrefno, @headofaccount, @amount)");
-                                    a_cmd.Parameters.Add("@collectionrefno", refno);
-                                    a_cmd.Parameters.Add("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
-                                    a_cmd.Parameters.Add("@amount", BranchAmount);
+                                    a_cmd.Parameters.AddWithValue("@collectionrefno", refno);
+                                    a_cmd.Parameters.AddWithValue("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
+                                    a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
                                     Accescontrol_db.insert(a_cmd);
 
                                     //Getting Agent Data and Insert into sub tables 
                                     DataTable dtaccountdetails = new DataTable();
 
                                     a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                    a_cmd.Parameters.Add("@accountname", tbranchname);
+                                    a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                                     dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                     if (dtaccountdetails.Rows.Count > 0)
                                     {
@@ -36354,19 +36279,19 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                     else
                                     {
                                         a_cmd = new SqlCommand("insert into headofaccounts_master (accountname, doe) values (@accountname, @doe)");
-                                        a_cmd.Parameters.Add("@accountname", tbranchname);
-                                        a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
+                                        a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
+                                        a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                                         Accescontrol_db.insert(a_cmd);
 
                                         a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                        a_cmd.Parameters.Add("@accountname", tbranchname);
+                                        a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                                         dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                     }
 
                                     a_cmd = new SqlCommand("insert into subaccount_collection (collectionrefno, headofaccount, amount) values (@refno, @headofaccount, @amount)");
-                                    a_cmd.Parameters.Add("@refno", refno);
-                                    a_cmd.Parameters.Add("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
-                                    a_cmd.Parameters.Add("@amount", BranchAmount);
+                                    a_cmd.Parameters.AddWithValue("@refno", refno);
+                                    a_cmd.Parameters.AddWithValue("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
+                                    a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
                                     Accescontrol_db.insert(a_cmd);
                                 }
                                 else
@@ -36498,7 +36423,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             cmd.Parameters.AddWithValue("@Amount", BranchAmount);
                             vdbmngr.Update(cmd);
                             DateTime fromdate = Convert.ToDateTime(cleardate);
-                            double opdifference = 0;
                             cmd = new MySqlCommand("SELECT   sno, OppBalance, SaleValue, paidamount, ClosingBalance, IndentDate, EntryDate, agentid, salesofficeid, SaleQty, ReceivedAmount, DiffAmount, RouteId, status FROM tempduetrasactions WHERE (agentid = @Agentid) AND (IndentDate BETWEEN @d1 AND @d2)");
                             cmd.Parameters.AddWithValue("@Agentid", BranchSno);
                             cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate).AddDays(-1));
@@ -36617,26 +36541,26 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 P_whcode = dt_branch.Rows[0]["P_whcode"].ToString();
                             }
                             a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                            a_cmd.Parameters.Add("@whcode", S_whcode);//Branch is Salesoffice Wh code
+                            a_cmd.Parameters.AddWithValue("@whcode", S_whcode);//Branch is Salesoffice Wh code
                             DataTable DT_S_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                             a_cmd = new SqlCommand("SELECT branchid FROM branchmaster WHERE (whcode = @whcode)");
-                            a_cmd.Parameters.Add("@whcode", P_whcode);//Branch is Plant WHcode
+                            a_cmd.Parameters.AddWithValue("@whcode", P_whcode);//Branch is Plant WHcode
                             DataTable DT_P_WH = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                             //DateTime from_date = Convert.ToDateTime(cleardate);
                             if (dt_branch.Rows.Count > 0)
                             {
                                 a_cmd = new SqlCommand("INSERT INTO collections (accountno,name, amount, remarks, doe, createdby, status, receiptdate,branch,subbranch,sapimport) VALUES (@accountno,@name, @amount, @remarks, @doe, @createdby, @status, @receiptdate,@branch,@subbranch,@sapimport)");
-                                a_cmd.Parameters.Add("@accountno", faaccuntno);
-                                a_cmd.Parameters.Add("@name", tbranchname);
-                                a_cmd.Parameters.Add("@amount", BranchAmount);
-                                a_cmd.Parameters.Add("@remarks", Remarks);
-                                a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
-                                a_cmd.Parameters.Add("@createdby", context.Session["UserSno"].ToString());
-                                a_cmd.Parameters.Add("@status", "P");
-                                a_cmd.Parameters.Add("@receiptdate", cleardate);
-                                a_cmd.Parameters.Add("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
-                                a_cmd.Parameters.Add("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
-                                a_cmd.Parameters.Add("@sapimport", "2");
+                                a_cmd.Parameters.AddWithValue("@accountno", faaccuntno);
+                                a_cmd.Parameters.AddWithValue("@name", tbranchname);
+                                a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
+                                a_cmd.Parameters.AddWithValue("@remarks", Remarks);
+                                a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                                a_cmd.Parameters.AddWithValue("@createdby", context.Session["UserSno"].ToString());
+                                a_cmd.Parameters.AddWithValue("@status", "P");
+                                a_cmd.Parameters.AddWithValue("@receiptdate", cleardate);
+                                a_cmd.Parameters.AddWithValue("@branch", DT_P_WH.Rows[0]["branchid"].ToString());
+                                a_cmd.Parameters.AddWithValue("@subbranch", DT_S_WH.Rows[0]["branchid"].ToString());
+                                a_cmd.Parameters.AddWithValue("@sapimport", "2");
                                 Accescontrol_db.insert(a_cmd);
                                 a_cmd = new SqlCommand("select MAX(sno) as sno from collections");
                                 DataTable dtsno = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
@@ -36645,7 +36569,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 //Getting Sales Office and Insert into main and sub tables 
                                 DataTable dt_soaccountdetails = new DataTable();
                                 a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                                a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                                 dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 if (dt_soaccountdetails.Rows.Count > 0)
                                 {
@@ -36654,24 +36578,24 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 else
                                 {
                                     a_cmd = new SqlCommand("insert into headofaccounts_master (accountname, doe) values (@accountname, @doe)");
-                                    a_cmd.Parameters.Add("@accountname", t_sobranchname);
-                                    a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
+                                    a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
+                                    a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                                     Accescontrol_db.insert(a_cmd);
                                     a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                    a_cmd.Parameters.Add("@accountname", t_sobranchname);
+                                    a_cmd.Parameters.AddWithValue("@accountname", t_sobranchname);
                                     dt_soaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 }
 
                                 a_cmd = new SqlCommand("INSERT INTO collectionsubdetails (collectionrefno, headofaccount, amount) VALUES (@collectionrefno, @headofaccount, @amount)");
-                                a_cmd.Parameters.Add("@collectionrefno", refno);
-                                a_cmd.Parameters.Add("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
-                                a_cmd.Parameters.Add("@amount", BranchAmount);
+                                a_cmd.Parameters.AddWithValue("@collectionrefno", refno);
+                                a_cmd.Parameters.AddWithValue("@headofaccount", dt_soaccountdetails.Rows[0]["sno"].ToString());
+                                a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
                                 Accescontrol_db.insert(a_cmd);
 
                                 //Getting Agent Data and Insert into sub tables 
                                 DataTable dtaccountdetails = new DataTable();
                                 a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                a_cmd.Parameters.Add("@accountname", tbranchname);
+                                a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                                 dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 if (dtaccountdetails.Rows.Count > 0)
                                 {
@@ -36680,18 +36604,18 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 else
                                 {
                                     a_cmd = new SqlCommand("insert into headofaccounts_master (accountname, doe) values (@accountname, @doe)");
-                                    a_cmd.Parameters.Add("@accountname", tbranchname);
-                                    a_cmd.Parameters.Add("@doe", ServerDateCurrentdate);
+                                    a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
+                                    a_cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                                     Accescontrol_db.insert(a_cmd);
 
                                     a_cmd = new SqlCommand("SELECT sno, accountname FROM  headofaccounts_master  where  accountname=@accountname");
-                                    a_cmd.Parameters.Add("@accountname", tbranchname);
+                                    a_cmd.Parameters.AddWithValue("@accountname", tbranchname);
                                     dtaccountdetails = Accescontrol_db.SelectQuery(a_cmd).Tables[0];
                                 }
                                 a_cmd = new SqlCommand("insert into subaccount_collection (collectionrefno, headofaccount, amount) values (@refno, @headofaccount, @amount)");
-                                a_cmd.Parameters.Add("@refno", refno);
-                                a_cmd.Parameters.Add("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
-                                a_cmd.Parameters.Add("@amount", BranchAmount);
+                                a_cmd.Parameters.AddWithValue("@refno", refno);
+                                a_cmd.Parameters.AddWithValue("@headofaccount", dtaccountdetails.Rows[0]["sno"].ToString());
+                                a_cmd.Parameters.AddWithValue("@amount", BranchAmount);
                                 Accescontrol_db.insert(a_cmd);
                             }
                             else
@@ -37339,7 +37263,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 cmd.Parameters.AddWithValue("@flag", true);
                 cmd.Parameters.AddWithValue("@DispMode", DispMode);
                 long dispatchsno = vdbmngr.insertScalar(cmd);
-                int i = 1;
                 foreach (string o in obj.dataarr)
                 {
                     string[] routeindents = o.Split('-');
@@ -37386,7 +37309,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 cmd.Parameters.AddWithValue("@RefNo", sno);
                 vdbmngr.Delete(cmd);
 
-                int i = 1;
                 foreach (string o in obj.dataarr)
                 {
                     string[] routeindents = o.Split('-');
@@ -40404,7 +40326,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             if (dtProduct.Rows.Count > 0)
                             {
                                 string BranchUnitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
-                                float Rate = 0;
                                 if (BranchUnitPrice != "0")
                                 {
                                     AunitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
@@ -40906,8 +40827,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DateTime dtmarch = new DateTime();
             int currentyear = ServerDateCurrentdate.Year;
             int nextyear = ServerDateCurrentdate.Year + 1;
-            int currntyearnum = 0;
-            int nextyearnum = 0;
             if (ServerDateCurrentdate.Month > 3)
             {
                 string apr = "4/1/" + currentyear;
@@ -41336,7 +41255,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     cmd.Parameters.AddWithValue("@DispType", "Free");
                     cmd.Parameters.AddWithValue("@DispMode", "Free");
                     string TitleName = context.Session["TitleName"].ToString();
-                    string BID = "";
                     if (TitleName == "SRI VYSHNAVI DAIRY SPECIALITIES (P) LTD")
                     {
                         cmd.Parameters.AddWithValue("@BranchID", context.Session["branch"].ToString());
@@ -41623,7 +41541,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                                 if (dtProduct.Rows.Count > 0)
                                 {
                                     string BranchUnitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
-                                    float Rate = 0;
                                     if (BranchUnitPrice != "0")
                                     {
                                         AunitPrice = dtProduct.Rows[0]["BUnitPrice"].ToString();
@@ -41687,7 +41604,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 string currentMonth = ServerDateCurrentdate.Month.ToString();
                 string currentYear = ServerDateCurrentdate.Year.ToString();
                 cm_d = new SqlCommand("SELECT employee_num, fullname,ledgername, branchid,empid FROM  employedetails  where  empid=@empid");
-                cm_d.Parameters.Add("@empid", SalesTypeId);
+                cm_d.Parameters.AddWithValue("@empid", SalesTypeId);
                 DataTable dtempnumber = vdm.SelectQuery(cm_d).Tables[0];
                 string employee_num = "";
                 if (dtempnumber.Rows.Count > 0)
@@ -41695,13 +41612,13 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     employee_num = dtempnumber.Rows[0]["employee_num"].ToString();
                 }
                 cm_d = new SqlCommand("insert into salaryadvance (empid,amount,doe,employee_num,month,year,remarks)values(@empid,@amount,@doe,@employee_num,@month,@year,@remarks)");
-                cm_d.Parameters.Add("@empid", SalesTypeId);
-                cm_d.Parameters.Add("@amount", totalamount);
-                cm_d.Parameters.Add("@doe", ServerDateCurrentdate);
-                cm_d.Parameters.Add("@employee_num", employee_num);
-                cm_d.Parameters.Add("@month", currentMonth);
-                cm_d.Parameters.Add("@year", currentYear);
-                cm_d.Parameters.Add("@remarks", remarks);
+                cm_d.Parameters.AddWithValue("@empid", SalesTypeId);
+                cm_d.Parameters.AddWithValue("@amount", totalamount);
+                cm_d.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
+                cm_d.Parameters.AddWithValue("@employee_num", employee_num);
+                cm_d.Parameters.AddWithValue("@month", currentMonth);
+                cm_d.Parameters.AddWithValue("@year", currentYear);
+                cm_d.Parameters.AddWithValue("@remarks", remarks);
                 vdm.insert(cm_d);
             }
             foreach (inventorydetail iv in obj.invdata)
@@ -41752,8 +41669,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string phonenumber = obj.Mobile;
             string empname = obj.clubbingname;
             DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdbmngr.conn);
-            int PasswordLength = 6;
-            string _allowedChars = "0123456789";
             Random randNum = new Random();
 
             String r = randNum.Next(0, 1000000).ToString("D6");
@@ -44127,7 +44042,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             if (mobileno.Length == 10)
             {
                 string Date = DateTime.Now.AddDays(1).ToString("dd/MM/yyyy");
-                string companyname = "\r\nPowered By Vyshnavi";
                 if (context.Session["TitleName"].ToString() == "SRI VYSHNAVI DAIRY SPECIALITIES (P) LTD")
                 {
                     //http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=
@@ -44994,7 +44908,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 foreach (DataRow drmobile in dtmobilenumbers.Rows)
                 {
                     string MobNo = drmobile["Mobno"].ToString();
-                    //MobNo = "9677056895";
+                    //MobNo = "9959693439";
                     string DispatchName = context.Session["branchname"].ToString();
                     DataTable Report = new DataTable();
                     ///Ravi
@@ -46642,7 +46556,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                             newrow["Sales"] = branch["DeliveryQty"].ToString();
                             newrow["Sales Value"] = branch["Total"].ToString();
                             double qtyvalue = 0;
-                            double Leakqtyvalue = 0;
                             float delqtyvalue = 0;
                             double TotAmountvalue = 0;
                             double.TryParse(branch["unitQty"].ToString(), out qtyvalue);
@@ -47527,8 +47440,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             cmd.Parameters.AddWithValue("@d2", GetHighDate(todate));
             cmd.Parameters.AddWithValue("@branchid", branchid);
             DataTable dtinvopp = vdbmngr.SelectQuery(cmd).Tables[0];
-            double totaldaywisecollection = 0; double agentincentive = 0; double totalagentchequecoll = 0;
-            double totalcolletion = 0; double TotalSaleValue = 0;
             foreach (DataRow drdaycoll in dtinvopp.Rows)
             {
                 PlantInventaryDetails obj1 = new PlantInventaryDetails();
@@ -47568,7 +47479,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
             string[] arr = branchid.Split('_');
             string t1 = arr.Length.ToString();
-            string routeid = "";
             string inventarysno = "";
             inventarysno = arr[0];
             branchid = arr[1];
@@ -47636,7 +47546,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
             string[] arr = branchid.Split('_');
             string t1 = arr.Length.ToString();
-            string routeid = "";
             string inventarysno = "";
             inventarysno = arr[0];
             branchid = arr[1];
@@ -47995,8 +47904,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             TimeSpan dateSpan = Enddate.Subtract(From_Date);
             int years = (dateSpan.Days / 365);
             int months = ((dateSpan.Days % 365) / 31) + (years * 12);
-            int N = 0;
-            int i = 1;
             if (months != 0)
             {
                 ArrayList al = new ArrayList();
@@ -48047,7 +47954,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     DateTime dtF = firstmonth;
                     DataTable tempbranchindentsale = new DataTable();
                     DataTable dtDispatchesbranches = new DataTable();
-                    string BranchID = "8009";
                     cmd = new MySqlCommand("SELECT  branchmappingtable.SubBranch, branchmappingtable.SuperBranch, branchmappingtable.SubBranch AS Expr1, branchdata.BranchName,branchdata.SalesType FROM  branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno WHERE  (branchmappingtable.SuperBranch = @Branchid) GROUP BY branchmappingtable.SubBranch ORDER BY companyname, branchmappingtable.SubBranch");
                     cmd.Parameters.AddWithValue("@Branchid", "8009");
                     DataTable BtGroupBranches = vdbmngr.SelectQuery(cmd).Tables[0];
@@ -48170,7 +48076,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
                                 if (branchid == drDriver["SuperBranch"].ToString())
                                 {
-                                    string logdate = "";
                                     string totqty = "";
                                     string DelivaryQty = drDriver["DeliveryQty"].ToString();
                                     if (DelivaryQty != "")
@@ -48212,14 +48117,11 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                         string branchid = drb["SuperBranch"].ToString();
                         DataRow newrow = Sorttable.NewRow();
                         string parlorname = drb["BranchName"].ToString();
-                        string columnname3 = "";
                         string columnname4 = "";
                         string columnname5 = "";
                         string columnname6 = "";
                         string columnname7 = "";
                         string columnname8 = "";
-                        string columnname9 = "";
-                        string columnname10 = "";
                         int columncount = Report.Columns.Count;
                         if (columncount > 7)
                         {
@@ -48523,7 +48425,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DataTable dtAll = new DataTable();
             DataTable tempbranchindentsale = new DataTable();
             DataTable dtDispatchesbranches = new DataTable();
-            string BranchID = "8009";
             cmd = new MySqlCommand("SELECT  branchmappingtable.SubBranch, branchmappingtable.SuperBranch, branchmappingtable.SubBranch AS Expr1, branchdata.BranchName,branchdata.SalesType FROM  branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno WHERE  (branchmappingtable.SuperBranch = @Branchid) GROUP BY branchmappingtable.SubBranch ORDER BY companyname, branchmappingtable.SubBranch");
             cmd.Parameters.AddWithValue("@Branchid", "8009");
             DataTable BtGroupBranches = vdbmngr.SelectQuery(cmd).Tables[0];
@@ -49050,7 +48951,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DataTable dtAll = new DataTable();
             DataTable tempbranchindentsale = new DataTable();
             DataTable dtDispatchesbranches = new DataTable();
-            string BranchID = "8009";
             cmd = new MySqlCommand("SELECT  branchmappingtable.SubBranch, branchmappingtable.SuperBranch, branchmappingtable.SubBranch AS Expr1, branchdata.BranchName,branchdata.SalesType FROM  branchmappingtable INNER JOIN branchdata ON branchmappingtable.SubBranch = branchdata.sno WHERE  (branchmappingtable.SuperBranch = @Branchid) GROUP BY branchmappingtable.SubBranch ORDER BY companyname, branchmappingtable.SubBranch");
             cmd.Parameters.AddWithValue("@Branchid", "8009");
             DataTable BtGroupBranches = vdbmngr.SelectQuery(cmd).Tables[0];
@@ -49567,7 +49467,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
         cmd = new MySqlCommand("SELECT empmanage.Sno, IFNULL(empmanage.otpstatus,0) otpstatus, empmanage.UserName,empmanage.grouplogin, empmanage.Password, empmanage.LevelType, empmanage.flag, empmanage.Userdata_sno, empmanage.Owner, empmanage.EmpName, empmanage.Address, empmanage.Mobno, empmanage.Email, empmanage.LWC, empmanage.RefName, empmanage.Dept_Sno, branchdata.BranchName,branchdata.Radius, empmanage.Branch, salestypemanagement.salestype FROM empmanage INNER JOIN branchdata ON empmanage.Branch = branchdata.sno INNER JOIN salestypemanagement ON branchdata.SalesType = salestypemanagement.sno WHERE (empmanage.Sno = @UN) AND (empmanage.flag ='1')");
         cmd.Parameters.AddWithValue("@UN", emp_id);
         DataTable dtemp = vdbmngr.SelectQuery(cmd).Tables[0];
-        string LevelType = "";
         if (dtemp.Rows.Count > 0)
         {
             // cmd = new MySqlCommand("SELECT branchmappingtable.SuperBranch, branchdata.BranchName,branchdata.stateid,branchdata.gstno,branchdata.statename FROM branchmappingtable INNER JOIN empmanage ON branchmappingtable.SubBranch = empmanage.Branch INNER JOIN branchdata ON empmanage.Branch = branchdata.sno WHERE (empmanage.UserName = @UN)");
@@ -49943,7 +49842,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             if (btnaddmodify == "Save")
             {//naveen
-                int i = 1;
                 foreach (fillstockclosing o in obj.fillstockclosing)
                 {
 
@@ -50171,7 +50069,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 Report.Columns.Add("Total  Ltrs");
                 DataTable distincttable = view.ToTable(true, "BranchName", "IndentDate");
                 DataTable distincttotal = view.ToTable(true, "ProductName", "DeliveryQty");
-                int i = 1;
                 double Total = 0;
                 double TotalQty = 0;
                 double prdtwisetotal = 0;
@@ -50543,7 +50440,6 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdbmngr.conn);
             if (btnSave == "Save")
             {
-                int i = 1;
                 cmd = new MySqlCommand("insert into smstransinfo (doe,smstype)values(@doe,@smstype)");
                 cmd.Parameters.AddWithValue("@doe", ServerDateCurrentdate);
                 cmd.Parameters.AddWithValue("@smstype", "MsgSend");

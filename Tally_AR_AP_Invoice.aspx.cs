@@ -335,9 +335,7 @@ public partial class Tally_AR_AP_Invoice : System.Web.UI.Page
                             double.TryParse(branch["qty"].ToString(), out  qty);
                             if (fromstateid == tostate)
                             {
-                                double sgst = 0;
                                 double sgstamount = 0;
-                                double cgst = 0;
                                 double cgstamount = 0;
                                 double Igst = 0;
                                 double Igstamount = 0;
@@ -524,9 +522,7 @@ public partial class Tally_AR_AP_Invoice : System.Web.UI.Page
                                         double.TryParse(branch["qty"].ToString(), out  qty);
                                         if (fromstateid == tostate)
                                         {
-                                            double sgst = 0;
                                             double sgstamount = 0;
-                                            double cgst = 0;
                                             double cgstamount = 0;
                                             double Igst = 0;
                                             double Igstamount = 0;
@@ -757,9 +753,7 @@ public partial class Tally_AR_AP_Invoice : System.Web.UI.Page
                             double.TryParse(branch["qty"].ToString(), out  qty);
                             if (fromstateid == tostate)
                             {
-                                double sgst = 0;
                                 double sgstamount = 0;
-                                double cgst = 0;
                                 double cgstamount = 0;
                                 double Igst = 0;
                                 double Igstamount = 0;
@@ -946,9 +940,7 @@ public partial class Tally_AR_AP_Invoice : System.Web.UI.Page
                                         double.TryParse(branch["qty"].ToString(), out  qty);
                                         if (fromstateid == tostate)
                                         {
-                                            double sgst = 0;
                                             double sgstamount = 0;
-                                            double cgst = 0;
                                             double cgstamount = 0;
                                             double Igst = 0;
                                             double Igstamount = 0;

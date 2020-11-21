@@ -172,7 +172,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 Report.Columns.Add("Net Value");
                 Report.Columns.Add("Narration");
                
-                int i = 1;
                 cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.Branchcode,branchdata.companycode, branchdata.incentivename, branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
@@ -187,7 +186,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 string branchcode = "";
                 string statecode = "";
                 string fromstateid = "";
-                string Branchcode = "";
                 string gststatecode = "";
                 string companycode = "";
                 if (dtstate.Rows.Count > 0)
@@ -208,7 +206,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 string DCNO = "";
                 foreach (DataRow dr in dtDispnames.Rows)
                 {
-                    string tripID = ""; string soid = "";
+                    string soid = "";
 
                     cmd = new MySqlCommand("SELECT SUM(offer_indents_sub.offer_delivered_qty) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, offer_indents_sub.invoiceno, products_category.tcategory, productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM offer_indents_sub INNER JOIN tripdata ON offer_indents_sub.DTripId = tripdata.Sno INNER JOIN  productsdata ON offer_indents_sub.product_id = productsdata.sno INNER JOIN   branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN    products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN  products_category ON products_subcategory.category_sno = products_category.sno  WHERE        (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) AND (productsdata.igst = 0)  GROUP BY productsdata.tproduct, products_category.tcategory");
                     cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
@@ -253,7 +251,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                                 }
                                 soid = ddlSalesOffice.SelectedValue;
                             }
-                            double freeqty = 0; double taxfreeqty = 0;
+                            double freeqty = 0; 
                             foreach (DataRow branch in newdt.Rows)
                             {
                                 //Free
@@ -354,7 +352,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                         //    DCNO = branchcode + "/" + dtapril.AddYears(-1).ToString("yy") + "-" + dtmarch.AddYears(-1).ToString("yy") + "N/" + DCNO;
                         //}
                     }
-                    double totfreeamount = 0;
                     foreach (DataRow branch in newdt.Rows)
                     {
                         if (branch["sgst"].ToString() == "0")
@@ -389,9 +386,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                                 newrow["Qty"] = Qty;
                                 newrow["Rate"] = rate;
                                 double invval = 0;
-                                double sgst = 0;
                                 double sgstamount = 0;
-                                double cgst = 0;
                                 double cgstamount = 0;
                                 double taxval = 0;
                                 double Igst = 0;
@@ -469,7 +464,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 Report.Columns.Add("IGST Amount");
                 Report.Columns.Add("Net Value");
                 Report.Columns.Add("Narration");
-                int i = 1;
                 cmd = new MySqlCommand("SELECT branchdata.sno,branchdata.Branchcode,branchdata.companycode, branchdata.incentivename, branchdata.BranchName,branchdata.stateid, statemastar.statename, statemastar.statecode , statemastar.gststatecode FROM branchdata INNER JOIN statemastar ON branchdata.stateid = statemastar.sno WHERE (branchdata.sno = @BranchID)");
                 if (Session["salestype"].ToString() == "Plant")
                 {
@@ -484,7 +478,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 string branchcode = "";
                 string statecode = "";
                 string fromstateid = "";
-                string Branchcode = "";
                 string gststatecode = "";
                 string companycode = "";
                 if (dtstate.Rows.Count > 0)
@@ -505,7 +498,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                 string DCNO = "";
                 foreach (DataRow dr in dtDispnames.Rows)
                 {
-                    string tripID = ""; string soid = "";
+                    string soid = "";
                     cmd = new MySqlCommand("SELECT  SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory, productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) AND (productsdata.igst > 0) GROUP BY productsdata.tproduct, products_category.tcategory");
                     //cmd = new MySqlCommand("SELECT SUM(leakages.ShortQty) AS ShortQty, SUM(leakages.FreeMilk) AS FreeMilk, productsdata.tproduct, branchproducts.unitprice, leakages.invoiceno, products_category.tcategory,productsdata.hsncode, productsdata.igst, productsdata.cgst, productsdata.sgst FROM leakages INNER JOIN tripdata ON leakages.TripID = tripdata.Sno INNER JOIN productsdata ON leakages.ProductID = productsdata.sno INNER JOIN branchproducts ON productsdata.sno = branchproducts.product_sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno WHERE (tripdata.ATripid = @TripID) AND (branchproducts.branch_sno = @BranchID) GROUP BY productsdata.tproduct, products_category.tcategory");
                     cmd.Parameters.AddWithValue("@TripID", dr["TripSno"].ToString());
@@ -554,7 +547,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                                 }
                                 soid = ddlSalesOffice.SelectedValue;
                             }
-                            double freeqty = 0; double taxfreeqty = 0;
+                            double freeqty = 0; 
                             foreach (DataRow branch in newdt.Rows)
                             {
                                 //Free
@@ -651,7 +644,6 @@ public partial class tallyscheemsales : System.Web.UI.Page
                             }
                         }
                     }
-                    double totfreeamount = 0;
                     foreach (DataRow branch in newdt.Rows)
                     {
                         //Free
@@ -685,9 +677,7 @@ public partial class tallyscheemsales : System.Web.UI.Page
                                 newrow["Qty"] = Qty;
                                 newrow["Rate"] = rate;
                                 double invval = 0;
-                                double sgst = 0;
                                 double sgstamount = 0;
-                                double cgst = 0;
                                 double cgstamount = 0;
                                 double taxval = 0;
                                 double Igst = 0;

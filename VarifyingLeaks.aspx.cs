@@ -10,7 +10,6 @@ using System.Data;
 public partial class VarifyingLeaks : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -178,11 +177,8 @@ public partial class VarifyingLeaks : System.Web.UI.Page
                     drnew3["Sub Leak"] = "Submited Inventory";
                     drnew3["Verified Leak"] = "Verified Inventory";
                     Report.Rows.Add(drnew3);
-                    int Ctotcan40ltr = 0;
                     int Vtotcan40ltr = 0;
-                    int Ctotcrates = 0;
                     int Vtotcrates = 0;
-                    int Ctotcan20ltr = 0;
                     int Dtotcrates = 0;
                     int Dtotcan20ltr = 0;
                     int Vtotcan20ltr = 0;

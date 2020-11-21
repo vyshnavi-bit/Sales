@@ -10,7 +10,6 @@ using System.Data;
 public partial class TotalLeakReturnDispatch : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {

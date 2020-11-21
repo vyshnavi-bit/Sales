@@ -12,7 +12,6 @@ using System.Net;
 public partial class totindent : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {

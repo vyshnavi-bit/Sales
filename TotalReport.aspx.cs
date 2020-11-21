@@ -17,7 +17,6 @@ using System.Net;
 public partial class TotalReport : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -231,7 +230,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -324,7 +322,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["SubCatName"].ToString()).DataType = typeof(Double);
@@ -434,7 +431,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["SubCatName"].ToString()).DataType = typeof(Double);
@@ -539,7 +535,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -621,7 +616,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -713,7 +707,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -822,7 +815,6 @@ public partial class TotalReport : System.Web.UI.Page
                     Report = new DataTable();
                     //Report.Columns.Add("SNo");
                     Report.Columns.Add("DespatchDate");
-                    int count = 0;
                     foreach (DataRow dr in distinctproducts.Rows)
                     {
                         Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -904,7 +896,7 @@ public partial class TotalReport : System.Web.UI.Page
             grdtotal_dcReports.DataSource = sortedProductDT2;
             grdtotal_dcReports.DataBind();
         }
-        catch (Exception ex)
+        catch 
         {
 
         }

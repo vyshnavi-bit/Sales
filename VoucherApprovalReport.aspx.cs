@@ -207,7 +207,6 @@ public partial class VoucherApprovalReport : System.Web.UI.Page
             Report.Columns.Add("Head Of Account");
             if (dtCheque.Rows.Count > 0)
             {
-                int i = 1;
                 foreach (DataRow dr in dtCheque.Rows)
                 {
                     DataRow newrow = Report.NewRow();

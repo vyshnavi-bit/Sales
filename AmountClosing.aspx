@@ -11,16 +11,15 @@
     <link href="js/DateStyles.css?v=3003" rel="stylesheet" type="text/css" />
     <script src="js/1.8.6.jquery.ui.min.js" type="text/javascript"></script>
     <style type="text/css">
-        .ddlsize
-        {
+        .ddlsize {
             width: 230px;
             height: 30px;
             font-size: 16px;
             border: 1px solid gray;
             border-radius: 7px 7px 7px 7px;
         }
-        .datepicker
-        {
+
+        .datepicker {
             border: 1px solid gray;
             background: url("Images/CalBig.png") no-repeat scroll 99%;
             width: 70%;
@@ -231,7 +230,12 @@
             //                alert("Please Select Date");
             //                return false;
             //            }
-            var data = { 'operation': 'GetAgentClosingAmount', 'RouteID': ddlRouteName };
+            var ddlType = document.getElementById('ddlType').value;
+            if (ddlType == "") {
+                alert("Please Select Date");
+                return false;
+            }
+            var data = { 'operation': 'GetAgentClosingAmount', 'RouteID': ddlRouteName, 'ddlType': ddlType };
             var s = function (msg) {
                 if (msg) {
                     $('#divFillScreen').removeTemplate();
@@ -255,7 +259,7 @@
         }
 
         function btnAmountUpdateClick(id) {
-
+            var ddlType = document.getElementById('ddlType').value;
             var rows = $("#table_Indent_details tr:gt(0)");
             var Indentdetails = new Array();
             $(rows).each(function (i, obj) {
@@ -264,7 +268,7 @@
                 }
             });
 
-            var data = { 'operation': 'btnAmountUpdateClick', 'data': Indentdetails };
+            var data = { 'operation': 'btnAmountUpdateClick', 'data': Indentdetails, type: ddlType };
             var s = function (msg) {
                 if (msg) {
                     alert(msg);
@@ -310,8 +314,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <section class="content-header">
-        <h1>
-            Plant wise Sales Vs Avg Sales<small>Preview</small>
+        <h1>Plant wise Sales Vs Avg Sales<small>Preview</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Chart Reports</a></li>
@@ -329,9 +332,9 @@
                 <table align="center">
                     <tr>
                         <td>
-                            <span>Sales Office</span>
+                            <label for="lblBranch"><span>Sales Office</span></label>
                         </td>
-                        <td style="height:40px;">
+                        <td style="height: 40px;">
                             <select id="ddlSalesOffice" class="form-control" onchange="ddlSalesOfficeChange(this);">
                             </select>
                         </td>
@@ -341,8 +344,24 @@
                             <label for="lblBranch">
                                 Route Name</label>
                         </td>
-                        <td style="height:40px;">
-                            <select id="ddlRouteName" class="form-control" onchange="ddlAgentNameChange(this);">
+                        <td style="height: 40px;">
+                            <select id="ddlRouteName" class="form-control" >
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                              <label for="lblBranch">
+                                Type</label>
+                        </td>
+                        <td>
+                            <select id="ddlType" class="form-control" onchange="ddlAgentNameChange(this);">
+
+                                <option value="0">Amount</option>
+                                <option value="1">CRATES</option>
+                                <option value="2">CAN-10 (ltr/kgs)</option>
+                                <option value="3">CAN-20 (ltr/kgs)</option>
+                                <option value="4">CAN-40 (ltr/kgs)</option>
                             </select>
                         </td>
                     </tr>
@@ -357,8 +376,14 @@
             </td>
         </tr>--%>
                     <tr>
+
                         <td>
+                            <br />
+
                         </td>
+                    </tr>
+                    <tr>
+                        <td></td>
                         <td>
                             <input type="button" id="Button1" value="GET Collections" class="btn btn-primary"
                                 onclick="GetEditIndentValues();" />

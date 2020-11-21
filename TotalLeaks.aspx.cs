@@ -12,7 +12,6 @@ public partial class TotalLeaks : System.Web.UI.Page
 {
     
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -301,7 +300,6 @@ public partial class TotalLeaks : System.Web.UI.Page
                             cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
                             DataTable dtdispqty = vdm.SelectQuery(cmd).Tables[0];
 
-                            double total = 0;
                             foreach (DataRow dr in dtLeaks.Rows)
                             {
                                 if (branch["DispName"].ToString() == dr["DispName"].ToString())
@@ -504,7 +502,6 @@ public partial class TotalLeaks : System.Web.UI.Page
                             cmd.Parameters.AddWithValue("@d2", GetHighDate(todate).AddDays(-1));
                             DataTable dtdispqty = vdm.SelectQuery(cmd).Tables[0];
                             newrow["Route Name"] = branch["DispName"].ToString();
-                            double Total = 0;
                             foreach (DataRow dr in dtLeaks.Rows)
                             {
                                 if (branch["DispName"].ToString() == dr["DispName"].ToString())

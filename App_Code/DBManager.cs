@@ -10,7 +10,6 @@ using System.Data.SqlClient;
 /// </summary>
 public class DBManager
 {
-    string ConnectionString;
       public SqlConnection conn = new SqlConnection();
       List<string> data = new List<string>();
       public SqlCommand cmd;

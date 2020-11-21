@@ -381,7 +381,6 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                             double delqty = 0;
                             double.TryParse(branch["DeliveryQty"].ToString(), out delqty);
                             string tcategory = "";
-                            double percent = 0;
                             newrow["Qty"] = branch["DeliveryQty"].ToString();
                             double UnitCost = 0;
                             double Unitprice = 0;
@@ -399,9 +398,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                             string tostateid = branch["stateid"].ToString();
                             if (fromstateid == tostateid)
                             {
-                                double sgst = 0;
                                 double sgstamount = 0;
-                                double cgst = 0;
                                 double cgstamount = 0;
                                 double Igst = 0;
                                 double Igstamount = 0;
@@ -683,7 +680,6 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                             double delqty = 0;
                             double.TryParse(branch["DeliveryQty"].ToString(), out delqty);
                             string tcategory = "";
-                            double percent = 0;
                             newrow["Qty"] = branch["DeliveryQty"].ToString();
                             double UnitCost = 0;
                             double Unitprice = 0;
@@ -737,9 +733,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                                 }
                                 else
                                 {
-                                    double sgst = 0;
                                     double sgstamount = 0;
-                                    double cgst = 0;
                                     double cgstamount = 0;
                                     double Igst = 0;
                                     double Igstamount = 0;

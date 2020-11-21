@@ -262,8 +262,6 @@ public partial class AgentAcknoledgement : System.Web.UI.Page
                             }
                             
                         }
-                        string clubsno = "";
-                        int clubsno1 = 0;
                         cmd = new MySqlCommand("SELECT subproductsclubbing.Productid, subproductsclubbing.Clubsno, slabs.SlotQty, slabs.Amt FROM incentive_struct_sub INNER JOIN subproductsclubbing ON incentive_struct_sub.clubbingID = subproductsclubbing.Clubsno INNER JOIN slabs ON subproductsclubbing.Clubsno = slabs.club_sno WHERE (incentive_struct_sub.is_sno = @structsno) AND (subproductsclubbing.Productid=@prdtid) ");
                         cmd.Parameters.AddWithValue("@structsno", dtincentiveamt.Rows[0]["structure_sno"].ToString());
                         cmd.Parameters.AddWithValue("@prdtid", dr["prodid"].ToString());

@@ -22,9 +22,7 @@ using System.Net.Mail;
 public partial class totaldcmail : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
-    string rowstatus = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["salestype"] == null)
@@ -36,7 +34,6 @@ public partial class totaldcmail : System.Web.UI.Page
             if (!Page.IsCallback)
             {
                 lblTitle.Text = Session["TitleName"].ToString();
-                rowstatus = "";
             }
         }
     }
@@ -46,7 +43,6 @@ public partial class totaldcmail : System.Web.UI.Page
 
         if (ddlReportType.SelectedValue == "Milk Curd & BM")
         {
-            rowstatus = "C";
             GetReport();
         }
         else
@@ -315,7 +311,6 @@ public partial class totaldcmail : System.Web.UI.Page
 
                         double total = 0;
                         double totalcurdandBM = 0;
-                        double totalltrs = 0;
                         foreach (DataRow dr in dtble.Rows)
                         {
 
@@ -323,7 +318,6 @@ public partial class totaldcmail : System.Web.UI.Page
                             {
                                 double assqty = 0;
                                 double curdBm = 0;
-                                double Buttermilk = 0;
                                 double AssignQty = 0;
                                 double.TryParse(dr["Qty"].ToString(), out AssignQty);
                                 if (dr["Categoryname"].ToString() == "MILK")
@@ -536,15 +530,11 @@ public partial class totaldcmail : System.Web.UI.Page
 
                         double total = 0;
                         double totalcurdandBM = 0;
-                        double totalltrs = 0;
                         foreach (DataRow dr in dtble.Rows)
                         {
 
                             if (branch["Sno"].ToString() == dr["Sno"].ToString())
                             {
-                                double assqty = 0;
-                                double curdBm = 0;
-                                double Buttermilk = 0;
                                 double AssignQty = 0;
                                 double.TryParse(dr["Qty"].ToString(), out AssignQty);
                                 Report.Columns.Add(dr["ProductName"].ToString()).DataType = typeof(Double);
@@ -695,7 +685,6 @@ public partial class totaldcmail : System.Web.UI.Page
         }
     }
 
-    int j = 0;
     string status = "";
 
     protected void grdtotal_dcReports_RowCreated(object sender, GridViewRowEventArgs e)
@@ -720,7 +709,6 @@ public partial class totaldcmail : System.Web.UI.Page
             //{
             //if (ddlSalesOffice.SelectedValue == "ALL")
             //{
-            int i = 5;
             HeaderCell = new TableCell();
             HeaderCell.Text = "Total Dispatch Details";
             HeaderCell.VerticalAlign = VerticalAlign.Middle;
@@ -805,7 +793,6 @@ public partial class totaldcmail : System.Web.UI.Page
 
     protected void SendEmail(object sender, EventArgs e)
     {
-        rowstatus = "M";
         GetReport();
         VehicleDBMgr vdbmngr = new VehicleDBMgr();
         DateTime ServerDateCurrentdate = VehicleDBMgr.GetTime(vdbmngr.conn);

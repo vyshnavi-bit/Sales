@@ -184,9 +184,7 @@ public partial class agentavgmilk_curdsale : System.Web.UI.Page
                             newvar["Agent Name"] = "Total";
                            
                             double ftotalmilkSale = 0;
-                            double totavgmilkSale = 0;
                             double ftotalcurdSale = 0;
-                            double totavgcurdSale = 0;
                             int route = 0;
                             int.TryParse(routeid, out route);
 

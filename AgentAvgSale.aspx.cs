@@ -10,7 +10,6 @@ using System.Data;
 public partial class AgentAvgSale : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -189,7 +188,6 @@ public partial class AgentAvgSale : System.Web.UI.Page
             //        TimeSpan dateSpan1 = todate.Subtract(fromdate);
             //        int years = (dateSpan1.Days / 365);
             //        int months = ((dateSpan1.Days % 365) / 31) + (years * 12);
-                    int N = 0;
                  //   int i = 1;
                     if (Years != 0)
                     {

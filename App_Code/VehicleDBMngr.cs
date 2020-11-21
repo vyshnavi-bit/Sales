@@ -8,7 +8,6 @@ using MySql.Data.MySqlClient;
 
 public class VehicleDBMgr
 {
-      string ConnectionString;
       public MySqlConnection conn = new MySqlConnection();
       List<string> data = new List<string>();
       public MySqlCommand cmd;

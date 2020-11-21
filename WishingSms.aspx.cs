@@ -13,7 +13,6 @@ public partial class WishingSms : System.Web.UI.Page
 {
     MySqlCommand cmd;
     string BranchID = "";
-    string Branchname = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -21,6 +20,7 @@ public partial class WishingSms : System.Web.UI.Page
         {
             Response.Redirect("Login.aspx");
         }
+
         else
         {
             BranchID = Session["branch"].ToString();

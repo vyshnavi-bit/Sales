@@ -12,7 +12,6 @@ using ClosedXML.Excel;
 public partial class TotalDCReport : System.Web.UI.Page
 {
     MySqlCommand cmd;
-    string UserName = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -1025,7 +1024,6 @@ public partial class TotalDCReport : System.Web.UI.Page
 
                         double total = 0;
                         double totalcurdandBM = 0;
-                        double totalltrs = 0;
                         foreach (DataRow dr in dtble.Rows)
                         {
 

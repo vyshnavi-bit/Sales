@@ -18,7 +18,6 @@ public partial class SmsForm : System.Web.UI.Page
 {
     MySqlCommand cmd;
     string BranchID = "";
-    string Branchname = "";
     VehicleDBMgr vdm;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -102,9 +101,10 @@ public partial class SmsForm : System.Web.UI.Page
                     //string strUrl = " http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + no + "&msg=" + message1 + "&type=1 ";
                     //string baseurl = "http://103.225.76.43/blank/sms/user/urlsmstemp.php?username=vyshnavidairy&pass=vyshnavi@123&senderid=VYSHRM&dest_mobileno=" + MobNo + "&message=%20" + msg + "&response=Y";
 
-                    string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + MobNo + "&message=" + msg + "&sender=VYSNVI&type=1&route=2"; 
+                    //string baseurl = "http://roundsms.com/api/sendhttp.php?authkey=Y2U3NGE2MGFkM2V&mobiles=" + MobNo + "&message=" + msg + "&sender=VYSNVI&type=1&route=2";
+                    //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VSALES&to=" + MobNo + "&msg=%20" + ProductName + "TotalQty =" + TotalQty + "(" + diffproduct + ")" + "&type=1";
 
-                    //string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&msg=" + msg + "&type=1";
+                    string baseurl = "http://www.smsstriker.com/API/sms.php?username=vaishnavidairy&password=vyshnavi@123&from=VYSNVI&to=" + MobNo + "&msg=" + msg + "&type=1";
                     Stream data = client.OpenRead(baseurl);
                     StreamReader reader = new StreamReader(data);
                     string ResponseID = reader.ReadToEnd();

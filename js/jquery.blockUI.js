@@ -79,8 +79,8 @@
 		// override these in your code to change the default behavior and style
 		$.blockUI.defaults = {
 			// message displayed when blocking (use null for no message)
-            message:  '<img src="Images/rotatelogo.gif" style="width: 100px;height: 68px;" alt="blinking!" id="blinking_image"  /><br /><span style="font-weight:700">Loading....</span>',
-			//message:  '<img src="images/719.GIF" />',/// <reference path="../thumbnails/36.gif" />
+		    message: '<img src="Images/Loading.gif" style="width: 100px;height: 68px;" alt="blinking!" id="blinking_image"  /><br /><span style="font-weight:700">Loading....</span>',
+		    //message:  '<img src="/thumbnails/loading29.gif" />',/// <reference path="../thumbnails/36.gif" />
 /// <reference path="../thumbnails/loading29.gif" />
 
 //			message:  '<div class="liadingimg" style="background:url(Images/Loading.gif) no-repeat;">',
