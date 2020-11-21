@@ -1,4 +1,4 @@
-﻿m<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
     CodeFile="AddressMaster.aspx.cs" Inherits="AddressMaster" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">

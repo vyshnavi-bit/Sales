@@ -1308,7 +1308,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     break;
             }
         }
-        catch (Exception ex)
+        catch
         {
             //context.Response.ContentType = MediaTypeNames.Text.Plain;
             //context.Response.StatusCode = 400;
@@ -36845,7 +36845,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
     MySqlCommand cmd;
     SqlCommand cm_d;
     VehicleDBMgr vdbmngr;
-    SalesDBManager SalesDB;
+   // SalesDBManager SalesDB;
     DBManager vdm;
     SqlCommand a_cmd;
     AccessControldbmanger Accescontrol_db;

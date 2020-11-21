@@ -314,10 +314,10 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <section class="content-header">
-        <h1>Plant wise Sales Vs Avg Sales<small>Preview</small>
+        <h1>Closing Details<small>Preview</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i>Chart Reports</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i>Closing Details</a></li>
             <li><a href="#">Line Chart</a></li>
         </ol>
     </section>
