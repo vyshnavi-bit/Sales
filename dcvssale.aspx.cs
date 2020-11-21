@@ -48,7 +48,7 @@ public partial class dcvssale : System.Web.UI.Page
             {
                 PBranch.Visible = true;
                 string bn = Session["branch"].ToString();
-                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
+                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchdata.flag = 1) AND  (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
                 cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 cmd.Parameters.AddWithValue("@SalesType", "21");
                 cmd.Parameters.AddWithValue("@SalesType1", "26");
@@ -61,7 +61,7 @@ public partial class dcvssale : System.Web.UI.Page
             else
             {
                 PBranch.Visible = true;
-                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE ((branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag=@flag)) OR ((branchdata.sno = @BranchID) AND (branchdata.flag=@flag))");
+                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM  branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.flag = 1) AND  ((branchdata_1.SalesOfficeID = @SOID) AND (branchdata_1.flag=@flag)) OR ((branchdata.sno = @BranchID) AND (branchdata.flag=@flag))");
                 cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
                 cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 cmd.Parameters.AddWithValue("@flag", "1");

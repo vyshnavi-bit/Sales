@@ -51,7 +51,7 @@ public partial class indentCrates : System.Web.UI.Page
             if (salestype == "SALES OFFICE")
             {
                 vdm = new VehicleDBMgr();
-                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM branchdata INNER JOIN branchroutes ON branchdata.sno = branchroutes.BranchID INNER JOIN dispatch ON branchroutes.BranchID = dispatch.BranchID WHERE (branchdata.SalesOfficeID = @SOID) OR (branchroutes.BranchID = @BranchID) GROUP BY dispatch.DispName");
+                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM branchdata INNER JOIN branchroutes ON branchdata.sno = branchroutes.BranchID INNER JOIN dispatch ON branchroutes.BranchID = dispatch.BranchID WHERE (dispatch.flag = 1) AND (branchdata.SalesOfficeID = @SOID) OR (branchroutes.BranchID = @BranchID) GROUP BY dispatch.DispName");
                 //cmd = new MySqlCommand("SELECT DispName, sno, Branch_Id, BranchID FROM (SELECT dispatch.DispName, dispatch.sno, dispatch.Branch_Id, branchroutes.BranchID FROM dispatch_sub INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno RIGHT OUTER JOIN dispatch ON dispatch_sub.dispatch_sno = dispatch.sno WHERE (NOT (branchroutes.BranchID = @BranchID)) OR (NOT (dispatch.Branch_Id = @branchid))) Result  WHERE (BranchID = @BranchID)GROUP BY DispName");
                 cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
                 cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
@@ -187,8 +187,6 @@ public partial class indentCrates : System.Web.UI.Page
                     newrow["Route Name"] = branch["RouteName"].ToString();
 
                     double total = 0;
-                    double totalcurd = 0;
-                    double totalbuttermilk = 0;
                     foreach (DataRow dr in dtble.Rows)
                     {
                         if (branch["RouteName"].ToString() == dr["RouteName"].ToString())

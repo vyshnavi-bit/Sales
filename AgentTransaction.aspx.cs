@@ -630,7 +630,7 @@ public partial class AgentTransaction : System.Web.UI.Page
             else
             {
                 PBranch.Visible = false;
-                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
+                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (dispatch.flag = 1) AND (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
                 //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
                 cmd.Parameters.AddWithValue("@BranchID", Session["branch"].ToString());
                 cmd.Parameters.AddWithValue("@SOID", Session["branch"].ToString());
@@ -651,7 +651,7 @@ public partial class AgentTransaction : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
-        cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
+        cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE   (dispatch.flag = 1) AND (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
         //cmd = new MySqlCommand("SELECT DispName, sno FROM dispatch WHERE (Branch_Id = @BranchD)");
         cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
@@ -666,7 +666,7 @@ public partial class AgentTransaction : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
-        cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno)");
+        cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno) AND  (dispatch.flag = 1)");
         cmd.Parameters.AddWithValue("@dispsno", ddlDispName.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlAgentName.DataSource = dtRoutedata;
@@ -976,7 +976,7 @@ public partial class AgentTransaction : System.Web.UI.Page
                     newrow["Paid Amount"] = amtpaid - incentiveamtpaid;
                     newrow["Incentive/JV"] = incentiveamtpaid;
                     newrow["Amount Debited"] = debitedamount;
-                    double tot_amount = amtpaid + incentiveamtpaid;
+                    double tot_amount = amtpaid ;
                     double totalbalance = totalamt - tot_amount;
                     newrow["Bal Amount"] = Math.Round(totalbalance, 2);
                     oppcarry = totalbalance;

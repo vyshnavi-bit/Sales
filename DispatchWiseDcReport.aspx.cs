@@ -42,7 +42,7 @@ public partial class DispatchWiseDcReport : System.Web.UI.Page
         else
         {
             PBranch.Visible = true;
-            cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
+            cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchdata branchdata_1 ON branchdata.sno = branchdata_1.sno WHERE (branchdata.flag = 1) AND (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
             cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
             cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
             DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
@@ -55,7 +55,7 @@ public partial class DispatchWiseDcReport : System.Web.UI.Page
     void FillPlantDisp()
     {
         vdm = new VehicleDBMgr();
-        cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno WHERE (dispatch.Branch_Id = @BranchID) AND (dispatch.Dispdate IS NOT NULL) OR (branchdata.SalesOfficeID = @SOID) AND (dispatch.Dispdate IS NOT NULL) ORDER BY dispatch.BranchID, dispatch.sno");
+        cmd = new MySqlCommand("SELECT dispatch.sno, dispatch.DispName FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno WHERE  (dispatch.Branch_Id = @BranchID) AND (dispatch.Dispdate IS NOT NULL) OR (branchdata.SalesOfficeID = @SOID) AND (dispatch.Dispdate IS NOT NULL) ORDER BY dispatch.BranchID, dispatch.sno");
         cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
         cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];

@@ -58,7 +58,7 @@ public partial class AgentDelivery : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         //cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch)");
-        cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno)");
+        cmd = new MySqlCommand("SELECT branchdata.sno, branchdata.BranchName FROM dispatch INNER JOIN dispatch_sub ON dispatch.sno = dispatch_sub.dispatch_sno INNER JOIN branchroutes ON dispatch_sub.Route_id = branchroutes.Sno INNER JOIN branchroutesubtable ON branchroutes.Sno = branchroutesubtable.RefNo INNER JOIN branchdata ON branchroutesubtable.BranchID = branchdata.sno WHERE (dispatch.sno = @dispsno) AND (dispatch.flag = 1) ");
         cmd.Parameters.AddWithValue("@dispsno", ddlRouteName.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
         ddlagentname.DataSource = dtRoutedata;
@@ -125,13 +125,8 @@ public partial class AgentDelivery : System.Web.UI.Page
             DataTable dtAddress = vdm.SelectQuery(cmd).Tables[0];
             string AgentAddress = "";
             string AgentName = "";
-            string quatationno = "";
-            string pono = "";
-            string grnno = "";
             string salestype = "";
             string buyerTinNumber = "";
-            string stateid = "";
-            string companycode = "";
             if (dtAddress.Rows.Count > 0)
             {
                 AgentAddress = dtAddress.Rows[0]["doorno"].ToString() + "," + dtAddress.Rows[0]["street"].ToString() + "," + dtAddress.Rows[0]["area"].ToString() + "," + dtAddress.Rows[0]["city"].ToString() + "," + dtAddress.Rows[0]["mandal"].ToString() + "," + dtAddress.Rows[0]["district"].ToString() + "," + dtAddress.Rows[0]["pincode"].ToString();// dtAddress.Rows[0]["Address"].ToString();
@@ -193,7 +188,6 @@ public partial class AgentDelivery : System.Web.UI.Page
                 cmd = new MySqlCommand("SELECT indents_subtable.DeliveryQty, indents_subtable.unitQty, productsdata.ProductName,productsdata.sno AS ProductId FROM indents_subtable INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (indents_subtable.IndentNo = @indno)");
                 cmd.Parameters.AddWithValue("@indno", dr["IndentNo"].ToString());
                 dtalldelivery = vdm.SelectQuery(cmd).Tables[0];
-                double TotalMilk = 0;
                 float torderqty = 0; float tqty = 0;
                 if (dtalldelivery.Rows.Count > 0)
                 {

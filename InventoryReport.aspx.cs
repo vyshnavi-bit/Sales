@@ -71,7 +71,7 @@ public partial class InventoryReport : System.Web.UI.Page
             else
             {
                 PBranch.Visible = false;
-                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
+                cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (dispatch.flag=1) AND (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
                 cmd.Parameters.AddWithValue("@SOID", Session["branch"]);
                 cmd.Parameters.AddWithValue("@BranchID", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
@@ -89,7 +89,7 @@ public partial class InventoryReport : System.Web.UI.Page
     protected void ddlSalesOffice_SelectedIndexChanged(object sender, EventArgs e)
     {
         vdm = new VehicleDBMgr();
-        cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
+        cmd = new MySqlCommand("SELECT dispatch.DispName, dispatch.sno FROM dispatch INNER JOIN branchdata ON dispatch.Branch_Id = branchdata.sno INNER JOIN branchdata branchdata_1 ON dispatch.Branch_Id = branchdata_1.sno WHERE (dispatch.flag=1) AND (branchdata.sno = @BranchID) OR (branchdata_1.SalesOfficeID = @SOID)");
         cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
         cmd.Parameters.AddWithValue("@SOID", ddlSalesOffice.SelectedValue);
         DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
