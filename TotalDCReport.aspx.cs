@@ -1085,6 +1085,13 @@ public partial class TotalDCReport : System.Web.UI.Page
                         i++;
                     }
                 }
+
+                foreach (var column in Report.Columns.Cast<DataColumn>().ToArray())
+                {
+                    if (Report.AsEnumerable().All(dr => dr.IsNull(column)))
+                        Report.Columns.Remove(column);
+                }
+
                 DataRow newvartical = Report.NewRow();
                 newvartical["Route Name"] = "Total";
                 double val = 0.0;
@@ -1094,7 +1101,10 @@ public partial class TotalDCReport : System.Web.UI.Page
                     {
                         val = 0.0;
                         double.TryParse(Report.Compute("sum([" + dc.ToString() + "])", "[" + dc.ToString() + "]<>'0'").ToString(), out val);
-                        newvartical[dc.ToString()] = val;
+                        if (val > 0)
+                        {
+                            newvartical[dc.ToString()] = val;
+                        }
                     }
                 }
                 Report.Rows.Add(newvartical);
@@ -1124,6 +1134,7 @@ public partial class TotalDCReport : System.Web.UI.Page
             grdReports.DataBind();
         }
     }
+    
     private string GetSpace(string p)
     {
         int i = 0;
