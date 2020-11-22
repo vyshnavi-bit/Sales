@@ -44105,9 +44105,8 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             List<employeesmgnt> branchlist = new List<employeesmgnt>();
             DataRow[] drr = dt.Select("SuperBranch=" + context.Session["branch"].ToString());
             DataTable dtt = new DataTable();
-            cmd = new MySqlCommand("SELECT branchdata.BranchName,branchdata.sno as BranchSno,empmanage.Sno, empmanage.Branch, empmanage.UserName, empmanage.Password,empmanage.Emp_PIC, empmanage.EmpName, empmanage.Address, empmanage.Mobno, empmanage.Email,empmanage.otpstatus, empmanage.LWC, empmanage.RefName, empmanage.MTarget, empmanage.WTarget, empmanage.DTarget, empmanage.Dept_Sno, deptmaster.DeptName,empmanage.street,empmanage.city,empmanage.mandal,empmanage.distic,empmanage.state,empmanage.pincode,empmanage.panno, empmanage.flag,empmanage.Userdata_sno, empmanage.LevelType FROM branchdata INNER JOIN empmanage ON branchdata.sno = empmanage.Branch INNER JOIN deptmaster ON empmanage.Dept_Sno = deptmaster.Sno WHERE (empmanage.Branch = @brnchsno)  and empmanage.flag=@flag");
+            cmd = new MySqlCommand("SELECT branchdata.BranchName,branchdata.sno as BranchSno,empmanage.Sno, empmanage.Branch, empmanage.UserName, empmanage.Password,empmanage.Emp_PIC, empmanage.EmpName, empmanage.Address, empmanage.Mobno, empmanage.Email,empmanage.otpstatus, empmanage.LWC, empmanage.RefName, empmanage.MTarget, empmanage.WTarget, empmanage.DTarget, empmanage.Dept_Sno, deptmaster.DeptName,empmanage.street,empmanage.city,empmanage.mandal,empmanage.distic,empmanage.state,empmanage.pincode,empmanage.panno, empmanage.flag,empmanage.Userdata_sno, empmanage.LevelType FROM branchdata INNER JOIN empmanage ON branchdata.sno = empmanage.Branch INNER JOIN deptmaster ON empmanage.Dept_Sno = deptmaster.Sno WHERE (empmanage.Branch = @brnchsno) ");
             cmd.Parameters.AddWithValue("@brnchsno", context.Session["branch"].ToString());
-            cmd.Parameters.AddWithValue("@flag", "1");
             DataTable dt1 = vdbmngr.SelectQuery(cmd).Tables[0];
             foreach (DataRow gotdata1 in dt1.Rows)
             {

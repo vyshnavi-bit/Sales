@@ -47,7 +47,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
             if (Session["salestype"].ToString() == "Group")
             {
                 PPlant.Visible = true;
-                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) ");
+                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchdata.flag=1) AND (branchmappingtable.SuperBranch = @SuperBranch) ");
                 cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 DataTable dtRoutedata = vdm.SelectQuery(cmd).Tables[0];
                 ddlPlant.DataSource = dtRoutedata;
@@ -62,7 +62,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                 DataTable dtBranch = new DataTable();
                 dtBranch.Columns.Add("BranchName");
                 dtBranch.Columns.Add("sno");
-                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
+                cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchdata.flag=1) AND (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
                 cmd.Parameters.AddWithValue("@SuperBranch", Session["branch"]);
                 cmd.Parameters.AddWithValue("@SalesType", "21");
                 cmd.Parameters.AddWithValue("@SalesType1", "26");
@@ -121,7 +121,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
     {
         vdm = new VehicleDBMgr();
         PBranch.Visible = true;
-        cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
+        cmd = new MySqlCommand("SELECT branchdata.BranchName, branchdata.sno FROM branchdata INNER JOIN branchmappingtable ON branchdata.sno = branchmappingtable.SubBranch WHERE (branchdata.flag=1) AND (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType) or (branchmappingtable.SuperBranch = @SuperBranch) and (branchdata.SalesType=@SalesType1) ");
         cmd.Parameters.AddWithValue("@SuperBranch", ddlPlant.SelectedValue);
         cmd.Parameters.AddWithValue("@SalesType", "21");
         cmd.Parameters.AddWithValue("@SalesType1", "26");

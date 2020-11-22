@@ -94,7 +94,7 @@
                             <div id="divPrint">
                                 <div style="width: 100%;">
                                     <div style="width: 11%; float: left;">
-                                        <img src="http://www.vyshnavi.co.in/Images/VLogo.png" alt="Vyshanvi" width="100"
+                                        <img src="Images/Vyshnavilogo.png" alt="Vyshanvi" width="100"
                                             height="80" />
                                     </div>
                                     <div style="left: 0%; text-align: center;">
