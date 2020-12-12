@@ -252,7 +252,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
         {
             var salesoffice = ddlSalesOffice.SelectedItem.Text;
             var salesoff = ddlSalesOffice.SelectedValue;
-            if (salesoff == "8097" || salesoff == "174" || salesoff == "10425" || salesoff == "1801" || salesoff == "527" || salesoff == "306" || salesoff == "538" || salesoff == "2909" || salesoff == "2749" || salesoff == "3781" || salesoff == "3928" || salesoff == "4607")
+            if (salesoff == "8097" || salesoff == "174" || salesoff == "10425" || salesoff == "11079" || salesoff == "1801" || salesoff == "527" || salesoff == "306" || salesoff == "538" || salesoff == "2909" || salesoff == "2749" || salesoff == "3781" || salesoff == "3928" || salesoff == "4607")
             {
                 GetReport();
             }
@@ -283,7 +283,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
         else
         {
             var salesoff = Session["branch"].ToString();
-            if (salesoff == "8097" || salesoff == "174" || salesoff == "10425" || salesoff == "527" || salesoff == "306" || salesoff == "4607" || salesoff == "538" || salesoff == "2909" || salesoff == "2749" || salesoff == "3781" || salesoff == "3928")
+            if (salesoff == "8097" || salesoff == "174" || salesoff == "10425" || salesoff == "11079" || salesoff == "527" || salesoff == "306" || salesoff == "4607" || salesoff == "538" || salesoff == "2909" || salesoff == "2749" || salesoff == "3781" || salesoff == "3928")
             {
                 GetReport();
             }

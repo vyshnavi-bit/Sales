@@ -107,7 +107,7 @@ table#tableaProductdetails {
         //            });
         //        }
         function FillPlant() {
-            var data = { 'operation': 'GetSalesOffices' };
+            var data = { 'operation': 'GetSalesOffices', 'SelecteType': 'SVDS' };
             var s = function (msg) {
                 if (msg) {
                     if (msg == "Session Expired") {
@@ -1206,20 +1206,23 @@ table#tableaProductdetails {
         var IndDate = "";
         var todate = "";
         var PlantName = "";
-         $(function () {
-          var date = new Date();
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
-            if (month < 10) month = "0" + month;
-            day=day-1;
-            if (day < 10) day = "0" + day;
-            today = year + "-" + month + "-" + day;
-            $('#txtDate').val(today);
-               $('#txtTodate').val(today);
-               ddlTypeChange(day);
-               ddlPlantNameChange(day);
-            });
+        $(function () {
+            daterangepicker();
+            datecontrolsession();
+            //var date = new Date();
+            //var day = date.getDate();
+            //var month = date.getMonth() + 1;
+            //var year = date.getFullYear();
+            //if (month < 10) month = "0" + month;
+            //day = day - 1;
+            //if (day < 10) day = "0" + day;
+            //today = year + "-" + month + "-" + day;
+            //$('#txtDate').val(today);
+            //$('#txtTodate').val(today);
+            ddlTypeChange(1);
+            ddlPlantNameChange(1);
+        });
+
         function GraphicalNetSaleClick() {
         $('#divMainAddNewRow1').css('display','none');
         $('#divHide').css('display','none');
@@ -1254,6 +1257,69 @@ table#tableaProductdetails {
                   $('#firstdiv').css('display', 'block ');
                     fillsubcategorywiseproductsdata(msg);
                     ProductInformationpieChart(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+
+        function daterangepicker() {
+           var start = moment().subtract(1, 'days');
+           var end = moment().subtract(1, 'days');
+           function cb(start, end) {
+               $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+               datecontrolsession();
+           }
+           $('#reportrange').daterangepicker({
+               startDate: start,
+               endDate: end,
+               ranges: {
+                   'Today': [moment(), moment()],
+                   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')]
+                   //           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                   //           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                   //           'This Month': [moment().startOf('month'), moment().endOf('month')],
+                   //           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+               }
+           }, cb);
+           cb(start, end);
+
+       }
+
+       function daterangepicker1() {
+           var Day = '<%=Session["Days"] %>';
+           var start = moment().subtract(1, 'days');
+           var end =  moment().subtract(1, 'days');
+           function cb(start, end) {
+               $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+               datecontrolsession();
+           }
+           $('#reportrange').daterangepicker({
+               startDate: start,
+               endDate: end,
+               ranges: {
+                   'Today': [moment(), moment()],
+                   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')]
+                   //           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                   //           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                   //           'This Month': [moment().startOf('month'), moment().endOf('month')],
+                   //           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+               }
+           }, cb);
+           cb(start, end);
+       }
+
+        function datecontrolsession() {
+            var IndDate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var Todate = $('#reportrange').data('daterangepicker').endDate.toString();
+            var data = { 'operation': 'pickervaluesettosession', 'IndDate': IndDate, 'Todate': Todate };
+            var s = function (msg) {
+                if (msg) {
+
                 }
                 else {
                 }
@@ -2052,6 +2118,9 @@ table#tableaProductdetails {
                 }
               });
         }
+        function DateClick() {
+            datecontrolsession();
+        }
         function btnShowRouteDetails(ID) {
             var DespSno = ID.value;
             GetAgentDetails(DespSno);
@@ -2144,7 +2213,7 @@ table#tableaProductdetails {
                         </td>
                         <td>
                             <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px;
-                                border: 1px solid #ccc; width: 100%">
+                                border: 1px solid #ccc; width: 100%" onclick="DateClick();">
                                 <i class="fa fa-calendar"></i>&nbsp; <span></span><i class="fa fa-caret-down"></i>
                             </div>
                         </td>

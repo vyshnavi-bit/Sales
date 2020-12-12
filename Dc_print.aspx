@@ -1,23 +1,23 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
     CodeFile="Dc_print.aspx.cs" Inherits="Dc_print" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script src="js/jquery-1.4.4.js?v=3004" type="text/javascript"></script>
     <style type="text/css">
-        .container
-        {
+        .container {
             max-width: 100%;
         }
-        th
-        {
+
+        th {
             text-align: center;
         }
-        #content
-        {
+
+        #content {
             position: absolute;
             z-index: 1;
         }
-        #bg-text
-        {
+
+        #bg-text {
             position: absolute;
             opacity: 0.1;
             color: lightgrey;
@@ -334,14 +334,13 @@
                 error: e
             });
         }
-         
+
 
     </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <section class="content-header">
-        <h1>
-            Delivery Challan<small>Preview</small>
+        <h1>Delivery Challan<small>Preview</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Reports</a></li>
@@ -373,10 +372,9 @@
                             <td>
                                 <input type="date" id="txttodate" class="form-control" />
                             </td>
-                            <td style="width: 5px;">
-                            </td>
+                            <td style="width: 5px;"></td>
                             <td>
-                             <button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="btnDCDetails_click()"><i class="fa fa-refresh"></i> Get DC Details </button>
+                                <button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="btnDCDetails_click()"><i class="fa fa-refresh"></i>Get DC Details </button>
                             </td>
                         </tr>
                     </table>
@@ -384,250 +382,249 @@
                     <div id="divPOdata" style="height: 300px; overflow-y: scroll;">
                     </div>
                     <br />
-<table id="tbltrip">
-<tr>
-<td>
-Ref No
-</td>
-<td>
-<input type="text" id="txt_Refno" class="form-control" placeholder="Enter Ref No" />
-</td>
-<td style="width: 5px;">
-</td>
-<td>
-DcType
-</td>
-<td>
-                                            <select id="ddltype" class="form-control">
-                                                <option value="NonTax">NonTax</option>
-                                               <option value="Tax">Tax</option>
-                                             </select>
-                                            </td>
-<td style="width: 5px;">
-</td>
-<td style="width: 5px;">
-</td>
-<td>
-<button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="GetDC_Products();"><i class="fa fa-refresh"></i> Generate </button>
-</td>
-</tr>
-</table>
+                    <table id="tbltrip">
+                        <tr>
+                            <td>Ref No
+                            </td>
+                            <td>
+                                <input type="text" id="txt_Refno" class="form-control" placeholder="Enter Ref No" />
+                            </td>
+                            <td style="width: 5px;"></td>
+                            <td>DcType
+                            </td>
+                            <td>
+                                <select id="ddltype" class="form-control">
+                                    <option value="NonTax">NonTax</option>
+                                    <option value="Tax">Tax</option>
+                                </select>
+                            </td>
+                            <td style="width: 5px;"></td>
+                            <td style="width: 5px;"></td>
+                            <td>
+                                <button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="GetDC_Products();"><i class="fa fa-refresh"></i>Generate </button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div>
                 </div>
-              
-              <div id="divPrint" class="watermark">
-              <div class="content">
-                <p id="bg-text"><image width="100%;" src="http://www.vyshnavi.co.in/Images/original.jpg"></image> </p>
-                <div style="border: 2px solid gray;" class="col-md-12">
-                    <div style="width: 17%; float: right;padding-top: 12px;">
-                        <img src="Images/Vyshnavilogo.png" alt="Vyshnavi" width="100px" height="72px" />
-                        <br />
-                    </div>
-                    <div style="border: 1px solid gray;">
-                        <div style="font-family: Arial; font-size: 20pt; font-weight: bold; color: Black; text-align:center;">
-                            <span id="spncompanyname" style="font-size: 20px;"></span>
-                            <br />
-                        </div>
-                        <div style="width:73%; padding-left:12%; text-align:center;">
-                        <span id="spnAddress" style="font-size: 11px;font-weight: bold;"></span>
-                        <br />
-                        <label style="font-size: 12px;font-weight: bold !important;">
-                                         GSTIN :</label>
-                        <span id="spngstnum" style="font-size: 11px;font-weight: bold !important;"></span>
-                        <br />
-                       <span id="Span1" style="font-size: 11px;font-weight: bold;"> Website: www.vyshnavi.in</span>
-                        <br />
-                        </div>
 
-                          <div style="width:73%; padding-left:31%;display:none;">
-                        <label style="font-size: 12px;font-weight: bold !important;">   GSTIN.</label> <span id="lblgstin" style="font-size: 12px;"></span>
-                        </div>
-                         <div style="width:73%;padding-left:27%;">
-                         <br />
-                          <div style="display:none;">
-                          <label style="font-size: 12px;"> State Name.</label> <span id="lbl_fromstate" style="font-size: 12px;"></span>
-                          <label style="font-size: 12px;"> State Code.</label> <span id="lbl_fromstate_code" style="font-size: 12px;"></span>
-                          </div>
-                        </div>
-                    </div>
-                    <div align="center" style="border-bottom: 2px solid gray; border-top: 1px solid gray;background: antiquewhite;">
-                        <span style="font-size: 18px; font-weight: bold;" id="lbldcType"></span>
-                    </div>
-                    <div style="width: 100%;">
-                      <div style="width: 100%;">
-                       
-                            <table style="width: 100%;">
-                            <tr>
-                            <td style="width: 60%;border: 2px solid gray;padding-left: 2%;">
-                             <label style="font-size: 14px;font-weight: bold;">
-                                        Bill From </label>
-                                        <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Name :</label>
-                                    <span id="spnfromname" style="font-size: 11px;"></span>
+                <div id="divPrint" class="watermark">
+                    <div class="content">
+                        <%-- <p id="bg-text"><image width="100%;" src="http://www.vyshnavi.co.in/Images/original.jpg"></image> </p>--%>
+                        <div style="border: 2px solid gray;" class="col-md-12">
+                            <div style="width: 17%; float: right; padding-top: 12px;">
+                                <img src="Images/Vyshnavilogo.png" alt="Vyshnavi" width="100px" height="72px" />
+                                <br />
+                            </div>
+                            <div style="border: 1px solid gray;">
+                                <div style="font-family: Arial; font-size: 20pt; font-weight: bold; color: Black; text-align: center;">
+                                    <span id="spncompanyname" style="font-size: 20px;"></span>
                                     <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Address :</label>
-                                    <span id="spnfromaddress" style="font-size: 11px;"></span>
+                                </div>
+                                <div style="width: 73%; padding-left: 12%; text-align: center;">
+                                    <span id="spnAddress" style="font-size: 11px; font-weight: bold;"></span>
                                     <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                         GSTIN :</label>
-                                    <span id="spnfromgstn" style="font-size: 11px;font-weight: bold !important;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Telephone no :</label>
-                                    <span id="lbl_companymobno" style="font-size: 11px;"></span>
-                                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Email Id :</label>
-                                    <span id="lbl_companyemail" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        State Name :</label>
-                                    <span id="spnfromstate" style="font-size: 11px;"></span>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                       State Code :</label>
-                                    <span id="spnfromstatecode" style="font-size: 11px;"></span>
-                                    <br />
-                                </td>
-                                <td style="width: 39%;border: 2px solid gray;padding-left: 2%;">
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Invoice No. :</label>
-                                    <span id="lbldcno" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Ref NO :</label>
-                                    <span id="lblRefdcno" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                         Date :</label>
-                                    <span id="lblassigndate" style="font-size: 11px;"></span>
-                                    <br />
-                                       <label style="font-size: 12px;font-weight: bold !important;">
-                                        Time :</label>
-                                    <span id="lbldisptime" style="font-size: 11px;"></span>
-                                    <br />
-                                 
-                                </td>
-                               
-                            </tr>
-                        </table>
-                        <table style="width: 100%;">
-                            <tr>
-                                <td style="width: 60%;border: 2px solid gray;padding-left: 2%;">
-                                  <label style="font-size: 14px;font-weight: bold;">
-                                        Bill To </label>
-                                        <br />
-                                <label style="font-size: 12px;font-weight: bold !important;">
-                                        Name :</label>
-                                    <span id="lblpartyname" style="font-size: 11px;"></span>
-                                    <input type="hidden" id="hdnDespsno"/>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                       Despatch Name :</label>
-                                     <span id="lblroutename" style="font-size: 11px;"></span>
-                                     <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Address :</label>
-                                    <span id="spn_toaddress" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
+                                    <label style="font-size: 12px; font-weight: bold !important;">
                                         GSTIN :</label>
-                                    <span id="span_toGSTIN" style="font-size: 11px;"></span>
+                                    <span id="spngstnum" style="font-size: 11px; font-weight: bold !important;"></span>
                                     <br />
-                                    
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Telephone no :</label>
-                                    <span id="lblvendorphoneno" style="font-size: 11px;"></span>
-                                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Email Id :</label>
-                                    <span id="lblvendoremail" style="font-size: 11px;"></span>
+                                    <span id="Span1" style="font-size: 11px; font-weight: bold;">Website: www.vyshnavi.in</span>
                                     <br />
-                                     <label style="font-size: 12px;font-weight: bold !important;">
-                                        State Name :</label>
-                                    <span id="lbl_tostate" style="font-size: 11px;"></span>
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                     <label style="font-size: 12px;font-weight: bold !important;">
-                                        State Code :</label>
-                                    <span id="lbl_tostatecode" style="font-size: 11px;"></span>
-                                    <br />
-                                </td>
-                                 <td style="width: 39%;border: 2px solid gray;padding-left: 2%;padding-bottom: 5%;">
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Transport Mode :</label>
-                                    <span id="spntransportmode" style="font-size: 11px;">By Road</span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Vehicle No. :</label>
-                                    <span id="lblvehicleno" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Date of Supply :</label>
-                                    <span id="spndateofsupply" style="font-size: 11px;"></span>
-                                    <br />
-                                    <label style="font-size: 12px;font-weight: bold !important;">
-                                        Place of Supply :</label>
-                                    <span id="spnplaceofsupply" style="font-size: 11px;"></span>
-                                    <br />
-                                </td>
-                                
-                            </tr>
-                        </table>
-                    </div>
-                      <div style="font-family: Arial; font-weight: bold; color: Black; text-align:center; border:2px solid gray;">
-                      <br />
-                      </div>
-                           <div id="div_products" >
-                    </div>
-                    <br />
-                     <br />
-                                    <table style="width: 100%;">
-                                    <tr> 
-                                     <td  colspan="3"></td>
-                                       <td style="width: 50%;" >
-                                            For <span id="lblsignname" style="font-weight: bold; font-size: 11px;"></span>
-                                       <br />
-                                       <br />
-                                       <br />
-                                       </td>
-                                    </tr>
-                                        <tr>
-                                            <td style="width: 20%;">
-                                                <span style="font-weight: bold; font-size: 12px;">RECEIVER'S SIGNATURE</span>
-                                            </td>
-                                            <td style="width: 15%;">
-                                                <span style="font-weight: bold; font-size: 12px;">SECURITY</span>
-                                            </td>
-                                            <td style="width: 25%;">
-                                                <span id="lbldispat" style="font-weight: bold; font-size: 12px;"></span>
-                                            </td>
-                                            <td style="width: 50%;">
+                                </div>
 
-                                                <span style="font-weight: bold; font-size: 12px;">AUTHORISED SIGNATURE</span>
+                                <div style="width: 73%; padding-left: 31%; display: none;">
+                                    <label style="font-size: 12px; font-weight: bold !important;">GSTIN.</label>
+                                    <span id="lblgstin" style="font-size: 12px;"></span>
+                                </div>
+                                <div style="width: 73%; padding-left: 27%;">
+                                    <br />
+                                    <div style="display: none;">
+                                        <label style="font-size: 12px;">State Name.</label>
+                                        <span id="lbl_fromstate" style="font-size: 12px;"></span>
+                                        <label style="font-size: 12px;">State Code.</label>
+                                        <span id="lbl_fromstate_code" style="font-size: 12px;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div align="center" style="border-bottom: 2px solid gray; border-top: 1px solid gray; background: antiquewhite;">
+                                <span style="font-size: 18px; font-weight: bold;" id="lbldcType"></span>
+                            </div>
+                            <div style="width: 100%;">
+                                <div style="width: 100%;">
+
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="width: 60%; border: 2px solid gray; padding-left: 2%;">
+                                                <label style="font-size: 14px; font-weight: bold;">
+                                                    Bill From
+                                                </label>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Name :</label>
+                                                <span id="spnfromname" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Address :</label>
+                                                <span id="spnfromaddress" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    GSTIN :</label>
+                                                <span id="spnfromgstn" style="font-size: 11px; font-weight: bold !important;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Telephone no :</label>
+                                                <span id="lbl_companymobno" style="font-size: 11px;"></span>
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <label style="font-size: 12px; font-weight: bold !important;">
+                                        Email Id :</label>
+                                                <span id="lbl_companyemail" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    State Name :</label>
+                                                <span id="spnfromstate" style="font-size: 11px;"></span>
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <label style="font-size: 12px; font-weight: bold !important;">
+                                        State Code :</label>
+                                                <span id="spnfromstatecode" style="font-size: 11px;"></span>
+                                                <br />
                                             </td>
+                                            <td style="width: 39%; border: 2px solid gray; padding-left: 2%;">
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Invoice No. :</label>
+                                                <span id="lbldcno" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Ref NO :</label>
+                                                <span id="lblRefdcno" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Date :</label>
+                                                <span id="lblassigndate" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Time :</label>
+                                                <span id="lbldisptime" style="font-size: 11px;"></span>
+                                                <br />
+
+                                            </td>
+
                                         </tr>
                                     </table>
-                                    <br />
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="width: 60%; border: 2px solid gray; padding-left: 2%;">
+                                                <label style="font-size: 14px; font-weight: bold;">
+                                                    Bill To
+                                                </label>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Name :</label>
+                                                <span id="lblpartyname" style="font-size: 11px;"></span>
+                                                <input type="hidden" id="hdnDespsno" />
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Despatch Name :</label>
+                                                <span id="lblroutename" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Address :</label>
+                                                <span id="spn_toaddress" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    GSTIN :</label>
+                                                <span id="span_toGSTIN" style="font-size: 11px;"></span>
+                                                <br />
 
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Telephone no :</label>
+                                                <span id="lblvendorphoneno" style="font-size: 11px;"></span>
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <label style="font-size: 12px; font-weight: bold !important;">
+                                        Email Id :</label>
+                                                <span id="lblvendoremail" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    State Name :</label>
+                                                <span id="lbl_tostate" style="font-size: 11px;"></span>
+                                                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                     <label style="font-size: 12px; font-weight: bold !important;">
+                                         State Code :</label>
+                                                <span id="lbl_tostatecode" style="font-size: 11px;"></span>
+                                                <br />
+                                            </td>
+                                            <td style="width: 39%; border: 2px solid gray; padding-left: 2%; padding-bottom: 5%;">
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Transport Mode :</label>
+                                                <span id="spntransportmode" style="font-size: 11px;">By Road</span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Vehicle No. :</label>
+                                                <span id="lblvehicleno" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Date of Supply :</label>
+                                                <span id="spndateofsupply" style="font-size: 11px;"></span>
+                                                <br />
+                                                <label style="font-size: 12px; font-weight: bold !important;">
+                                                    Place of Supply :</label>
+                                                <span id="spnplaceofsupply" style="font-size: 11px;"></span>
+                                                <br />
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="font-family: Arial; font-weight: bold; color: Black; text-align: center; border: 2px solid gray;">
                                     <br />
-                                    <div>
-                        <span style="font-weight: bold; font-size: 13px;">Decleration:</span>
-                        <br />
+                                </div>
+                                <div id="div_products">
+                                </div>
+                                <br />
+                                <br />
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td style="width: 50%;">For <span id="lblsignname" style="font-weight: bold; font-size: 11px;"></span>
+                                            <br />
+                                            <br />
+                                            <br />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20%;">
+                                            <span style="font-weight: bold; font-size: 12px;">RECEIVER'S SIGNATURE</span>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            <span style="font-weight: bold; font-size: 12px;">SECURITY</span>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            <span id="lbldispat" style="font-weight: bold; font-size: 12px;"></span>
+                                        </td>
+                                        <td style="width: 50%;">
+
+                                            <span style="font-weight: bold; font-size: 12px;">AUTHORISED SIGNATURE</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+
+                                <br />
+                                <div>
+                                    <span style="font-weight: bold; font-size: 13px;">Decleration:</span>
+                                    <br />
                                     <span style="font-size: 11px;">We declare that this invioce shows the actual price of the goods decribe and that all particulars are ture and correct</span>
                                     <br />
-                                    </div>
+                                </div>
 
+                            </div>
                         </div>
-                        </div>
-                        </div>
-                        </div>
+                    </div>
+                </div>
 
-                             <button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="javascript:CallPrint('divPrint');"><i class="fa fa-print"></i> Print </button>
+                <button type="button" class="btn btn-primary" style="margin-right: 5px;" onclick="javascript:CallPrint('divPrint');"><i class="fa fa-print"></i>Print </button>
 
-                        </div>
-                        </div>
-                        </section>
+            </div>
+        </div>
+    </section>
 </asp:Content>
