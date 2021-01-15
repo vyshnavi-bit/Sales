@@ -36,18 +36,18 @@
             today = year + "-" + month + "-" + day;
             $('#txtfromdate').val(today);
             $('#txttodate').val(today);
-            document.getElementById("bg-text").style.opacity = "0.1";
-            document.getElementById("bg-text").style.width = "85%";
-            document.getElementById("bg-text").style.position = "absolute";
-            document.getElementById("bg-text").style.padding = "12% 8% 8% 8%";
+            //document.getElementById("bg-text").style.opacity = "0.1";
+            //document.getElementById("bg-text").style.width = "85%";
+            //document.getElementById("bg-text").style.position = "absolute";
+            //document.getElementById("bg-text").style.padding = "12% 8% 8% 8%";
         });
         function CallPrint(strid) {
             document.getElementById("tbl_po_print").style.borderCollapse = "collapse";
             //document.getElementById("bg-text").style.transform = "rotate(300deg)";
-            document.getElementById("bg-text").style.opacity = "0.1";
-            document.getElementById("bg-text").style.width = "85%";
-            document.getElementById("bg-text").style.position = "absolute";
-            document.getElementById("bg-text").style.padding = "12% 8% 8% 8%";
+            //document.getElementById("bg-text").style.opacity = "0.1";
+            //document.getElementById("bg-text").style.width = "85%";
+            //document.getElementById("bg-text").style.position = "absolute";
+            //document.getElementById("bg-text").style.padding = "12% 8% 8% 8%";
             var divToPrint = document.getElementById(strid);
             var newWin = window.open('', 'Print-Window', 'width=400,height=400,top=100,left=100');
             newWin.document.open();
