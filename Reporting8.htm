@@ -197,23 +197,6 @@
                         <span id="Span15" class="TotalClass" style="font-size: 14px; color: Red; font-weight: bold;"><b>0</b></span>
                     </td>
                 </tr>
-                 <tr class="tblrowcolor">
-                    <td style="width: 20%; height: 30px; vertical-align: middle; font-size: 12px; font-weight: 500;
-                        text-align: center; padding: 0px 0px 0px 3px">
-                        <span id="Span18" class="CashClass" style="font-size: 14px; color: Red; font-weight: bold;"><b>Vouchers</b></span>
-                    </td>
-                    <td style="width: 20%; height: 30px; vertical-align: middle; font-size: 12px; font-weight: 500;
-                        text-align: center; padding: 0px 0px 0px 3px">
-                        <b style="font-size: 18px; font-weight: bold;">X</b>
-                        <input type="number" id="Number9" onkeyup="CountChange(this);" class="qtyclass" onkeypress="return numberOnlyExample();"
-                            style="width: 80%; height: 24px; border: 1px solid gray; border-radius: 6px 6px 6px 6px;"
-                            placeholder="Enter Count" />
-                    </td>
-                    <td style="width: 20%; height: 30px; vertical-align: middle; font-size: 12px; font-weight: 500;
-                        text-align: center; padding: 0px 0px 0px 3px">
-                        <span id="Span19" class="TotalClass" style="font-size: 14px; color: Red; font-weight: bold;"><b>0</b></span>
-                    </td>
-                </tr>
                 <tr>
                     <td style="width: 20%; height: 30px; vertical-align: top; font-size: 12px; font-weight: 500;
                         text-align: center; padding: 0px 0px 0px 3px">
@@ -234,22 +217,41 @@
         </table>
         <table style="width: 100%; height: 16%;padding-left:40%;">
         <tr >
-        <td style="width: 10%;">
-                Amount Submitted
+        <td style="width: 20%;">
+               Denomination Amount
             </td>
             <td>
                         <span style="font-size: 16px; color: Red; font-weight: bold;" id="txtSubmittedAmount"></span>
 
             </td>
         </tr>
-       
+      
+                    <tr>
+                        <td>
+                            Closing Balance
+                        </td>
+                        <td >
+                            <!--<input type="number" id="txtAmount" class="RAmountClass"
+                                                            onkeypress="return numberOnlyExample();" style="width: 80%; height: 24px; border: 1px solid gray;
+                                                            border-radius: 6px 6px 6px 6px;" placeholder="Enter Amount" />-->
+                            <input type="number" id="txtAmount" class="form-control" placeholder="Enter Amount"  onkeypress="return numberOnlyExample();" style="width: 30%;" />
+                        </td>
+
+                    </tr>
+
+            <tr>
+                <td>
+                    <br />
+
+                </td>
+            </tr>
         <tr>
             <td>
             </td>
             <td>
                 
                 <input type="button" id="Button1" value="Update" onclick="btnDenominationSaveClick();"
-                    style="width: 100px; height: 24px; font-size: 16px;" class="SaveButton" />
+                    class="btn btn-primary" />
             
             </td>
         </tr>

@@ -149,9 +149,6 @@
                     $('#divFillScreen').removeTemplate();
                     $('#divFillScreen').setTemplateURL('CollectionsEdit1.htm');
                     $('#divFillScreen').processTemplate();
-                    //                    $('#divdenomination').removeTemplate();
-                    //                    $('#divdenomination').setTemplateURL('Reporting8.htm');
-                    //                    $('#divdenomination').processTemplate();
 
                 }
                 else {
@@ -241,9 +238,6 @@
                     $('#divFillScreen').removeTemplate();
                     $('#divFillScreen').setTemplateURL('AgentsAmounts.htm');
                     $('#divFillScreen').processTemplate(msg);
-                    //                    $('#divdenomination').removeTemplate();
-                    //                    $('#divdenomination').setTemplateURL('Reporting8.htm');
-                    //                    $('#divdenomination').processTemplate();
                     //                    $('.TotClass').each(function (i, obj) {
                     //                        Returnqty += parseFloat($(this).val());
                     //                    });

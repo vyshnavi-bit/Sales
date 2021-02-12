@@ -329,6 +329,9 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 case "Get_Employee":
                     Get_Employee(context);
                     break;
+                case "Get_Employee_editDC":
+                    Get_Employee_editDC(context);
+                    break;
                 case "Inventorymanage":
                     Inventorymanage(context);
                     break;
@@ -845,9 +848,10 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 case "saveDistributorDetails":
                     saveDistributorDetails(context);
                     break;
-
-
-
+                case "GetEditCashBookValues":
+                    GetEditCashBookValues(context);
+                    break;
+                    
                 case "get_Costing_details":
                     get_Costing_details(context);
                     break;
@@ -1090,7 +1094,10 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 case "Getchillingcenters":
                     Getchillingcenters(context);
                     break;
-
+                case "btnEditCashbookSaveClick":
+                    btnEditCashbookSaveClick(context);
+                    break;
+                    
                 default:
                     var jsonString = String.Empty;
                     context.Request.InputStream.Position = 0;
@@ -1313,6 +1320,76 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             //context.Response.ContentType = MediaTypeNames.Text.Plain;
             //context.Response.StatusCode = 400;
             //context.Response.Write(ex.Message);
+        }
+    }
+
+    public class collectiondetails
+    {
+
+        public string sno { get; set; }
+        public string AmountPaid { get; set; }
+        public string Denominations { get; set; }
+
+    }
+    private void btnEditCashbookSaveClick(HttpContext context)
+    {
+        try
+        {
+            vdbmngr = new VehicleDBMgr();
+            string SalesOffice = context.Request["SalesOfficeID"];
+            string hdncashsno = context.Request["hdncashsno"];
+            string SubAmount = context.Request["SubAmount"];
+            string Denominations = context.Request["Denominations"];
+            string UserID = context.Session["empid"].ToString();
+            cmd = new MySqlCommand("Update collections set AmountPaid=@AmountPaid,Denominations=@Denominations, vempid=@vempid where BranchId=@BranchId and sno=@sno");
+            cmd.Parameters.AddWithValue("@AmountPaid", SubAmount);
+            cmd.Parameters.AddWithValue("@Denominations", Denominations);
+            cmd.Parameters.AddWithValue("@BranchId", SalesOffice);
+            cmd.Parameters.AddWithValue("@sno", hdncashsno);
+            cmd.Parameters.AddWithValue("@vempid", UserID);
+            vdbmngr.Update(cmd);
+            string msg = "CashBook updated successfully";
+            string Response = GetJson(msg);
+            context.Response.Write(Response);
+        }
+        catch(Exception ex)
+        {
+            string msg = ex.Message;
+            string Response = GetJson(msg);
+            context.Response.Write(Response);
+        }
+    }
+        private void GetEditCashBookValues(HttpContext context)
+    {
+        try
+        {
+            vdbmngr = new VehicleDBMgr();
+            string SalesOffice = context.Request["SalesOffice"];
+            string IndDate = context.Request["IndDate"];
+            DateTime dtinddate = Convert.ToDateTime(IndDate);
+            cmd = new MySqlCommand("SELECT sno,AmountPaid,Denominations FROM collections WHERE (Branchid = @BranchID) AND (PaidDate BETWEEN @d1 AND @d2)");
+            cmd.Parameters.AddWithValue("@BranchID", SalesOffice);
+            cmd.Parameters.AddWithValue("@d1", GetLowDate(dtinddate));
+            cmd.Parameters.AddWithValue("@d2", GetHighDate(dtinddate));
+            DataTable dtCash = vdbmngr.SelectQuery(cmd).Tables[0];
+            List<collectiondetails> collectionlist = new List<collectiondetails>();
+            if (dtCash.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dtCash.Rows)
+                {
+                    collectiondetails details = new collectiondetails();
+                    details.sno = dr["sno"].ToString();
+                    details.AmountPaid = dr["AmountPaid"].ToString();
+                    details.Denominations = dr["Denominations"].ToString();
+                    collectionlist.Add(details);
+                }
+                string response = GetJson(collectionlist);
+                context.Response.Write(response);
+            }
+
+        }
+        catch(Exception ex)
+        {
         }
     }
     class VoucherPrintdetails1
@@ -27422,6 +27499,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             string tripid = obj.tripid;
             string vehicleno = obj.VehicleNo;
             string status = obj.status;
+            string EmpID = obj.EmpID;
             context.Session["TripIDSno"] = tripid;
             string DispMode = "";
             string msg = "";
@@ -27691,7 +27769,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     double DeliveryQty = 0;
                     cmd.Parameters.AddWithValue("@DeliveryQty", DeliveryQty);
                     vdbmngr.Delete(cmd);
-                    cmd = new MySqlCommand("UPDATE tripdata SET Status = @status, VehicleNo = @vehicleno, Modified_EmpID = @modified_empid, ModifiedDate = @modifieddate WHERE (Sno = @tripid)");
+                    cmd = new MySqlCommand("UPDATE tripdata SET Status = @status, VehicleNo = @vehicleno, EmpId = @EmpId, Modified_EmpID = @modified_empid, ModifiedDate = @modifieddate WHERE (Sno = @tripid)");
 
                     if (status == "2")
                     {
@@ -27700,6 +27778,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
 
                     cmd.Parameters.AddWithValue("@status", status);
                     cmd.Parameters.AddWithValue("@vehicleno", vehicleno);
+                    cmd.Parameters.AddWithValue("@EmpId", EmpID);
                     cmd.Parameters.AddWithValue("@modified_empid", context.Session["UserSno"]);
                     cmd.Parameters.AddWithValue("@modifieddate", ServerDateCurrentdate);
                     cmd.Parameters.AddWithValue("@tripid", tripid);
@@ -27732,7 +27811,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
             }
             else
             {
-                cmd = new MySqlCommand("UPDATE tripdata SET Status = @status, VehicleNo = @vehicleno, Modified_EmpID = @modified_empid, ModifiedDate = @modifieddate WHERE (Sno = @tripid)");
+                cmd = new MySqlCommand("UPDATE tripdata SET Status = @status, VehicleNo = @vehicleno, EmpId = @EmpId, Modified_EmpID = @modified_empid, ModifiedDate = @modifieddate WHERE (Sno = @tripid)");
                 if (status == "0")
                 {
                     status = "A";
@@ -27757,6 +27836,7 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                 //cmd.Parameters.AddWithValue("@I_date", dtindent);
                 cmd.Parameters.AddWithValue("@status", status);
                 cmd.Parameters.AddWithValue("@vehicleno", vehicleno);
+                cmd.Parameters.AddWithValue("@EmpId", EmpID);
                 cmd.Parameters.AddWithValue("@modified_empid", context.Session["UserSno"]);
                 cmd.Parameters.AddWithValue("@modifieddate", ServerDateCurrentdate);
                 cmd.Parameters.AddWithValue("@tripid", tripid);
@@ -38930,6 +39010,40 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
         {
         }
     }
+
+    private void Get_Employee_editDC(HttpContext context)
+    {
+        try
+        {
+            vdbmngr = new VehicleDBMgr();
+            string Username = context.Session["userdata_sno"].ToString();
+            List<PlantEmployee> Employeelist = new List<PlantEmployee>();
+            if (context.Session["LevelType"].ToString() == "Admin" || context.Session["LevelType"].ToString() == "MAdmin" || context.Session["LevelType"].ToString() == "PlantDispatcher")
+            {
+                    cmd = new MySqlCommand("SELECT empmanage.Sno, empmanage.EmpName FROM empmanage INNER JOIN branchmappingtable ON empmanage.Branch = branchmappingtable.SubBranch WHERE (empmanage.LevelType = 'SODispatcher') AND (branchmappingtable.SuperBranch = @Branch) ");
+                    cmd.Parameters.AddWithValue("@Branch", context.Session["branch"].ToString());
+                
+            }
+            DataTable dtEmployee = vdbmngr.SelectQuery(cmd).Tables[0];
+            if (dtEmployee.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dtEmployee.Rows)
+                {
+                    PlantEmployee b = new PlantEmployee() { Employee_id = dr["Sno"].ToString(), EmployeeName = dr["EmpName"].ToString() };
+                    Employeelist.Add(b);
+                }
+                string response = GetJson(Employeelist);
+                context.Response.Write(response);
+            }
+        }
+        catch (Exception ex)
+        {
+            string msg = ex.Message;
+            string response = GetJson(msg);
+            context.Response.Write(response);
+        }
+    }
+
     private void Get_Employee(HttpContext context)
     {
         try

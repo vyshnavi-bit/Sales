@@ -11,7 +11,6 @@
     <link href="js/DateStyles.css?v=3003" rel="stylesheet" type="text/css" />
     <script src="js/1.8.6.jquery.ui.min.js" type="text/javascript"></script>
     <style type="text/css">
-       
         .datepicker
         {
             border: 1px solid gray;
@@ -30,11 +29,55 @@
             filter: Alpha(Opacity=0);
             box-shadow: 3px 3px 3px #ccc;
         }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
+        {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+         .btn
+        {
+            padding:6px;
+        }
     </style>
     <script type="text/javascript">
         $(function () {
             FillVehicleNo();
+            FillEmployee();
         });
+        function FillEmployee() {
+            var data = { 'operation': 'Get_Employee_editDC' };
+            var s = function (msg) {
+                if (msg) {
+                    fillEmployeelist(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillEmployeelist(msg) {
+            document.getElementById('ddlEmployee').options.length = "";
+            var veh = document.getElementById('ddlEmployee');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select Employee";
+            opt.value = "";
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].EmployeeName;
+                    opt.value = msg[i].Employee_id;
+                    veh.appendChild(opt);
+                }
+            }
+        }
         function FillVehicleNo() {
             var data = { 'operation': 'GetVehicleNos' };
             var s = function (msg) {
@@ -70,36 +113,7 @@
             }
         }
     </script>
-    <style type="text/css">
-      
-        .datepicker
-        {
-            border: 1px solid gray;
-            background: url("Images/CalBig.png") no-repeat scroll 99%;
-            width: 70%;
-            top: 0;
-            left: 0;
-            height: 20px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            border: 1px solid gray;
-            margin: .5em 0;
-            padding: .6em 20px;
-            border-radius: 10px 10px 10px 10px;
-            filter: Alpha(Opacity=0);
-            box-shadow: 3px 3px 3px #ccc;
-        }
-        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
-        {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-         .btn
-        {
-            padding:6px;
-        }
-    </style>
+  
     <script type="text/javascript">
         function btnGetDcDetails() {
             var Dcno = document.getElementById("txtDcno").value;
@@ -220,6 +234,7 @@
             }
             var vehicleno = document.getElementById("txtVehicleNo").value;
             var status = document.getElementById("cmbdcstatus").value;
+            var Employee = document.getElementById('ddlEmployee').value;
             var rows = $("#tabledetails tr:gt(0)");
             var Orderdetails = new Array();
             $(rows).each(function (i, obj) {
@@ -250,7 +265,7 @@
             }
             //table_inventory_details
             Operationvalues = "D";
-            var Data = { 'op': 'btnEditDCSaveclick', 'invdata': inventorydetails, 'tripid': Dcno, 'VehicleNo': vehicleno, 'status': status, 'data': Orderdetails };
+            var Data = { 'op': 'btnEditDCSaveclick', 'invdata': inventorydetails, 'tripid': Dcno, 'VehicleNo': vehicleno, 'EmpID': EmpID, 'status': status, 'data': Orderdetails };
             var s = function (msg) {
                 if (msg) {
                     if (msg == "Session Expired") {
@@ -331,6 +346,16 @@
                         </td>
                         <td style="height:40px;">
                             <select id="txtVehicleNo" class="form-control">
+                            </select>
+                        </td>
+                         </tr>
+                    <tr>
+                        <td>
+                            <label for="lblSalesType">
+                                Employee Name:</label>
+                        </td>
+                        <td style="height:40px;">
+                            <select id="ddlEmployee" class="form-control">
                             </select>
                         </td>
                          </tr>

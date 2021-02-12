@@ -1,5 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"
-    CodeFile="EditCollections.aspx.cs" Inherits="EditCollections" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="EditCashBook.aspx.cs" Inherits="EditCashBook" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script src="js/jquery-1.4.4.js" type="text/javascript"></script>
@@ -40,11 +39,10 @@
     </style>
     <script type="text/javascript">
         $(function () {
-            //FillRoutes();
             FillSalesOffice();
             $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd', numberOfMonths: 1, showButtonPanel: false, maxDate: '+13M +0D',
                 onSelect: function (selectedDate) {
-                    GetEditIndentValues();
+                    GetEditCashBookValues();
                 }
             });
 
@@ -91,98 +89,8 @@
                 }
             }
         }
-        function ddlSalesOfficeChange(ID) {
-            var BranchID = ID.value;
-            var data = { 'operation': 'GetDespatches', 'BranchID': BranchID };
-            var s = function (msg) {
-                if (msg) {
-                    if (msg == "Session Expired") {
-                        alert(msg);
-                        window.location = "Login.aspx";
-                    }
-                    bindRoutes(msg);
-                }
-                else {
-                }
-            };
-            var e = function (x, h, e) {
-            };
-            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-            callHandler(data, s, e);
-        }
-        function FillRoutes() {
-            var BranchID = document.getElementById('ddlSalesOffice').value;
-            var data = { 'operation': 'GetDespatches', 'BranchID': BranchID };
-            var s = function (msg) {
-                if (msg) {
-                    bindRoutes(msg);
-                }
-                else {
-                }
-            };
-            var e = function (x, h, e) {
-            };
-            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-            callHandler(data, s, e);
-        }
-        function bindRoutes(msg) {
-            var ddlRouteName = document.getElementById('ddlRouteName');
-            var length = ddlRouteName.options.length;
-            ddlRouteName.options.length = null;
-            var opt = document.createElement('option');
-            opt.innerHTML = "Select Route Name";
-            ddlRouteName.appendChild(opt);
-            for (var i = 0; i < msg.length; i++) {
-                if (msg[i].routename != null) {
-                    var opt = document.createElement('option');
-                    opt.innerHTML = msg[i].routename;
-                    opt.value = msg[i].routesno;
-                    ddlRouteName.appendChild(opt);
-                }
-            }
-        }
-        var RouteSno = 0;
-        function ddlRouteNameChange(Id) {
-            var data = { 'operation': 'GetRouteNameChange', 'RouteID': Id.value };
-            var s = function (msg) {
-                if (msg) {
-                    BindBranchName(msg);
-                    $('#divFillScreen').removeTemplate();
-                    $('#divFillScreen').setTemplateURL('CollectionsEdit1.htm');
-                    $('#divFillScreen').processTemplate();
-
-                }
-                else {
-                }
-            };
-            var e = function (x, h, e) {
-            };
-            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-            callHandler(data, s, e);
-        }
-        function ddlAgentNameChange() {
-            GetEditIndentValues();
-        }
-        function BindBranchName(msg) {
-            document.getElementById('ddlBranchName').options.length = "";
-            var veh = document.getElementById('ddlBranchName');
-            var length = veh.options.length;
-            for (i = length - 1; i >= 0; i--) {
-                veh.options[i] = null;
-            }
-            var opt = document.createElement('option');
-            opt.innerHTML = "Select Agent Name";
-            opt.value = "";
-            veh.appendChild(opt);
-            for (var i = 0; i < msg.length; i++) {
-                if (msg[i] != null || msg[i].BranchName != "" || msg[i].BranchName != null) {
-                    var opt = document.createElement('option');
-                    opt.innerHTML = msg[i].BranchName;
-                    opt.value = msg[i].b_id;
-                    veh.appendChild(opt);
-                }
-            }
-        }
+       
+        
         function AmountChange(Amount) {
             var TotalCash = 0;
             var Total = 0;
@@ -214,34 +122,58 @@
             document.getElementById('txt_Total').innerHTML = TotalCash;
             document.getElementById('txtSubmittedAmount').innerHTML = TotalCash;
         }
-        function GetEditIndentValues() {
+        function GetEditCashBookValues() {
             var Returnqty = 0;
 
-            var ddlRouteName = document.getElementById('ddlRouteName').value;
-            if (ddlRouteName == "Select Route Name" || ddlRouteName == "") {
+            var ddlSalesOffice = document.getElementById('ddlSalesOffice').value;
+            if (ddlSalesOffice == "Select Route Name" || ddlSalesOffice == "") {
                 alert("Please Select Route Name");
                 return false;
             }
-            //            var BranchName = document.getElementById('ddlBranchName').value;
-            //            if (BranchName == "Select Agent Name" || BranchName == "") {
-            //                alert("Please Select Agent Name");
-            //                return false;
-            //            }
             var txtDate = document.getElementById('datepicker').value;
             if (txtDate == "") {
                 alert("Please Select Date");
                 return false;
             }
-            var data = { 'operation': 'GetEditCollectionValuesClick', 'RouteID': ddlRouteName, 'IndDate': txtDate };
+            var data = { 'operation': 'GetEditCashBookValues', 'SalesOffice': ddlSalesOffice, 'IndDate': txtDate };
             var s = function (msg) {
                 if (msg) {
                     $('#divFillScreen').removeTemplate();
-                    $('#divFillScreen').setTemplateURL('CollectionsEdit1.htm');
+                    $('#divFillScreen').setTemplateURL('Reporting8.htm');
                     $('#divFillScreen').processTemplate(msg);
-                    $('.TotClass').each(function (i, obj) {
-                        Returnqty += parseFloat($(this).val());
-                    });
-                    document.getElementById('txtAmount').innerHTML = Returnqty;
+                    if (msg.length > 0) {
+                        document.getElementById('hdncashsno').value = msg[0].sno
+                        var strdenmn = msg[0].Denominations.split("+");
+                        for (i = 0; i < strdenmn.length; i++) {
+                            var rowsdenominations = $("#tableReportingDetails tr:gt(0)");
+                            var DenominationString = "";
+                            $(rowsdenominations).each(function (i, obj) {
+                                if (i <= 10) {
+                                    var cash = strdenmn[i].split("x");
+                                    if ($(this).closest("tr").find(".CashClass").text() == cash[0]) {
+                                        Cash = cash[0];
+                                        if (Cash != "") {
+                                            if (cash[0] == "Vouchers") {
+                                                cash[0] = "1";
+                                            }
+                                            var denamount = 0;
+                                            denamount = cash[1];
+                                            $(this).closest("tr").find(".qtyclass").val(denamount);
+                                            var amount = 0;
+                                            amount = parseFloat(cash[0]) * denamount;
+                                            $(this).closest("tr").find(".TotalClass").text(amount);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    //$('.TotClass').each(function (i, obj) {
+                    //    Returnqty += parseFloat($(this).val());
+                    //});
+
+
+                    CountChange(0);
                 }
                 else {
                 }
@@ -251,24 +183,13 @@
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
             callHandler(data, s, e);
         }
-        function btnEditCollectionSaveClick(id) {
+        function btnDenominationSaveClick(id) {
             var txtDate = document.getElementById('datepicker').value;
             if (txtDate == "") {
                 alert("Please Select Date");
                 return false;
             }
-            var rows = $("#table_Indent_details tr:gt(0)");
-            var Indentdetails = new Array();
-            $(rows).each(function (i, obj) {
-                if ($(this).find('#txtDeliveryQty').val() != "" || $(this).find('#txtDeliveryQty').val() != "0") {
-                    var txtProductQty = $(this).find('#txtDeliveryQty').val();
-                    var tot_qty = 0;
-                    tot_qty = parseFloat(txtProductQty);
-                    if (tot_qty > 0) {
-                        Indentdetails.push({ BranchID: $(this).find('#txtIndentNo').text(), TripId: $(this).find('#txtunitQty').text(), PaidDate: $(this).find('#txtPaiddate').text(), PaidAmount: $(this).find('#txtDeliveryQty').val() });
-                    }
-                }
-            });
+            
             var rowsdenominations = $("#tableReportingDetails tr:gt(0)");
             var DenominationString = "";
             $(rowsdenominations).each(function (i, obj) {
@@ -278,17 +199,23 @@
                     DenominationString += $(this).closest("tr").find(".CashClass").text() + 'x' + $(this).closest("tr").find(".qtyclass").val() + "+";
                 }
             });
-            var ColAmount = document.getElementById('txtAmount').innerHTML;
-            var SubAmount = document.getElementById('txtSubmittedAmount').innerHTML;
-            var ddlRouteName = document.getElementById('ddlRouteName').value;
+            var txtAmount = document.getElementById('txtAmount').value;
+            if (txtAmount == "") {
+                alert("Please Enter Amount");
+                return false;
+            }
             var soid = document.getElementById('ddlSalesOffice').value;
-            var data = { 'operation': 'btnEditCollectionSaveClick', 'data': Indentdetails, 'refno': ddlRouteName, 'indentdate': txtDate, 'Denominations': DenominationString, 'ColAmount': ColAmount, 'SubAmount': SubAmount, 'SalesOfficeID': soid };
+            var hdncashsno = document.getElementById('hdncashsno').value;
+            var data = { 'operation': 'btnEditCashbookSaveClick', 'indentdate': txtDate, 'Denominations': DenominationString, 'hdncashsno': hdncashsno, 'SubAmount': txtAmount, 'SalesOfficeID': soid };
             var s = function (msg) {
                 if (msg) {
                     alert(msg);
                     $('#divFillScreen').removeTemplate();
-                    $('#divFillScreen').setTemplateURL('CollectionsEdit1.htm');
+                    $('#divFillScreen').setTemplateURL('Reporting8.htm');
                     $('#divFillScreen').processTemplate();
+                    document.getElementById('hdncashsno').value = 0;
+                    document.getElementById('txtSubmittedAmount').innerHTML = 0;
+                    document.getElementById('ddlSalesOffice').value = 0;
                 }
                 else {
                 }
@@ -296,7 +223,7 @@
             var e = function (x, h, e) {
             };
             $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
-            CallHandlerUsingJson(data, s, e);
+            callHandler(data, s, e);
         }
         function CallHandlerUsingJson(d, s, e) {
             $.ajax({
@@ -329,18 +256,18 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <section class="content-header">
         <h1>
-            Edit Collections<small>Preview</small>
+            Edit CashBook<small>Preview</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Operations</a></li>
-            <li><a href="#">Edit Collections</a></li>
+            <li><a href="#">Edit CashBook</a></li>
         </ol>
     </section>
     <section class="content">
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    <i style="padding-right: 5px;" class="fa fa-cog"></i>Edit Collections Details
+                    <i style="padding-right: 5px;" class="fa fa-cog"></i>Edit CashBook Details
                 </h3>
             </div>
             <div class="box-body">
@@ -351,42 +278,33 @@
                             Sales Office</label>
                         </td>
                         <td style="height:40px;">
-                            <select id="ddlSalesOffice" class="form-control" onchange="ddlSalesOfficeChange(this);">
+                            <select id="ddlSalesOffice" class="form-control">
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td nowrap>
                             <label for="lblBranch">
-                                Route Name</label>
+                                CashBook Date</label>
                         </td>
-                        <td style="height:40px;">
-                            <select id="ddlRouteName" class="form-control" onchange="ddlAgentNameChange(this);">
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td nowrap>
-                            <label for="lblBranch">
-                                Indent Date</label>
-                        </td>
-                        <td style="height:40px;">
+                        <td style="height:40px;wi">
                             <input type="date" id="datepicker" placeholder="DD-MM-YYYY" class="form-control" />
+                            <input type="hidden" id="hdncashsno" />
                         </td>
                     </tr>
-                    <tr>
+                    <tr style="height:10px;">
                         <td>
                         </td>
                         <td>
-                            <input type="button" id="Button1" value="Get Collections" class="btn btn-primary"
-                                onclick="GetEditIndentValues();" />
+                            <input type="button" id="Button1" value="Get Details" class="btn btn-primary"
+                                onclick="GetEditCashBookValues();" />
                         </td>
                     </tr>
                 </table>
                 <div id="divFillScreen">
                 </div>
-                <div id="divdenomination">
-                </div>
+               
+
             </div>
         </div>
     </section>
