@@ -672,6 +672,7 @@ j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; 
                                     BranchWise Rates Management</a></li>
                                 <li id="liRatesManage1"><a href="PriceListForm.aspx">Branch Wise Rate Details</a></li>
                                 <li id="li170"><a href="AvgPriceSummary.aspx">AvgRateDetails</a></li>
+                                <li id="liagentRatesManage"><a href="Agent_wise_rates.aspx">Agent Wise Rates </a></li>
                                 <li id="liRatesManage"><a href="RatesManage.aspx">Rate Management</a></li>
                                 <li id="liroutemanage"><a href="Routes.aspx">Route Management</a></li>
                                 <li id="liemployee"><a href="EmployeeManagement.aspx">Employee Master</a></li>

@@ -39016,24 +39016,54 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
         try
         {
             vdbmngr = new VehicleDBMgr();
-            string Username = context.Session["userdata_sno"].ToString();
-            List<PlantEmployee> Employeelist = new List<PlantEmployee>();
-            if (context.Session["LevelType"].ToString() == "Admin" || context.Session["LevelType"].ToString() == "MAdmin" || context.Session["LevelType"].ToString() == "PlantDispatcher")
+            string Username = context.Session["UserSno"].ToString();
+            string Tripdata_sno = context.Request["Dcno"];
+            DataTable dtEmploye = new DataTable();
+            cmd = new MySqlCommand("SELECT dispatch.Sno, dispatch.DispType, dispatch.DispMode FROM dispatch INNER JOIN triproutes ON triproutes.routeid = dispatch.sno WHERE (triproutes.Tripdata_sno = @Tripdata_sno)");
+            cmd.Parameters.AddWithValue("@Tripdata_sno", Tripdata_sno);
+            DataTable dtDespatch = vdbmngr.SelectQuery(cmd).Tables[0];
+            if (dtDespatch.Rows.Count > 0)
             {
-                    cmd = new MySqlCommand("SELECT empmanage.Sno, empmanage.EmpName FROM empmanage INNER JOIN branchmappingtable ON empmanage.Branch = branchmappingtable.SubBranch WHERE (empmanage.LevelType = 'SODispatcher') AND (branchmappingtable.SuperBranch = @Branch) ");
-                    cmd.Parameters.AddWithValue("@Branch", context.Session["branch"].ToString());
-                
-            }
-            DataTable dtEmployee = vdbmngr.SelectQuery(cmd).Tables[0];
-            if (dtEmployee.Rows.Count > 0)
-            {
-                foreach (DataRow dr in dtEmployee.Rows)
+                string DispType = dtDespatch.Rows[0]["DispType"].ToString();
+                string DispSno = dtDespatch.Rows[0]["Sno"].ToString();
+                string DispMode = dtDespatch.Rows[0]["DispMode"].ToString();
+                if (DispType == "SO" && DispMode != "AGENT")
                 {
-                    PlantEmployee b = new PlantEmployee() { Employee_id = dr["Sno"].ToString(), EmployeeName = dr["EmpName"].ToString() };
-                    Employeelist.Add(b);
+                    cmd = new MySqlCommand("SELECT empmanage.Sno, empmanage.UserName FROM empmanage INNER JOIN dispatch ON empmanage.Branch = dispatch.BranchID WHERE (dispatch.sno = @DispSno) AND (empmanage.LevelType = 'SODispatcher')");
+                    cmd.Parameters.AddWithValue("@DispSno", DispSno);
+                    dtEmploye = vdbmngr.SelectQuery(cmd).Tables[0];
                 }
-                string response = GetJson(Employeelist);
-                context.Response.Write(response);
+                else if (DispType == "SM")
+                {
+                    cmd = new MySqlCommand("SELECT Sno, UserName FROM empmanage WHERE (Branch = @BranchID) AND (LevelType = 'Opperations')");
+                    cmd.Parameters.AddWithValue("@BranchID", context.Session["branch"]);
+                    dtEmploye = vdbmngr.SelectQuery(cmd).Tables[0];
+                }
+                else if (DispType == "Staff" || DispType == "Free" || DispType == "LOCAL" || DispType == "AGENT" || DispMode == "AGENT")
+                {
+                    cmd = new MySqlCommand("SELECT Sno, UserName FROM empmanage WHERE (sno = @Username)");
+                    cmd.Parameters.AddWithValue("@Username", Username);
+                    dtEmploye = vdbmngr.SelectQuery(cmd).Tables[0];
+                }
+                else
+                {
+                    cmd = new MySqlCommand("SELECT empmanage.Sno, empmanage.UserName FROM empmanage INNER JOIN dispatch ON empmanage.Branch = dispatch.BranchID WHERE (dispatch.sno = @DispSno) AND (empmanage.LevelType = 'Opperations')");
+                    cmd.Parameters.AddWithValue("@DispSno", DispSno);
+                    dtEmploye = vdbmngr.SelectQuery(cmd).Tables[0];
+                }
+                List<PlantEmployee> Employeelist = new List<PlantEmployee>();
+                if (dtEmploye.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dtEmploye.Rows)
+                    {
+                        PlantEmployee GetEmployee = new PlantEmployee();
+                        GetEmployee.Employee_id = dr["Sno"].ToString();
+                        GetEmployee.EmployeeName = dr["UserName"].ToString();
+                        Employeelist.Add(GetEmployee);
+                    }
+                }
+                string errresponse = GetJson(Employeelist);
+                context.Response.Write(errresponse);
             }
         }
         catch (Exception ex)
@@ -49978,6 +50008,11 @@ public class DairyFleet : IHttpHandler, IRequiresSessionState
                     cmd.Parameters.AddWithValue("@Denominations", DenominationString);
                     cmd.Parameters.AddWithValue("@ReturnDenomin", ReturnDenominationString);
                     vdbmngr.insert(cmd);
+
+                    cmd = new MySqlCommand("Update branchaccounts set Amount=Amount-@Amount where BranchId=@BranchId");
+                    cmd.Parameters.AddWithValue("@Amount", amount);
+                    cmd.Parameters.AddWithValue("@BranchId", agentid);
+                    vdbmngr.Update(cmd);
                 }
                 var jsonSerializer = new JavaScriptSerializer();
                 var jsonString = String.Empty;

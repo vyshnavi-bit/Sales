@@ -336,7 +336,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                                 }
                                 else
                                 {
-                                    if (fromdate.AddDays(1).Month < 3)
+                                    if (fromdate.AddDays(1).Month <= 3)
                                     {
                                         DCNO = Branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "N/" + DCNO;
                                     }
@@ -354,7 +354,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                                 }
                                 else
                                 {
-                                    if (fromdate.Month < 3)
+                                    if (fromdate.Month <= 3)
                                     {
                                         DCNO = Branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "N/" + DCNO;
                                     }
@@ -634,7 +634,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                                 }
                                 else
                                 {
-                                    if (fromdate.AddDays(1).Month < 3)
+                                    if (fromdate.AddDays(1).Month <= 3)
                                     {
                                         DCNO = Branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "T/" + DCNO;
                                     }
@@ -652,7 +652,7 @@ public partial class Tally_BiproductsSales : System.Web.UI.Page
                                 }
                                 else
                                 {
-                                    if (fromdate.Month < 3)
+                                    if (fromdate.Month <= 3)
                                     {
                                         DCNO = Branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "T/" + DCNO;
                                     }

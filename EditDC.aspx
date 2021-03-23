@@ -42,10 +42,15 @@
     <script type="text/javascript">
         $(function () {
             FillVehicleNo();
-            FillEmployee();
+           
         });
-        function FillEmployee() {
-            var data = { 'operation': 'Get_Employee_editDC' };
+        function btnEmployeeDetails() {
+            var Dcno = document.getElementById("txtDcno").value;
+            if (Dcno == "") {
+                alert("Enter Dc No");
+                return false;
+            }
+            var data = { 'operation': 'Get_Employee_editDC', 'Dcno': Dcno };
             var s = function (msg) {
                 if (msg) {
                     fillEmployeelist(msg);
@@ -235,6 +240,10 @@
             var vehicleno = document.getElementById("txtVehicleNo").value;
             var status = document.getElementById("cmbdcstatus").value;
             var Employee = document.getElementById('ddlEmployee').value;
+            if (Employee == "" || Employee == "Select Employee") {
+                alert("Select Employee Name");
+                return false;
+            }
             var rows = $("#tabledetails tr:gt(0)");
             var Orderdetails = new Array();
             $(rows).each(function (i, obj) {
@@ -265,7 +274,7 @@
             }
             //table_inventory_details
             Operationvalues = "D";
-            var Data = { 'op': 'btnEditDCSaveclick', 'invdata': inventorydetails, 'tripid': Dcno, 'VehicleNo': vehicleno, 'EmpID': EmpID, 'status': status, 'data': Orderdetails };
+            var Data = { 'op': 'btnEditDCSaveclick', 'invdata': inventorydetails, 'tripid': Dcno, 'VehicleNo': vehicleno, 'EmpID': Employee, 'status': status, 'data': Orderdetails };
             var s = function (msg) {
                 if (msg) {
                     if (msg == "Session Expired") {
@@ -336,7 +345,10 @@
                         <td style="height:40px;">
                             <input type="text" id="txtDcno" class="form-control" placeholder="Enter Dc No" />
                         </td>
-                       
+                       <td>
+                           <input type="button" id="btndcclick" value="Get Employees" class="btn btn-primary" onclick="btnEmployeeDetails();"/>
+
+                       </td>
                       
                     </tr>
                     <tr>

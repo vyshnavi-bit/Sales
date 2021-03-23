@@ -209,7 +209,7 @@
                 var COLOR = ["#f3f5f7", "#cfe2e0", "", "#cfe2e0"];
                 var k = 1;
                 var results = '<div class="divcontainer" style="overflow:auto;"><table class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info">';
-                results += '<thead><tr class="trbgclrcls"><th scope="col" class="thcls">Sno</th><th scope="col" class="thcls">Branch Code</th><th scope="col" class="thcls">Customer Name</th><th scope="col" class="thcls">Customer Code</th><th scope="col" class="thcls">Mobile</th><th scope="col" class="thcls">E-Mail</th><th scope="col" class="thcls">Sales Type</th><th scope="col" class="thcls">Flag</th><th scope="col" class="thcls">Image</th><th scope="col"></th></tr></thead></tbody>';
+                results += '<thead><tr class="trbgclrcls"><th scope="col" class="thcls">Sno</th><th scope="col" class="thcls">Branch Code</th><th scope="col" class="thcls">Customer Name</th><th scope="col" class="thcls">Customer Code</th><th scope="col" class="thcls">Mobile</th><th scope="col" class="thcls">E-Mail</th><th scope="col" class="thcls">Sales Type</th><th scope="col" class="thcls">Flag</th><th scope="col" class="thcls" style="display:none;">Image</th><th scope="col"></th></tr></thead></tbody>';
                 for (var i = 0; i < BranchdataArr.length; i++) {
 
                     if (BranchdataArr[i].Flag == '1') {
@@ -270,10 +270,10 @@
                     var rndmnum = Math.floor((Math.random() * 10) + 1);
                     var img_url = BranchdataArr[i].ftplocation + BranchdataArr[i].Agent_PIC + '?v=' + rndmnum;
                     if (BranchdataArr[i].Agent_PIC != "") {
-                        results += '<td><img data-imagezoom="true" class="img-circle img-responsive" id="main_img_item" alt="Item Image" src="' + img_url + '" style="width: 35px; height: 35px;border: 2px solid gray;" /></td>';
+                        results += '<td style="display:none;"><img data-imagezoom="true" class="img-circle img-responsive" id="main_img_item" alt="Item Image" src="' + img_url + '" style="width: 35px; height: 35px;border: 2px solid gray;" /></td>';
                     }
                     else {
-                        results += '<td><img data-imagezoom="true" class="img-circle img-responsive" id="main_img_item" alt="Item Image" src="Images/dummy_image.jpg" style="width: 35px; height: 35px;border: 2px solid gray;" /></td>';
+                        results += '<td style="display:none;"><img data-imagezoom="true" class="img-circle img-responsive" id="main_img_item" alt="Item Image" src="Images/dummy_image.jpg" style="width: 35px; height: 35px;border: 2px solid gray;" /></td>';
                     }
 
                     results += '<td data-title="brandstatus"><button type="button" title="Click Here To Edit!" class="btn btn-info btn-outline btn-circle btn-lg m-r-5 editcls"   onclick="getmeCustomerData(this)"><span class="glyphicon glyphicon-edit" style="top: 0px !important;"></span></button></td>';
@@ -1682,8 +1682,9 @@
                                             </button>
                                         </span>
                                     </td>
-                                    <td style="width: 50px">
-                                    </td>
+                                    <%--<td style="width: 200px;padding-right:20px;">
+                                        <a href="RatesManage.aspx" target="_blank">Get Rate Sheet</a> 
+                                    </td>--%>
                                     <td>
                                         <div id="divCustomerProduct" align="center" class="input-group" style="display: block;">
                                             <div class="input-group-addon" style="width: 100px;">

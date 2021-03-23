@@ -326,7 +326,7 @@ public partial class TallyOthersSale : System.Web.UI.Page
                         }
                         else
                         {
-                            if (fromdate.AddDays(1).Month < 3)
+                            if (fromdate.AddDays(1).Month <= 3)
                             {
                                 DCNO = branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "N/" + DCNO;
                             }
@@ -345,7 +345,7 @@ public partial class TallyOthersSale : System.Web.UI.Page
                         }
                         else
                         {
-                            if (fromdate.Month < 3)
+                            if (fromdate.Month <= 3)
                             {
                                 DCNO = branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "N/" + DCNO;
                             }
@@ -633,7 +633,7 @@ public partial class TallyOthersSale : System.Web.UI.Page
                         }
                         else
                         {
-                            if (fromdate.AddDays(1).Month < 3)
+                            if (fromdate.AddDays(1).Month <= 3)
                             {
                                 DCNO = branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "T/" + DCNO;
                             }
@@ -652,7 +652,7 @@ public partial class TallyOthersSale : System.Web.UI.Page
                         }
                         else
                         {
-                            if (fromdate.Month < 3)
+                            if (fromdate.Month <= 3)
                             {
                                 DCNO = branchcode + "/" + dtapril.ToString("yy") + "-" + dtmarch.ToString("yy") + "T/" + DCNO;
                             }
