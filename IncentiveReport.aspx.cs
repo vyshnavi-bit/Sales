@@ -592,9 +592,9 @@ public partial class IncentiveReport : System.Web.UI.Page
                                     if (BranchID == "174" || BranchID == "527")
                                     {
                                         lblmsg.Text = "Crates Balance   :" + totcratesbal + "  Cans Balance    :" + totcansbal;
-                                        btnicentivesave.Visible = false;
-                                        btnPrint.Visible = false;
-                                        Button3.Visible = false;
+                                        //btnicentivesave.Visible = false;
+                                        //btnPrint.Visible = false;
+                                        //Button3.Visible = false;
                                     }
                                 }
                             }
