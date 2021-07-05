@@ -243,12 +243,12 @@ public partial class TallyReceipts : System.Web.UI.Page
                         DataRow newrow = Report.NewRow();
                         string salestype = dr["salestype"].ToString();
                         newrow["DOE"] = dr["DOE"].ToString();
-                        newrow["Receipt"] = dr["ReceiptNo"].ToString();
+                        newrow["Receipt"] = dr["Receipt"].ToString();
                         newrow["Name"] = dr["tBranchName"].ToString();
                         double AmountPaid = 0;
                         double.TryParse(dr["AmountPaid"].ToString(), out AmountPaid);
                         newrow["Amount"] = AmountPaid;
-                      //  newrow["Remarks"] = dr["Remarks"].ToString();
+                        newrow["Remarks"] = dr["Remarks"].ToString();
                         Report.Rows.Add(newrow);
                     }
                 }
