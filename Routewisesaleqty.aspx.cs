@@ -246,6 +246,7 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
             }
             grdReports.DataSource = Report;
             grdReports.DataBind();
+            Session["xportdata"] = Report;
 
         }
         catch(Exception ex)
@@ -253,6 +254,7 @@ public partial class RoutewiseSaleQty : System.Web.UI.Page
             lblmsg.Text = ex.Message;
             grdReports.DataSource = Report;
             grdReports.DataBind();
+            Session["xportdata"] = Report;
         }
     }
     private string GetSpace(string p)

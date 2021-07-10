@@ -855,7 +855,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                     Report.Rows.Add(newrow);
                 }
 
-                cmd = new MySqlCommand("SELECT clotrans.BranchId,productsdata.ProductName,productsdata.tempsubcatsno, closubtranprodcts.StockQty, productsdata.sno FROM clotrans INNER JOIN closubtranprodcts ON clotrans.Sno = closubtranprodcts.RefNo INNER JOIN productsdata ON closubtranprodcts.ProductID = productsdata.sno WHERE (clotrans.BranchId = @BranchID) AND (clotrans.IndDate BETWEEN @d1 AND @d2) AND (clotrans.Transaction_Type = 0) GROUP BY productsdata.ProductName");
+                cmd = new MySqlCommand("SELECT clotrans.BranchId,productsdata.ProductName,productsdata.tempsubcatsno, closubtranprodcts.StockQty, productsdata.sno, productsdata.Unitprice FROM clotrans INNER JOIN closubtranprodcts ON clotrans.Sno = closubtranprodcts.RefNo INNER JOIN productsdata ON closubtranprodcts.ProductID = productsdata.sno WHERE (clotrans.BranchId = @BranchID) AND (clotrans.IndDate BETWEEN @d1 AND @d2) AND (clotrans.Transaction_Type = 0) GROUP BY productsdata.ProductName");
                 cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
                 cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
@@ -863,6 +863,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                 DataView viewClo = new DataView(dtClo);
                 DataTable distinctClo = viewClo.ToTable(true, "BranchId");
                 double totalclos = 0;
+                double stockvalue = 0;
                 foreach (DataRow drp in distinctClo.Rows)
                 {
                     DataRow newrow = Report.NewRow();
@@ -879,6 +880,16 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                             newrow[dr["ProductName"].ToString()] = StockQty;
                             totalclos += StockQty;
 
+                            double Stockprice = 0;
+                            foreach (DataRow drprice in produtstbl1.Select("sno='" + dr["sno"].ToString() + "'"))
+                            {
+                                double.TryParse(drprice["Unitprice"].ToString(), out Stockprice);
+                            }
+                            double clovalue = 0;
+
+                            clovalue = StockQty * Stockprice;
+                            stockvalue += clovalue;
+
                             if (StockQty == 0.0)
                             {
                             }
@@ -893,6 +904,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                         }
                     }
                     newrow["Total Qty"] = totalclos;
+                    newrow["Total Amount"] = Math.Round(stockvalue,2);
                     Report.Rows.Add(newrow);
                 }
 
@@ -2352,7 +2364,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                         }
                     }
                 }
-                cmd = new MySqlCommand("SELECT clotrans.BranchId,productsdata.ProductName,productsdata.tempsubcatsno, closubtranprodcts.StockQty, productsdata.sno FROM clotrans INNER JOIN closubtranprodcts ON clotrans.Sno = closubtranprodcts.RefNo INNER JOIN productsdata ON closubtranprodcts.ProductID = productsdata.sno WHERE (clotrans.BranchId = @BranchID) AND (clotrans.IndDate BETWEEN @d1 AND @d2) AND (clotrans.Transaction_Type = 0) GROUP BY productsdata.ProductName");
+                cmd = new MySqlCommand("SELECT clotrans.BranchId,productsdata.ProductName,productsdata.tempsubcatsno, closubtranprodcts.StockQty, productsdata.sno,productsdata.Unitprice FROM clotrans INNER JOIN closubtranprodcts ON clotrans.Sno = closubtranprodcts.RefNo INNER JOIN productsdata ON closubtranprodcts.ProductID = productsdata.sno WHERE (clotrans.BranchId = @BranchID) AND (clotrans.IndDate BETWEEN @d1 AND @d2) AND (clotrans.Transaction_Type = 0) GROUP BY productsdata.ProductName");
                 cmd.Parameters.AddWithValue("@BranchID", ddlSalesOffice.SelectedValue);
                 cmd.Parameters.AddWithValue("@d1", GetLowDate(fromdate.AddDays(-1)));
                 cmd.Parameters.AddWithValue("@d2", GetHighDate(fromdate.AddDays(-1)));
@@ -2365,6 +2377,7 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                     newrow["SNo"] = i++;
                     newrow["Route Name"] = "Closing Stock";
                     double total = 0;
+                    double stockvalue = 0;
                     foreach (DataRow dr in dtClo.Rows)
                     {
                         if (drp["BranchId"].ToString() == dr["BranchId"].ToString())
@@ -2383,11 +2396,20 @@ public partial class Delivery_Collection_Report : System.Web.UI.Page
                                 tempnewrow["SubCatSno"] = dr["tempsubcatsno"].ToString();
                                 dttempproducts.Rows.Add(tempnewrow);
                                 newrow[dr["ProductName"].ToString()] = StockQty;
+                                double Stockprice = 0;
+                                foreach (DataRow drprice in produtstbl1.Select("sno='" + dr["sno"].ToString() + "'"))
+                                {
+                                    double.TryParse(drprice["Unitprice"].ToString(), out Stockprice);
+                                }
+                                double clovalue = 0;
+                                clovalue = StockQty * Stockprice;
+                                stockvalue += clovalue;
                             }
                             total += StockQty;
                         }
                     }
                     newrow["Total Qty"] = total;
+                    newrow["Total Amount"] = Math.Round(stockvalue, 2);
                     Report.Rows.Add(newrow);
                 }
                 foreach (DataRow branchroute in dtClo.Rows)
